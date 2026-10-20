@@ -17,12 +17,12 @@ public class WorldSpawn {
     }
 
     private void createItemList() {
-        itemList.add(new Item("red berry", true, "/assets/Sprites/redberry.png", 0,5));
-        itemList.add(new Item("purple berry", true, "/assets/Sprites/purpleberry.png", 0,10));
-        itemList.add(new Item("yellow berry", true, "/assets/Sprites/yellowberry.png", 0,15));
-        itemList.add(new Item("pear", true, "/assets/Sprites/pear.png", 0,12));
-        itemList.add(new Item("red apple", true, "/assets/Sprites/redapple.png", 0,7));
-        itemList.add(new Item("green apple", true, "/assets/Sprites/greenapple.png", 0,12));
+        itemList.add(new Item("red berry", ItemType.CONSUMABLE, "/assets/Sprites/redberry.png", 1,5,0));
+        itemList.add(new Item("purple berry", ItemType.CONSUMABLE, "/assets/Sprites/purpleberry.png", 1,10,0));
+        itemList.add(new Item("yellow berry", ItemType.CONSUMABLE, "/assets/Sprites/yellowberry.png", 1,15,0));
+        itemList.add(new Item("pear", ItemType.CONSUMABLE, "/assets/Sprites/pear.png", 1,12,0));
+        itemList.add(new Item("red apple", ItemType.CONSUMABLE, "/assets/Sprites/redapple.png", 1,7,0));
+        itemList.add(new Item("green apple", ItemType.CONSUMABLE, "/assets/Sprites/greenapple.png", 1,12,0));
     }
 
     private void generateItems(int amount) {

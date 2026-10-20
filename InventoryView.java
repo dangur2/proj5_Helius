@@ -38,10 +38,12 @@ public class InventoryView{
         createDestroyTooltip();
         createUseTooltip();
     }
-
+    public ArrayList<Rectangle> getSlots(){
+        return slots;
+    }
 
     public void LeftClick(int x, int y) {
-        //ta bort en item om du vänsterklickar på tooltippen när den är uppe
+        //ta bort en item om du trycker på destroy
         if (destroyTooltip.get(selectedSlot).contains(x, y) && showTooltip) {
             player.getInventory().removeItem(selectedSlot);
             showTooltip = false;
@@ -60,8 +62,12 @@ public class InventoryView{
             if (slots.get(i).contains(x, y)) {
                 showTooltip = false;
                 selectedSlot = i;
+                return;
             }
         }
+    }
+    public int getSelectedItem(){
+        return selectedSlot;
     }
 
 
@@ -75,6 +81,7 @@ public class InventoryView{
                 }
             }
         }
+        
     }
 
 

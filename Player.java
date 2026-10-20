@@ -7,16 +7,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-
 public class Player extends Entity {
 
     private final Inventory inventory;
     private int currHealth;
     private final int maxHealth = 100;
-    private int dmgCounter;
+    private int dmgCounter, attackCounter;
     private final GamePanel gp;
     private double length;
     private boolean playerLost = false;
+    private boolean attacking = false;
 
     public Player(TileManager tm, GamePanel gp) {
         this.gp = gp;
@@ -50,14 +50,42 @@ public class Player extends Entity {
         return playerSizeY;
     }
 
+    public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots, double tx, double ty) {
+
+        double mdx = mx - (x - tx); //mus klick i relation till spelarens skärmposition
+        double mdy = my - (y - ty);
+
+        if (inventory.getInventorySize() == 0 || slots.get(selectedSlot).contains(mx, my) || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
+            //returnar tidigt om saken man håller i inte kan slåss
+            return;
+        }
+        attacking = true;
+        if (Math.abs(mdx) > Math.abs(mdy)) {
+            if (mdx > 0) {
+                attDir = attackDirection.RIGHT;
+            } else {
+                attDir = attackDirection.LEFT;
+            }
+        } else {
+            if (mdy > 0) {
+                attDir = attackDirection.DOWN;
+            } else {
+                attDir = attackDirection.UP;
+            }
+        }
+        System.out.println("You attacked with " + inventory.getItem(selectedSlot).getItemName() + " in direction " + attDir);
+
+    }
+
     public void hurt(int score) {
         if (currHealth > 0) {
             dmgCounter++;
             if (dmgCounter >= 60) { //tappa 1 hp varje sekund
                 currHealth -= Math.min(1 + (score / 10), 3);
                 dmgCounter = 0;
-            } if (currHealth <= 5 && dmgCounter % 15 == 0) { //under 5hp, spela low hp ljud 4ggr per sekund
-                    gp.playSound(SoundEffect.LOWHP);
+            }
+            if (currHealth <= 5 && dmgCounter % 15 == 0) { //under 5hp, spela low hp ljud 4ggr per sekund
+                gp.playSound(SoundEffect.LOWHP);
             }
         } else {
             currHealth = 0;
@@ -98,18 +126,33 @@ public class Player extends Entity {
             idle2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_idle2.png"));
             lost1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_lose1.png"));
             lost2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_lose2.png"));
+            attDown = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_down.png"));
+            attLeft = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_left.png"));
+            attRight = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_right.png"));
+            attUp = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_up.png"));
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("no find sprite amigo", e);
         }
     }
 
+    public void updateAttack(){
+        if (attacking == true) {
+            attackCounter ++;
+            if (attackCounter > 15) {
+                attacking = false;
+                attackCounter = 0;
+            }
+            
+        }
+    }
     public void move(double dt, double dx, double dy, int worldSizeX, int worldsizeY, TileManager tm) {
+        
 
         length = Math.sqrt(dx * dx + dy * dy); //1,0 = 1, 0,0 = 0, 1,1 = 1,4
 
         if (length == 0) {
             direction = Direction.IDLE;
-            updateSprite();
+            updateWalkingSprite();
             return; //Om jag inte rör mig, ingen mening att fortsätta
         }
 
@@ -143,15 +186,14 @@ public class Player extends Entity {
             direction = Direction.UP;
         }
 
-        updateSprite();
+        updateWalkingSprite();
 
     }
 
-    private void updateSprite() {
-
+    private void updateWalkingSprite() {
         spriteCounter++;
-        //hastigheten av hur snabbt den byter sprite vid gång
 
+        //hastigheten av hur snabbt den byter sprite vid gång
         if (spriteCounter > 15) {
             if (spriteNum == 1) {
                 playSound();
@@ -173,55 +215,73 @@ public class Player extends Entity {
     public void draw(Graphics2D g2, Camera camera) {
         BufferedImage image = null;
 
-        switch (direction) {
-            case Direction.UP -> {
-                if (spriteNum == 1) {
-                    image = up1;
+        if (attacking == true) {
+            switch (attDir) {
+                case attackDirection.DOWN -> {
+                    image = attDown;
                 }
-                if (spriteNum == 2) {
-                    image = up2;
+                case attackDirection.UP -> {
+                    image = attUp;
                 }
-            }
-            case Direction.DOWN -> {
-                if (spriteNum == 1) {
-                    image = down1;
+                case attackDirection.LEFT -> {
+                    image = attLeft;
                 }
-                if (spriteNum == 2) {
-                    image = down2;
+                case attackDirection.RIGHT -> {
+                    image = attRight;
                 }
             }
-            case Direction.RIGHT -> {
-                if (spriteNum == 1) {
-                    image = right1;
+        } else {
+            switch (direction) {
+                case Direction.UP -> {
+                    if (spriteNum == 1) {
+                        image = up1;
+                    }
+                    if (spriteNum == 2) {
+                        image = up2;
+                    }
                 }
-                if (spriteNum == 2) {
-                    image = right2;
+                case Direction.DOWN -> {
+                    if (spriteNum == 1) {
+                        image = down1;
+                    }
+                    if (spriteNum == 2) {
+                        image = down2;
+                    }
+                }
+                case Direction.RIGHT -> {
+                    if (spriteNum == 1) {
+                        image = right1;
+                    }
+                    if (spriteNum == 2) {
+                        image = right2;
+                    }
+                }
+                case Direction.LEFT -> {
+                    if (spriteNum == 1) {
+                        image = left1;
+                    }
+                    if (spriteNum == 2) {
+                        image = left2;
+                    }
+                }
+                case Direction.IDLE -> {
+                    if (spriteNum == 1) {
+                        image = idle1;
+                    }
+                    if (spriteNum == 2) {
+                        image = idle2;
+                    }
+                }
+                case Direction.LOST -> {
+                    if (spriteNum == 1) {
+                        image = lost1;
+                    }
+                    if (spriteNum == 2) {
+                        image = lost2;
+                    }
                 }
             }
-            case Direction.LEFT -> {
-                if (spriteNum == 1) {
-                    image = left1;
-                }
-                if (spriteNum == 2) {
-                    image = left2;
-                }
-            }
-            case Direction.IDLE -> {
-                if (spriteNum == 1) {
-                    image = idle1;
-                }
-                if (spriteNum == 2) {
-                    image = idle2;
-                }
-            }
-            case Direction.LOST -> {
-                if (spriteNum == 1) {
-                    image = lost1;
-                }
-                if (spriteNum == 2) {
-                    image = lost2;
-                }
-            }
+
         }
         g2.drawImage(image, ((int) x - (int) camera.getTx()), ((int) y - (int) camera.getTy()), playerSizeX, playerSizeY, null);
     }

@@ -4,20 +4,22 @@ import javax.swing.ImageIcon;
 
 public class Item {
     private final String name;
-    private final boolean consumable;
+    private final ItemType type;
     private final Image sprite;
     private int quantity;
     private final int heal;
+    private final int dmg;
 
-    public Item(String name, boolean consumable, String spritePath, int quantity,int heal){
+    public Item(String name, ItemType type, String spritePath, int quantity,int heal, int dmg){
         this.name = name;
-        this.consumable = consumable;
+        this.type = type;
         this.sprite = new ImageIcon(Item.class.getResource(spritePath)).getImage();
         this.quantity = quantity;
         this.heal = heal;
+        this.dmg = dmg;
     }
     public int use(){
-        if(consumable){
+        if(type == ItemType.CONSUMABLE){
             return heal;
         }
         return 0;
@@ -34,8 +36,11 @@ public class Item {
     public String getItemName(){
         return this.name;
     }
-    public boolean getItemConsumable(){
-        return this.consumable;
+    public ItemType getItemType(){
+        return this.type;
+    }
+    public int getDmg(){
+        return this.dmg;
     }
     public Image getItemImage(){
         return this.sprite;

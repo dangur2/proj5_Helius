@@ -62,6 +62,7 @@ public class GamePanel extends JPanel implements ClickListener {
         //medans spelaren lever
         if (!player.isDead()) {
             player.move(dt, kh.getDx(), kh.getDy(), worldSizeX, worldSizeY, tm);
+            player.updateAttack();
             camera.follow(player);
             worldSpawn.handleCollision(player, kh.isePressed(), this);
         }
@@ -77,6 +78,7 @@ public class GamePanel extends JPanel implements ClickListener {
         switch (ge.getState()) {
             case GameState.PLAYING -> {
                 is.LeftClick(x, y);
+                player.LeftClick(x,y, is.getSelectedItem(), is.getSlots(), camera.getTx(),camera.getTy());
             }
             case GameState.PAUSE -> {
                 pauseMenu.LeftClick(x, y);
@@ -90,11 +92,18 @@ public class GamePanel extends JPanel implements ClickListener {
 
     @Override
     public void OnRightClick(int x, int y) {
+        switch (ge.getState()) {
+            case GameState.PLAYING -> {
+                is.RightClick(x, y);
+            }
+            case GameState.PAUSE -> {
 
-        if (!player.isDead()) {
-            is.RightClick(x, y);
+            }
+            case GameState.LOSE -> {
+            }
+            case GameState.MENU -> {
+            }
         }
-
     }
 
     public void playSound(SoundEffect i) {
