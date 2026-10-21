@@ -1,7 +1,10 @@
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +20,11 @@ public class Player extends Entity {
     private double length;
     private boolean playerLost = false;
     private boolean attacking = false;
+    private boolean chopping = false;
+    private boolean mining = false;
+    private boolean hoeing = false;
+    private Image attImage;
+    private double attImageRot;
 
     public Player(TileManager tm, GamePanel gp) {
         this.gp = gp;
@@ -57,9 +65,10 @@ public class Player extends Entity {
 
         if (inventory.getInventorySize() == 0 || slots.get(selectedSlot).contains(mx, my) || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
             //returnar tidigt om saken man håller i inte kan slåss
+            System.out.println("returning early");
             return;
         }
-        attacking = true;
+        attImageRot = 0;
         if (Math.abs(mdx) > Math.abs(mdy)) {
             if (mdx > 0) {
                 attDir = attackDirection.RIGHT;
@@ -73,8 +82,31 @@ public class Player extends Entity {
                 attDir = attackDirection.UP;
             }
         }
-        System.out.println("You attacked with " + inventory.getItem(selectedSlot).getItemName() + " in direction " + attDir);
+        switch (inventory.getItem(selectedSlot).getItemType()) {
+            case ItemType.SWORD -> {
+                System.out.println("du attackerar med svärd");
+                attacking = true;
+                setAttackImage(selectedSlot);
+            }
+            case ItemType.PICKAXE -> {
+                System.out.println("du minear");
+                mining = true;
+            }
+            case ItemType.AXE -> {
+                System.out.println("du hugger");
+                chopping = true;
+            }
+            case ItemType.HOE -> {
+                System.out.println("du hoe");
+                hoeing = true;
+            }
+            default ->
+                throw new IllegalArgumentException("Unexpected value: " + inventory.getItem(selectedSlot).getItemType());
+        }
+    }
 
+    private void setAttackImage(int selectedSlot) {
+        attImage = inventory.getItem(selectedSlot).getHeldIcon();
     }
 
     public void hurt(int score) {
@@ -135,19 +167,36 @@ public class Player extends Entity {
         }
     }
 
-    public void updateAttack(){
+    public void updateAttack(double tx, double ty) {
         if (attacking == true) {
-            attackCounter ++;
+            attackCounter++;
+            switch (attDir) {
+                case UP -> {
+                    attArea = new Rectangle((int) x + 17, (int) y - 2, 10, 20);
+                    attImageRot = Math.toRadians(0);
+                }
+                case DOWN -> {
+                    attArea = new Rectangle((int) x + 17, (int) y + 25, 10, 20);
+                    attImageRot = Math.toRadians(180);
+                }
+                case RIGHT -> {
+                    attArea = new Rectangle((int) x + 26,  (int) y + 15, 20, 10);
+                    attImageRot = Math.toRadians(90);
+                }
+                case LEFT -> {
+                    attArea = new Rectangle((int) x - 13,  (int) y + 15, 20, 10);
+                    attImageRot = Math.toRadians(270);
+                }
+            }
             if (attackCounter > 15) {
                 attacking = false;
                 attackCounter = 0;
             }
-            
+
         }
     }
-    public void move(double dt, double dx, double dy, int worldSizeX, int worldsizeY, TileManager tm) {
-        
 
+    public void move(double dt, double dx, double dy, int worldSizeX, int worldsizeY, TileManager tm) {
         length = Math.sqrt(dx * dx + dy * dy); //1,0 = 1, 0,0 = 0, 1,1 = 1,4
 
         if (length == 0) {
@@ -283,7 +332,22 @@ public class Player extends Entity {
             }
 
         }
-        g2.drawImage(image, ((int) x - (int) camera.getTx()), ((int) y - (int) camera.getTy()), playerSizeX, playerSizeY, null);
+        int playerX = ((int) x - (int) camera.getTx());
+        int playerY = ((int) y - (int) camera.getTy());
+
+        g2.drawImage(image, playerX, playerY, playerSizeX, playerSizeY, null);
+
+        if (attacking) {
+            int pivotX = (int) attArea.x - (int) camera.getTx() + attArea.width / 2; //attArea mittpunkt i x
+            int pivotY = (int) attArea.y - (int) camera.getTy() + attArea.height / 2; //attArea mittpunkt i y
+            AffineTransform oldTrans = g2.getTransform();
+            g2.rotate(attImageRot, pivotX, pivotY);
+            g2.drawImage(attImage, pivotX - attImage.getWidth(gp) / 2, pivotY - attImage.getHeight(gp) / 2, null);
+            g2.setTransform(oldTrans);
+            g2.setColor(Color.red);
+            g2.drawRect((int) attArea.x - (int) camera.getTx(), (int) attArea.y - (int) camera.getTy(), attArea.width, attArea.height);
+        }
+
     }
 
     public Rectangle getBounds() {

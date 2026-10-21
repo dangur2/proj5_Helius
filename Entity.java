@@ -13,7 +13,7 @@ public class Entity {
     public attackDirection attDir;
     public int playerSizeX = 32;
     public int playerSizeY = 32;
-    public Rectangle collArea;
+    public Rectangle collArea,attArea;
     public boolean playerCollision = false;
 
     public int spriteCounter = 0;

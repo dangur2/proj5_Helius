@@ -7,8 +7,10 @@ public class Inventory {
 
     public Inventory(ArrayList<Item> inventory) {
         this.inventory = inventory;
-        addItem(new Item("sword", ItemType.SWORD, "/assets/Sprites/sword.png", 1, 0, 5));
-        addItem(new Item("pickaxe", ItemType.SWORD, "/assets/Sprites/pickaxe.png", 1, 0, 5));
+        addItem(new Item("sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png","/assets/Sprites/held_sword.png", 1, 0, 5));
+        addItem(new Item("pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png","/assets/Sprites/held_pickaxe.png", 1, 0, 5));
+        addItem(new Item("axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png","/assets/Sprites/held_axe.png", 1, 0, 5));
+        addItem(new Item("hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png","/assets/Sprites/held_hoe.png", 1, 0, 5));
     }
 
     public void addItem(Item x) {
@@ -49,6 +51,9 @@ public class Inventory {
                         return x.getDmg();
                     }
                     case ItemType.AXE -> {
+                        return x.getDmg();
+                    }
+                    case ItemType.HOE -> {
                         return x.getDmg();
                     }
                 }

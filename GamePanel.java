@@ -62,7 +62,7 @@ public class GamePanel extends JPanel implements ClickListener {
         //medans spelaren lever
         if (!player.isDead()) {
             player.move(dt, kh.getDx(), kh.getDy(), worldSizeX, worldSizeY, tm);
-            player.updateAttack();
+            player.updateAttack(camera.getTx(),camera.getTy());
             camera.follow(player);
             worldSpawn.handleCollision(player, kh.isePressed(), this);
         }

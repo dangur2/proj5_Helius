@@ -127,10 +127,8 @@ public class InventoryView{
         }
         for (int i = 0; i < player.getInventory().getInventorySize(); i++) { //ritar item med rätt siffra av mängd item + bilden av itemen.
             g2.setColor(Color.white);
-            g2.drawString(Integer.toString(player.getInventory().getItem(i).getQuantity()), slots.get(i).x, slots.get(i).y + numberPadding);
-            g2.drawImage(player.getInventory().getItem(i).getItemImage(), slots.get(i).x + itemPaddingX, slots.get(i).y + itemPaddingY, null);
+            g2.drawString(Integer.toString(player.getInventory().getItem(i).getQuantity()), slots.get(i).x, slots.get(i).y + numberPadding); //quantity av item
+            g2.drawImage(player.getInventory().getItem(i).getHotbarIcon(), slots.get(i).x + itemPaddingX, slots.get(i).y + itemPaddingY, null); //item ikonen
         }
     }
-
-    
 }

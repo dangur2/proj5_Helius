@@ -54,6 +54,7 @@ public class GameEngine implements Runnable {
         SwingUtilities.invokeLater(() -> {
             ui.setContentPane(x);
             ui.pack();
+            ui.setLocationRelativeTo(null);
             x.requestFocusInWindow();
             ui.revalidate();
             ui.repaint();

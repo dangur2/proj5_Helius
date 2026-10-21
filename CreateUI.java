@@ -9,7 +9,6 @@ public class CreateUI extends JFrame{
     public CreateUI(){
         loadIcon();
         setResizable(false);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setTitle("Helius");

@@ -5,15 +5,17 @@ import javax.swing.ImageIcon;
 public class Item {
     private final String name;
     private final ItemType type;
-    private final Image sprite;
+    private final Image hotbarSprite;
+    private final Image heldSprite;
     private int quantity;
     private final int heal;
     private final int dmg;
 
-    public Item(String name, ItemType type, String spritePath, int quantity,int heal, int dmg){
+    public Item(String name, ItemType type, String hotbarPath, String heldPath, int quantity,int heal, int dmg){
         this.name = name;
         this.type = type;
-        this.sprite = new ImageIcon(Item.class.getResource(spritePath)).getImage();
+        this.hotbarSprite = new ImageIcon(Item.class.getResource(hotbarPath)).getImage();
+        this.heldSprite = new ImageIcon(Item.class.getResource(heldPath)).getImage();
         this.quantity = quantity;
         this.heal = heal;
         this.dmg = dmg;
@@ -42,8 +44,11 @@ public class Item {
     public int getDmg(){
         return this.dmg;
     }
-    public Image getItemImage(){
-        return this.sprite;
+    public Image getHotbarIcon(){
+        return this.hotbarSprite;
+    }
+    public Image getHeldIcon(){
+        return this.heldSprite;
     }
     
 }
