@@ -68,4 +68,9 @@ public class TitleScreen extends JPanel implements ClickListener {
     public void OnRightClick(int x, int y) {
 
     }
+
+    @Override
+    public void OnHover(int x, int y) {
+
+    }
 }

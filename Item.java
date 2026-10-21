@@ -20,11 +20,24 @@ public class Item {
         this.heal = heal;
         this.dmg = dmg;
     }
+    public Item(Item other){
+        this.name = other.name;
+        this.type = other.type;
+        this.hotbarSprite = other.hotbarSprite;
+        this.heldSprite = other.heldSprite;
+        this.quantity = other.quantity;
+        this.heal = other.heal;
+        this.dmg = other.dmg;
+    }
+    
     public int use(){
         if(type == ItemType.CONSUMABLE){
             return heal;
         }
         return 0;
+    }
+    public int getHeal(){
+        return this.heal;
     }
     public void increaseQuantity(int x){
         this.quantity += x;
@@ -50,5 +63,6 @@ public class Item {
     public Image getHeldIcon(){
         return this.heldSprite;
     }
+  
     
 }

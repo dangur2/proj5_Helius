@@ -1,5 +1,4 @@
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -63,12 +62,12 @@ public class Player extends Entity {
         double mdx = mx - (x - tx); //mus klick i relation till spelarens skärmposition
         double mdy = my - (y - ty);
 
-        if (inventory.getInventorySize() == 0 || slots.get(selectedSlot).contains(mx, my) || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
+        if (inventory.getInventorySize() == 0 || slots.size() < selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedSlot >= inventory.getInventorySize()|| inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
             //returnar tidigt om saken man håller i inte kan slåss
             System.out.println("returning early");
             return;
         }
-        attImageRot = 0;
+        attImageRot = 0; //resettar rotationen på itemspriten
         if (Math.abs(mdx) > Math.abs(mdy)) {
             if (mdx > 0) {
                 attDir = attackDirection.RIGHT;
@@ -180,11 +179,11 @@ public class Player extends Entity {
                     attImageRot = Math.toRadians(180);
                 }
                 case RIGHT -> {
-                    attArea = new Rectangle((int) x + 26,  (int) y + 15, 20, 10);
+                    attArea = new Rectangle((int) x + 23,  (int) y + 19, 20, 10);
                     attImageRot = Math.toRadians(90);
                 }
                 case LEFT -> {
-                    attArea = new Rectangle((int) x - 13,  (int) y + 15, 20, 10);
+                    attArea = new Rectangle((int) x - 12,  (int) y + 19, 20, 10);
                     attImageRot = Math.toRadians(270);
                 }
             }
@@ -344,8 +343,6 @@ public class Player extends Entity {
             g2.rotate(attImageRot, pivotX, pivotY);
             g2.drawImage(attImage, pivotX - attImage.getWidth(gp) / 2, pivotY - attImage.getHeight(gp) / 2, null);
             g2.setTransform(oldTrans);
-            g2.setColor(Color.red);
-            g2.drawRect((int) attArea.x - (int) camera.getTx(), (int) attArea.y - (int) camera.getTy(), attArea.width, attArea.height);
         }
 
     }

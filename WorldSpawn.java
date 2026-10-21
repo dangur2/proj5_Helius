@@ -28,7 +28,8 @@ public class WorldSpawn {
     private void generateItems(int amount) {
         Random r = new Random();
         for (int i = 0; i < amount; i++) {
-            groundItems.add(new GroundItem(itemList.get(r.nextInt(0,itemList.size())), tm.findFreePosition()));
+            GroundItem item = new GroundItem(itemList.get(r.nextInt(0,itemList.size())), tm.findFreePosition());
+            groundItems.add(item);
         }
     }
 
@@ -36,7 +37,7 @@ public class WorldSpawn {
         for (GroundItem i : groundItems) {
             if (i.getBounds().intersects(player.getCollison()) && ePressed) {
                 ge.playSound(SoundEffect.PICKUP);
-                player.getInventory().addItem(i.getItem());
+                player.getInventory().addCopyOf(i.getItem());
                 groundItems.remove(i);
                 break;
             }

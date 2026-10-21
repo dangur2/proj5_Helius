@@ -7,10 +7,10 @@ public class Inventory {
 
     public Inventory(ArrayList<Item> inventory) {
         this.inventory = inventory;
-        addItem(new Item("sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png","/assets/Sprites/held_sword.png", 1, 0, 5));
-        addItem(new Item("pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png","/assets/Sprites/held_pickaxe.png", 1, 0, 5));
-        addItem(new Item("axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png","/assets/Sprites/held_axe.png", 1, 0, 5));
-        addItem(new Item("hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png","/assets/Sprites/held_hoe.png", 1, 0, 5));
+        addItem(new Item("sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png", "/assets/Sprites/held_sword.png", 1, 0, 5));
+        addItem(new Item("pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png", "/assets/Sprites/held_pickaxe.png", 1, 0, 5));
+        addItem(new Item("axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png", "/assets/Sprites/held_axe.png", 1, 0, 5));
+        addItem(new Item("hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 5));
     }
 
     public void addItem(Item x) {
@@ -25,43 +25,43 @@ public class Inventory {
     }
 
     public void removeItem(int x) {
-        if (inventory.get(x) != null) {
+        if (x >= 0 && x <= inventory.size()) {
             inventory.remove(x);
         }
     }
 
     public int useItem(Item x) {
         //decreases quantity first if item exist, remove secondly
-        for (Item y : inventory) {
-            if (x != null) {
-                switch (x.getItemType()) {
-                    case ItemType.CONSUMABLE -> {
-                        if (y.getItemName().equals(x.getItemName())) {
-                            x.decreaseQuantity();
-                            if (x.getQuantity() == 0) {
-                                inventory.remove(x);
-                            }
-                            return x.use();
-                        }
+        if (x != null) {
+            switch (x.getItemType()) {
+                case ItemType.CONSUMABLE -> {
+                    x.decreaseQuantity();
+                    if (x.getQuantity() == 0) {
+                        inventory.remove(x);
                     }
-                    case ItemType.SWORD -> {
-                        return x.getDmg();
-                    }
-                    case ItemType.PICKAXE -> {
-                        return x.getDmg();
-                    }
-                    case ItemType.AXE -> {
-                        return x.getDmg();
-                    }
-                    case ItemType.HOE -> {
-                        return x.getDmg();
-                    }
+                    return x.use();
+
+                }
+                case ItemType.SWORD -> {
+                    return x.getDmg();
+                }
+                case ItemType.PICKAXE -> {
+                    return x.getDmg();
+                }
+                case ItemType.AXE -> {
+                    return x.getDmg();
+                }
+                case ItemType.HOE -> {
+                    return x.getDmg();
                 }
             }
         }
+
         return 0;
     }
-
+    public void addCopyOf(Item x){
+        addItem(new Item(x));
+    }
     public Item getItem(int x) {
         return this.inventory.get(x);
     }
