@@ -63,6 +63,12 @@ public class Item {
     public Image getHeldIcon(){
         return this.heldSprite;
     }
+    public String getHoverDescription(){
+        return switch(type){
+            case CONSUMABLE -> "Heal:" + heal;
+            case AXE,PICKAXE,HOE,SWORD -> "Dmg:" + dmg;
+        };
+    }
   
     
 }

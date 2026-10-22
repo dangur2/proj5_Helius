@@ -87,7 +87,7 @@ public class InventoryView {
                 selectedSlot = i;
                 if (slots.get(selectedSlot).contains(x, y) && selectedSlot < player.getInventory().getInventorySize()) {
                     showTooltip = !showTooltip;
-                    if(showTooltip){
+                    if (showTooltip) {
                         displayHover = false;
                     }
                 }
@@ -99,13 +99,14 @@ public class InventoryView {
         hoverX = x;
         hoverY = y;
         displayHover = false;
-        for(int i = 0; i < slots.size(); i++){
-            if (slots.get(i).contains(x,y) && i < player.getInventory().getInventorySize()) {
+        for (int i = 0; i < slots.size(); i++) {
+            if (slots.get(i).contains(x, y) && i < player.getInventory().getInventorySize()) {
                 hoveredSlot = i;
                 displayHover = true;
             }
         }
     }
+
     private void createDestroyTooltip() {
         for (int i = 0; i < column; i++) {
             destroyTooltip.add(new Rectangle(hotbarX + tooltipTextPaddingX + (i % column * slotSpacing), hotbarY - tooltipTextPaddingY, 61, 15));
@@ -153,19 +154,32 @@ public class InventoryView {
             g2.setColor(Color.white);
             g2.drawString(Integer.toString(player.getInventory().getItem(i).getQuantity()), slots.get(i).x, slots.get(i).y + numberPadding); //quantity av item
             g2.drawImage(player.getInventory().getItem(i).getHotbarIcon(), slots.get(i).x + itemPaddingX, slots.get(i).y + itemPaddingY, null); //item ikonen
-            if (displayHover) {
-                g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
-                FontMetrics textSize = g2.getFontMetrics();
-                int textWidth = textSize.stringWidth(player.getInventory().getItem(hoveredSlot).getItemName());
-                int textHeight = textSize.getHeight();
-                g2.setColor(new Color(36,33,52,230));
-                g2.fillRoundRect((hoverX - 45 + hoverDisplay.getWidth() / 2), (hoverY - hoverDisplay.getHeight() / 2) - 15, textWidth + 15, textHeight + 5, 5, 5);
-                
-                g2.setColor(Color.black);
-                g2.drawString(player.getInventory().getItem(hoveredSlot).getItemName(), hoverX - 40 + hoverDisplay.getWidth() / 2, hoverY - hoverDisplay.getHeight() / 2);
-                g2.setColor(Color.white);
-                g2.drawString(player.getInventory().getItem(hoveredSlot).getItemName(), hoverX - 39 + hoverDisplay.getWidth() / 2, hoverY - hoverDisplay.getHeight() / 2);
-            }
+
+        }
+        if (displayHover) {
+            Item item = player.getInventory().getItem(hoveredSlot);
+            String effect = item.getHoverDescription();
+
+            g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
+            FontMetrics textSize = g2.getFontMetrics();
+            int textWidth = Math.max(textSize.stringWidth(item.getItemName()), textSize.stringWidth(effect));
+            int textHeight = textSize.getHeight();
+            g2.setColor(new Color(36, 33, 52, 230));
+            g2.fillRoundRect((hoverX - 45 + hoverDisplay.getWidth() / 2), (hoverY - hoverDisplay.getHeight() / 2) - 45, textWidth + 15, (textHeight) * 2, 9, 9);
+
+            //3d text, item name
+            g2.setColor(Color.black);
+            g2.drawString(item.getItemName(), hoverX - 40 + hoverDisplay.getWidth() / 2, hoverY - 12 - hoverDisplay.getHeight());
+            g2.setColor(Color.white);
+            g2.drawString(item.getItemName(), hoverX - 39 + hoverDisplay.getWidth() / 2, hoverY - 12 - hoverDisplay.getHeight());
+
+            //3d text, item use
+            g2.setColor(Color.black);
+            g2.drawString(effect, hoverX - 40 + hoverDisplay.getWidth() / 2, hoverY + 5 - hoverDisplay.getHeight());
+            g2.setColor(Color.white);
+            g2.drawString(effect, hoverX - 39 + hoverDisplay.getWidth() / 2, hoverY + 5 - hoverDisplay.getHeight());
+
         }
     }
+
 }
