@@ -3,5 +3,6 @@ public enum ItemType {
     AXE,
     SWORD,
     HOE,
+    SHOVEL,
     CONSUMABLE
 }

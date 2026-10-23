@@ -3,7 +3,6 @@
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +14,7 @@ import javax.imageio.ImageIO;
 public class TileManager {
 
     private final Tile[] tile;
-
     private final GamePanel gp;
-    private BufferedImage noise;
     private final int mapTileNum[][];
 
     public TileManager(GamePanel gp, MapType mapType) {
@@ -35,24 +32,59 @@ public class TileManager {
         }
 
     }
-
+    public Tile getTileNum(int x, int y){
+        return tile[mapTileNum[(int) x][(int) y]];
+    }
     private void setTileImage() {
         try {
             tile[0] = new Tile();
             tile[0].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tile.png"));
             tile[0].collision = false;
+            tile[0].requiredTool = ItemType.HOE;
+            tile[0].setTile = 4;
+            tile[0].health = 1;
 
             tile[1] = new Tile();
             tile[1].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/water_tile.png"));
             tile[1].collision = true;
+            tile[1].requiredTool = null;
+            tile[1].setTile = 1;
+            tile[1].health = 0;
 
             tile[2] = new Tile();
             tile[2].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/brick_tile.png"));
             tile[2].collision = true;
+            tile[2].requiredTool = null;
+            tile[2].setTile = 2;
+            tile[2].health = 0;
 
             tile[3] = new Tile();
             tile[3].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tile.png"));
             tile[3].collision = false;
+            tile[3].requiredTool = ItemType.SHOVEL;
+            tile[3].setTile = 6;
+            tile[3].health = 0;
+
+            tile[4] = new Tile();
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tile.png"));
+            tile[4].collision = false;
+            tile[4].requiredTool = ItemType.SHOVEL;
+            tile[4].setTile = 5;
+            tile[4].health = 0;
+
+            tile[5] = new Tile();
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dugdirt_tile.png"));
+            tile[5].collision = false;
+            tile[5].requiredTool = null;
+            tile[5].setTile = 5;
+            tile[5].health = 0;
+
+            tile[6] = new Tile();
+            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dugsand_tile.png"));
+            tile[6].collision = false;
+            tile[6].requiredTool = null;
+            tile[6].setTile = 6;
+            tile[6].health = 0;
         } catch (IOException e) {
         }
     }
@@ -63,6 +95,11 @@ public class TileManager {
             return true;
         }
         return tile[mapTileNum[(int) worldX / gp.tileSize][(int) worldY / gp.tileSize]].collision;
+    }
+    public void setTile(int x, int y, int toTile){
+        if (x <= gp.worldCol || x > 0 || y > 0 || y <= gp.worldRow) {
+            mapTileNum[x][y] = toTile;
+        }
     }
 
     //kollar collision åt spelaren
@@ -78,7 +115,7 @@ public class TileManager {
 
     public Point findFreePosition() {
         Random random = new Random();
-        int worldPadding = 10;
+        int worldPadding = 15;
         for (int i = 0; i < 100; i++) {
                 int x = random.nextInt(worldPadding, gp.worldCol-worldPadding) * gp.tileSize;
                 int y = random.nextInt(worldPadding, gp.worldRow-worldPadding) * gp.tileSize;
@@ -118,10 +155,12 @@ public class TileManager {
 
                 if (value < 0.32) {
                     mapTileNum[j][i] = 1; //vatten
-                } else if (value < 0.44) {
+                } else if (value < 0.38) {
                     mapTileNum[j][i] = 3;//sand
-                } else {
+                } else if (value < 0.85) {
                     mapTileNum[j][i] = 0;//gräs
+                } else {
+                    mapTileNum[j][i] = 4;//jord
                 }
 
             }
@@ -155,23 +194,6 @@ public class TileManager {
             e.printStackTrace();
         }
     }
-
-    private void randomiseBackground() {
-        noise = new BufferedImage(gp.screenSizeX, gp.screenSizeY, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < gp.screenSizeX; i += gp.tileSize) {
-            for (int j = 0; j < gp.screenSizeY; j += gp.tileSize) {
-                int red = (int) (Math.random() * 256);
-                int green = (int) (Math.random() * 256);
-                int blue = (int) (Math.random() * 256);
-                int rgb = (red << 16) | (green << 8) | blue;
-                //bitwise operators, << är en bit shift och | är en bitwise OR. Alltså shiftar bitsen av red 16 bits till vänster, bitsen av green 8 bits till vänster och blå är kvar.
-                //Detta betyder att första 8 bitsen, vänstra channeln blir bitsen motsvarande rödas färg, mitten channeln blir motsvarande gröna färgens bits och blå stannar i högra channeln.
-                // | sätter ihop channelsen och memorerar deras bits separat, så varje channel inte sätts ihop som hade gjorts om man adderade dom.
-                noise.setRGB(i, j, rgb);
-            }
-        }
-    }
-
     public void draw(Graphics2D g2, Camera camera) {
 
         int startCol = Math.max(0, (int) camera.getTx() / gp.tileSize);

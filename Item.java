@@ -66,7 +66,11 @@ public class Item {
     public String getHoverDescription(){
         return switch(type){
             case CONSUMABLE -> "Heal:" + heal;
-            case AXE,PICKAXE,HOE,SWORD -> "Dmg:" + dmg;
+            case AXE -> "Chops wood";
+            case PICKAXE -> "Mines rock";
+            case HOE -> "Tills dirt";
+            case SWORD -> "Dmg:"+dmg;
+            case SHOVEL -> "Digs sand";
         };
     }
   

@@ -19,15 +19,15 @@ public class Player extends Entity {
     private double length;
     private boolean playerLost = false;
     private boolean attacking = false;
-    private boolean chopping = false;
-    private boolean mining = false;
-    private boolean hoeing = false;
+    private boolean harvesting = false;
     private Image attImage;
     private double attImageRot;
+    private final TileManager tm;
 
     public Player(TileManager tm, GamePanel gp) {
         this.gp = gp;
         this.currHealth = 100;
+        this.tm = tm;
         collArea = new Rectangle(10, 25, 12, 7);
         inventory = new Inventory(new ArrayList<>());
         setStartingValues(tm.findFreePosition());
@@ -62,50 +62,61 @@ public class Player extends Entity {
         double mdx = mx - (x - tx); //mus klick i relation till spelarens skärmposition
         double mdy = my - (y - ty);
 
-        if (inventory.getInventorySize() == 0 || slots.size() < selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedSlot >= inventory.getInventorySize()|| inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
+        int k = (int) (mx + tx) / 32;
+        int l = (int) (my + ty) / 32;
+
+        int pCol = (int) (x + playerSizeX / 2) / gp.tileSize;
+        int pRow = (int) (y + playerSizeY / 2) / gp.tileSize;
+        int dRow = 0;
+        int dCol = 0;
+
+        if (inventory.getInventorySize() == 0 || slots.size() < selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedSlot >= inventory.getInventorySize() || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
             //returnar tidigt om saken man håller i inte kan slåss
-            System.out.println("returning early");
             return;
         }
         attImageRot = 0; //resettar rotationen på itemspriten
         if (Math.abs(mdx) > Math.abs(mdy)) {
             if (mdx > 0) {
                 attDir = attackDirection.RIGHT;
+                dCol += 1;
             } else {
                 attDir = attackDirection.LEFT;
+                dCol -= 1;
             }
         } else {
             if (mdy > 0) {
                 attDir = attackDirection.DOWN;
+                dRow += 1;
             } else {
                 attDir = attackDirection.UP;
+                dRow -= 1;
             }
         }
-        switch (inventory.getItem(selectedSlot).getItemType()) {
-            case ItemType.SWORD -> {
-                System.out.println("du attackerar med svärd");
-                attacking = true;
-                setAttackImage(selectedSlot);
-            }
-            case ItemType.PICKAXE -> {
-                System.out.println("du minear");
-                mining = true;
-            }
-            case ItemType.AXE -> {
-                System.out.println("du hugger");
-                chopping = true;
-            }
-            case ItemType.HOE -> {
-                System.out.println("du hoe");
-                hoeing = true;
-            }
-            default ->
-                throw new IllegalArgumentException("Unexpected value: " + inventory.getItem(selectedSlot).getItemType());
+        int targetCol = pCol + dCol;
+        int targetRow = pRow + dRow;
+        Tile lookedTile = getTileLookedAt(k,l);
+        boolean canHarvest = canHarvest(lookedTile, inventory.getItem(selectedSlot));
+        setAttackImage(inventory.getItem(selectedSlot));
+        toolUsage(targetCol,targetRow, lookedTile, canHarvest);
+    }
+
+    private void toolUsage(int targetCol, int targetRow, Tile lookedTile, boolean canHarvest) {
+        if (canHarvest) {
+            harvesting = true;
+            tm.setTile((int) targetCol,(int) targetRow, lookedTile.setTile);
         }
     }
 
-    private void setAttackImage(int selectedSlot) {
-        attImage = inventory.getItem(selectedSlot).getHeldIcon();
+    private Tile getTileLookedAt(int x, int y) {
+        return tm.getTileNum(x, y);
+    }
+
+    private boolean canHarvest(Tile tileLookedAt, Item item) {
+        return tileLookedAt.requiredTool == item.getItemType();
+    }
+
+    private void setAttackImage(Item item) {
+        attImage = item.getHeldIcon();
     }
 
     public void hurt(int score) {
@@ -166,7 +177,11 @@ public class Player extends Entity {
         }
     }
 
-    public void updateAttack(double tx, double ty) {
+    public void updateTool() {
+
+    }
+
+    public void updateAttack() {
         if (attacking == true) {
             attackCounter++;
             switch (attDir) {
@@ -179,11 +194,11 @@ public class Player extends Entity {
                     attImageRot = Math.toRadians(180);
                 }
                 case RIGHT -> {
-                    attArea = new Rectangle((int) x + 23,  (int) y + 19, 20, 10);
+                    attArea = new Rectangle((int) x + 23, (int) y + 19, 20, 10);
                     attImageRot = Math.toRadians(90);
                 }
                 case LEFT -> {
-                    attArea = new Rectangle((int) x - 12,  (int) y + 19, 20, 10);
+                    attArea = new Rectangle((int) x - 12, (int) y + 19, 20, 10);
                     attImageRot = Math.toRadians(270);
                 }
             }
@@ -362,4 +377,5 @@ public class Player extends Entity {
     public double getY() {
         return y;
     }
+
 }
