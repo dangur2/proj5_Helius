@@ -54,6 +54,9 @@ public class Item {
     public ItemType getItemType(){
         return this.type;
     }
+    public boolean isTool(){
+        return (this.type == ItemType.AXE || this.type == ItemType.HOE || this.type == ItemType.PICKAXE || this.type == ItemType.SHOVEL) ;
+    }
     public int getDmg(){
         return this.dmg;
     }

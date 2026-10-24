@@ -59,14 +59,11 @@ public class Player extends Entity {
 
     public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots, double tx, double ty) {
 
-        double mdx = mx - (x - tx); //mus klick i relation till spelarens skärmposition
+        double mdx = mx - (x - tx); //mus position/klick i relation till spelarens skärmposition
         double mdy = my - (y - ty);
 
-        int k = (int) (mx + tx) / 32;
-        int l = (int) (my + ty) / 32;
-
-        int pCol = (int) (x + playerSizeX / 2) / gp.tileSize;
-        int pRow = (int) (y + playerSizeY / 2) / gp.tileSize;
+        int pCol = (int) (x + playerSizeX / 2) / gp.tileSize; //spelarens world col baserad på mittpunkten av spelaren
+        int pRow = (int) (y + playerSizeY / 2) / gp.tileSize; //spelarens world row baserad på mittpunkten av spelaren
         int dRow = 0;
         int dCol = 0;
 
@@ -92,11 +89,12 @@ public class Player extends Entity {
                 dRow -= 1;
             }
         }
-        int targetCol = pCol + dCol;
+        int targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
         int targetRow = pRow + dRow;
-        Tile lookedTile = getTileLookedAt(k,l);
-        boolean canHarvest = canHarvest(lookedTile, inventory.getItem(selectedSlot));
-        setAttackImage(inventory.getItem(selectedSlot));
+        Item selectedItem = inventory.getItem(selectedSlot);
+        Tile lookedTile = getTileLookedAt(targetCol,targetRow);
+        boolean canHarvest = canHarvest(lookedTile, selectedItem);
+        setAttackImage(selectedItem);
         toolUsage(targetCol,targetRow, lookedTile, canHarvest);
     }
 
@@ -178,11 +176,38 @@ public class Player extends Entity {
     }
 
     public void updateTool() {
-
+        int harvestCounter = 0;
+        if (harvesting) {
+            harvestCounter++;
+            switch(attDir){
+                case UP -> {
+                    attArea = new Rectangle((int) x + 17, (int) y - 2, 10, 20);
+                    attImageRot = Math.toRadians(0);
+                }
+                case DOWN -> {
+                    attArea = new Rectangle((int) x + 17, (int) y + 25, 10, 20);
+                    attImageRot = Math.toRadians(180);
+                }
+                case RIGHT -> {
+                    attArea = new Rectangle((int) x + 23, (int) y + 19, 20, 10);
+                    attImageRot = Math.toRadians(90);
+                }
+                case LEFT -> {
+                    attArea = new Rectangle((int) x - 12, (int) y + 19, 20, 10);
+                    attImageRot = Math.toRadians(270);
+                }
+                
+            }
+            if (harvestCounter > 15) {
+                harvesting = false;
+                attackCounter = 0;
+            }
+            
+        }
     }
 
     public void updateAttack() {
-        if (attacking == true) {
+        if (attacking) {
             attackCounter++;
             switch (attDir) {
                 case UP -> {
@@ -206,7 +231,6 @@ public class Player extends Entity {
                 attacking = false;
                 attackCounter = 0;
             }
-
         }
     }
 
@@ -359,7 +383,6 @@ public class Player extends Entity {
             g2.drawImage(attImage, pivotX - attImage.getWidth(gp) / 2, pivotY - attImage.getHeight(gp) / 2, null);
             g2.setTransform(oldTrans);
         }
-
     }
 
     public Rectangle getBounds() {
