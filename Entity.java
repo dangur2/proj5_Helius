@@ -6,7 +6,7 @@ public class Entity {
     public double speed;
     public double x,y;
     public double worldX,worldY;
-    public BufferedImage up1,up2,down1,down2,left1,left2,right1,right2,idle1,idle2,lost1,lost2,attUp,attDown,attRight,attLeft;
+    public BufferedImage up1,up2,down1,down2,left1,left2,right1,right2,idle1,idle2,lost1,lost2,attUp,attDown,attRight,attLeft,tileHighLight;
     public enum Direction{UP,DOWN,RIGHT,LEFT,IDLE,LOST};
     public Direction direction;
     public enum attackDirection{UP,DOWN,RIGHT,LEFT};

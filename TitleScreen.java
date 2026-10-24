@@ -19,8 +19,6 @@ public class TitleScreen extends JPanel implements ClickListener {
         loadSprites();
         createButtonBounds();
         addMouseListener(ge.getMh());
-        
-
     }
 
     @Override

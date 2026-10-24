@@ -76,7 +76,10 @@ public class InventoryView {
         }
     }
 
-    public int getSelectedItem() {
+    public Item getSelectedItem() {
+        return player.getInventory().getItem(selectedSlot);
+    }
+    public int getSelectedSlot() {
         return selectedSlot;
     }
 

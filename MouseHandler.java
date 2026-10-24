@@ -6,6 +6,7 @@ import java.awt.event.MouseMotionListener;
 public class MouseHandler implements MouseListener, MouseMotionListener{
 
     private ClickListener active;
+    private int x, y;
 
     public MouseHandler() {
         
@@ -52,6 +53,15 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        x = e.getX();
+        y = e.getY();
         active.OnHover(e.getX(), e.getY());
+    }
+
+    public int getMx(){
+        return x;
+    }
+    public int getMy(){
+        return y;
     }
 }

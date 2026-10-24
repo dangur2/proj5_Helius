@@ -11,22 +11,26 @@ import javax.imageio.ImageIO;
 
 public class Player extends Entity {
 
+    private int animationCounter;
     private final Inventory inventory;
-    private int currHealth;
-    private final int maxHealth = 100;
-    private int dmgCounter, attackCounter;
+    private int currHealth, currStamina;
+    private final int maxHealth = 100, maxStamina = 100;
     private final GamePanel gp;
     private double length;
     private boolean playerLost = false;
     private boolean attacking = false;
     private boolean harvesting = false;
+    private boolean previewToolHit = false;
+    private int targetCol, targetRow;
     private Image attImage;
     private double attImageRot;
     private final TileManager tm;
+    private Item selectedItem;
 
     public Player(TileManager tm, GamePanel gp) {
         this.gp = gp;
         this.currHealth = 100;
+        this.currStamina = 100;
         this.tm = tm;
         collArea = new Rectangle(10, 25, 12, 7);
         inventory = new Inventory(new ArrayList<>());
@@ -41,8 +45,19 @@ public class Player extends Entity {
         }
     }
 
+    public void increaseStamina(int x) {
+        this.currStamina += x;
+        if (currStamina > maxStamina) {
+            currStamina = maxStamina;
+        }
+    }
+
     public int getHealth() {
         return this.currHealth;
+    }
+
+    public int getStamina() {
+        return this.currStamina;
     }
 
     public Inventory getInventory() {
@@ -57,51 +72,72 @@ public class Player extends Entity {
         return playerSizeY;
     }
 
-    public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots, double tx, double ty) {
+    public void setStamina(int x) {
+        this.currStamina += x;
+    }
 
-        double mdx = mx - (x - tx); //mus position/klick i relation till spelarens skärmposition
-        double mdy = my - (y - ty);
+    public void updateTarget(int mx, int my, double tx, double ty, Item currItem) {
+        double mdx = mx - ((x + playerSizeX / 2) - tx); //mus position/klick i relation till spelarens skärmposition
+        double mdy = my - ((y + playerSizeY / 2) - ty);
 
         int pCol = (int) (x + playerSizeX / 2) / gp.tileSize; //spelarens world col baserad på mittpunkten av spelaren
-        int pRow = (int) (y + playerSizeY / 2) / gp.tileSize; //spelarens world row baserad på mittpunkten av spelaren
+        int pRow = (int) (y + playerSizeY / 2) / gp.tileSize;
+
         int dRow = 0;
         int dCol = 0;
-
-        if (inventory.getInventorySize() == 0 || slots.size() < selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedSlot >= inventory.getInventorySize() || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
-            //returnar tidigt om saken man håller i inte kan slåss
-            return;
+        if (Math.abs(mdx) > 0.4 * Math.abs(mdy)) {
+            dCol += mdx > 0 ? 1 : -1;   //Ternary operator, om mdx > 0, sätt dCol till 1, annars -1
         }
-        attImageRot = 0; //resettar rotationen på itemspriten
+        if (Math.abs(mdy) > 0.4 * Math.abs(mdx)) {
+            dRow += mdy > 0 ? 1 : -1;
+        }
         if (Math.abs(mdx) > Math.abs(mdy)) {
             if (mdx > 0) {
                 attDir = attackDirection.RIGHT;
-                dCol += 1;
             } else {
                 attDir = attackDirection.LEFT;
-                dCol -= 1;
             }
         } else {
             if (mdy > 0) {
                 attDir = attackDirection.DOWN;
-                dRow += 1;
             } else {
                 attDir = attackDirection.UP;
-                dRow -= 1;
             }
         }
-        int targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
-        int targetRow = pRow + dRow;
-        Item selectedItem = inventory.getItem(selectedSlot);
-        Tile lookedTile = getTileLookedAt(targetCol,targetRow);
-        boolean canHarvest = canHarvest(lookedTile, selectedItem);
+        targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
+        targetRow = pRow + dRow;
+
+        previewToolHit = currItem.isTool();
+    }
+
+    public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots) {
+        if (inventory.getInventorySize() == 0 || slots.size() <= selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedSlot >= inventory.getInventorySize() || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
+            //returnar tidigt om saken man håller i inte kan slåss
+            return;
+        }
+        attArea = new Rectangle();
+        attImageRot = 0; //resettar rotationen på itemspriten
+
+        selectedItem = inventory.getItem(selectedSlot);
         setAttackImage(selectedItem);
-        toolUsage(targetCol,targetRow, lookedTile, canHarvest);
+
+        switch (selectedItem.getItemType()) {
+            case AXE, HOE, SHOVEL, PICKAXE -> {
+                Tile lookedTile = getTileLookedAt(targetCol, targetRow);
+                boolean canHarvest = canHarvest(lookedTile, selectedItem);
+                toolUsage(targetCol, targetRow, lookedTile, canHarvest);
+            }
+            case SWORD -> {
+                attacking = true;
+            }
+        }
     }
 
     private void toolUsage(int targetCol, int targetRow, Tile lookedTile, boolean canHarvest) {
         if (canHarvest) {
             harvesting = true;
-            tm.setTile((int) targetCol,(int) targetRow, lookedTile.setTile);
+            setStamina(-1);
+            tm.setTile((int) targetCol, (int) targetRow, lookedTile.setTile);
         }
     }
 
@@ -117,30 +153,8 @@ public class Player extends Entity {
         attImage = item.getHeldIcon();
     }
 
-    public void hurt(int score) {
-        if (currHealth > 0) {
-            dmgCounter++;
-            if (dmgCounter >= 60) { //tappa 1 hp varje sekund
-                currHealth -= Math.min(1 + (score / 10), 3);
-                dmgCounter = 0;
-            }
-            if (currHealth <= 5 && dmgCounter % 15 == 0) { //under 5hp, spela low hp ljud 4ggr per sekund
-                gp.playSound(SoundEffect.LOWHP);
-            }
-        } else {
-            currHealth = 0;
-            playerLose();
-        }
-    }
-
     public boolean isDead() {
         return playerLost;
-    }
-
-    private void playerLose() {
-        direction = Direction.LOST;
-        playerLost = true;
-        spriteNum = 2;
     }
 
     private void setStartingValues(Point p) {
@@ -170,45 +184,15 @@ public class Player extends Entity {
             attLeft = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_left.png"));
             attRight = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_right.png"));
             attUp = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_up.png"));
+            attUp = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_up.png"));
+            tileHighLight = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/highlight_tile.png"));
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("no find sprite amigo", e);
         }
     }
-
-    public void updateTool() {
-        int harvestCounter = 0;
-        if (harvesting) {
-            harvestCounter++;
-            switch(attDir){
-                case UP -> {
-                    attArea = new Rectangle((int) x + 17, (int) y - 2, 10, 20);
-                    attImageRot = Math.toRadians(0);
-                }
-                case DOWN -> {
-                    attArea = new Rectangle((int) x + 17, (int) y + 25, 10, 20);
-                    attImageRot = Math.toRadians(180);
-                }
-                case RIGHT -> {
-                    attArea = new Rectangle((int) x + 23, (int) y + 19, 20, 10);
-                    attImageRot = Math.toRadians(90);
-                }
-                case LEFT -> {
-                    attArea = new Rectangle((int) x - 12, (int) y + 19, 20, 10);
-                    attImageRot = Math.toRadians(270);
-                }
-                
-            }
-            if (harvestCounter > 15) {
-                harvesting = false;
-                attackCounter = 0;
-            }
-            
-        }
-    }
-
     public void updateAttack() {
-        if (attacking) {
-            attackCounter++;
+        if (attacking || harvesting) {
+            animationCounter++;
             switch (attDir) {
                 case UP -> {
                     attArea = new Rectangle((int) x + 17, (int) y - 2, 10, 20);
@@ -227,9 +211,10 @@ public class Player extends Entity {
                     attImageRot = Math.toRadians(270);
                 }
             }
-            if (attackCounter > 15) {
+            if (animationCounter > 15) {
                 attacking = false;
-                attackCounter = 0;
+                harvesting = false;
+                animationCounter = 0;
             }
         }
     }
@@ -302,7 +287,7 @@ public class Player extends Entity {
     public void draw(Graphics2D g2, Camera camera) {
         BufferedImage image = null;
 
-        if (attacking == true) {
+        if (attacking || harvesting) {
             switch (attDir) {
                 case attackDirection.DOWN -> {
                     image = attDown;
@@ -368,14 +353,14 @@ public class Player extends Entity {
                     }
                 }
             }
-
         }
+
         int playerX = ((int) x - (int) camera.getTx());
         int playerY = ((int) y - (int) camera.getTy());
 
         g2.drawImage(image, playerX, playerY, playerSizeX, playerSizeY, null);
 
-        if (attacking) {
+        if (attacking || harvesting) {
             int pivotX = (int) attArea.x - (int) camera.getTx() + attArea.width / 2; //attArea mittpunkt i x
             int pivotY = (int) attArea.y - (int) camera.getTy() + attArea.height / 2; //attArea mittpunkt i y
             AffineTransform oldTrans = g2.getTransform();
@@ -383,6 +368,10 @@ public class Player extends Entity {
             g2.drawImage(attImage, pivotX - attImage.getWidth(gp) / 2, pivotY - attImage.getHeight(gp) / 2, null);
             g2.setTransform(oldTrans);
         }
+        if (previewToolHit) {
+            g2.drawImage(tileHighLight, targetCol * gp.tileSize - (int) camera.getTx(), targetRow * gp.tileSize - (int) camera.getTy(), null);
+        }
+
     }
 
     public Rectangle getBounds() {
