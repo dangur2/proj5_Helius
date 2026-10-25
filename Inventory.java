@@ -1,11 +1,9 @@
 
-import java.util.ArrayList;
-
 public class Inventory {
 
-    private ArrayList<Item> inventory = new ArrayList<>();
+    private Item[] inventory;
 
-    public Inventory(ArrayList<Item> inventory) {
+    public Inventory(Item[] inventory) {
         this.inventory = inventory;
         addItem(new Item("Sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png", "/assets/Sprites/held_sword.png", 1, 0, 5));
         addItem(new Item("Pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png", "/assets/Sprites/held_pickaxe.png", 1, 0, 1));
@@ -16,58 +14,73 @@ public class Inventory {
 
     public void addItem(Item x) {
         //increase quantity first if item exists, then adds a new item
-        for (Item y : inventory) {
-            if (y.getItemName().equals(x.getItemName())) {
-                y.increaseQuantity(x.getQuantity());
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null && inventory[i].getItemName().equals(x.getItemName())) {
+                inventory[i].increaseQuantity(x.getQuantity());
                 return;
             }
         }
-        inventory.add(x);
-    }
-
-    public void removeItem(int x) {
-        if (x >= 0 && x <= inventory.size()) {
-            inventory.remove(x);
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                inventory[i] = x;
+                return;
+            }
         }
     }
 
-    public int useItem(Item x) {
+    public void removeItem(int x) {
+        if (x >= 0 && x <= 9) {
+            inventory[x] = null;
+        }
+    }
+
+    public int useItem(int x) {
         //decreases quantity first if item exist, remove secondly
-        if (x != null) {
-            switch (x.getItemType()) {
+        if (inventory[x] != null) {
+            switch (inventory[x].getItemType()) {
                 case ItemType.CONSUMABLE -> {
-                    x.decreaseQuantity();
-                    if (x.getQuantity() == 0) {
-                        inventory.remove(x);
+                    int heal = inventory[x].use();
+                    inventory[x].decreaseQuantity();
+                    if (inventory[x].getQuantity() == 0) {
+                        inventory[x] = null;
                     }
-                    return x.use();
+                    return heal;
 
                 }
                 case ItemType.SWORD -> {
-                    return x.getDmg();
+                    return inventory[x].getDmg();
                 }
                 case ItemType.PICKAXE -> {
-                    return x.getDmg();
+                    return inventory[x].getDmg();
                 }
                 case ItemType.AXE -> {
-                    return x.getDmg();
+                    return inventory[x].getDmg();
                 }
                 case ItemType.HOE -> {
-                    return x.getDmg();
+                    return inventory[x].getDmg();
+                }
+                case ItemType.SHOVEL -> {
+                    return inventory[x].getDmg();
                 }
             }
         }
 
         return 0;
     }
-    public void addCopyOf(Item x){
+
+    public void addCopyOf(Item x) {
         addItem(new Item(x));
     }
+
     public Item getItem(int x) {
-        return this.inventory.get(x);
+        if (this.inventory[x] == null) {
+            return null;
+        }
+        return this.inventory[x];
     }
 
-    public int getInventorySize() {
-        return this.inventory.size();
+    public boolean isEmpty(int x) {
+        return this.inventory[x] == null;
     }
+
 }

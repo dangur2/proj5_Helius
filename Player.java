@@ -33,7 +33,7 @@ public class Player extends Entity {
         this.currStamina = 100;
         this.tm = tm;
         collArea = new Rectangle(10, 25, 12, 7);
-        inventory = new Inventory(new ArrayList<>());
+        inventory = new Inventory(new Item[9]);
         setStartingValues(tm.findFreePosition());
         setPlayerImage();
     }
@@ -74,9 +74,15 @@ public class Player extends Entity {
 
     public void setStamina(int x) {
         this.currStamina += x;
+        if (currStamina + x < 0) {
+            currStamina = 0;
+        }
     }
 
     public void updateTarget(int mx, int my, double tx, double ty, Item currItem) {
+        if (currItem == null) {
+            return;
+        }
         double mdx = mx - ((x + playerSizeX / 2) - tx); //mus position/klick i relation till spelarens skärmposition
         double mdy = my - ((y + playerSizeY / 2) - ty);
 
@@ -111,19 +117,20 @@ public class Player extends Entity {
     }
 
     public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots) {
-        if (inventory.getInventorySize() == 0 || slots.size() <= selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedSlot >= inventory.getInventorySize() || inventory.getItem(selectedSlot).getItemType() == ItemType.CONSUMABLE) {
+        selectedItem = inventory.getItem(selectedSlot);
+
+        if (selectedItem == null || slots.size() <= selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedItem.getItemType() == ItemType.CONSUMABLE) {
             //returnar tidigt om saken man håller i inte kan slåss
             return;
         }
         attArea = new Rectangle();
         attImageRot = 0; //resettar rotationen på itemspriten
 
-        selectedItem = inventory.getItem(selectedSlot);
         setAttackImage(selectedItem);
 
         switch (selectedItem.getItemType()) {
             case AXE, HOE, SHOVEL, PICKAXE -> {
-                Tile lookedTile = getTileLookedAt(targetCol, targetRow);
+                Tile lookedTile = tm.getTileNum(targetCol, targetRow);
                 boolean canHarvest = canHarvest(lookedTile, selectedItem);
                 toolUsage(targetCol, targetRow, lookedTile, canHarvest);
             }
@@ -136,13 +143,11 @@ public class Player extends Entity {
     private void toolUsage(int targetCol, int targetRow, Tile lookedTile, boolean canHarvest) {
         if (canHarvest) {
             harvesting = true;
-            setStamina(-1);
+            if (currStamina>0) {
+                setStamina(-1);
+            }
             tm.setTile((int) targetCol, (int) targetRow, lookedTile.setTile);
         }
-    }
-
-    private Tile getTileLookedAt(int x, int y) {
-        return tm.getTileNum(x, y);
     }
 
     private boolean canHarvest(Tile tileLookedAt, Item item) {

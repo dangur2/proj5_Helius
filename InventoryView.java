@@ -47,6 +47,8 @@ public class InventoryView {
     }
 
     public void LeftClick(int x, int y) {
+        Item item = player.getInventory().getItem(selectedSlot);
+    
         if (showTooltip) {
             if (!destroyTooltip.get(selectedSlot).contains(x, y) && !useTooltip.get(selectedSlot).contains(x, y)) {
                 showTooltip = false;
@@ -60,7 +62,7 @@ public class InventoryView {
         }
         //använder en item och om den har heal, så healar den för den mängden och spelar ett ljud
         if (useTooltip.get(selectedSlot).contains(x, y) && showTooltip) {
-            int heal = player.getInventory().useItem(player.getInventory().getItem(selectedSlot));
+            int heal = player.getInventory().useItem(selectedSlot);
             player.increaseHealth(heal);
             gp.playSound(SoundEffect.USE);
             showTooltip = false;
@@ -88,7 +90,7 @@ public class InventoryView {
         for (int i = 0; i < slots.size(); i++) {
             if (slots.get(i).contains(x, y)) {
                 selectedSlot = i;
-                if (slots.get(selectedSlot).contains(x, y) && selectedSlot < player.getInventory().getInventorySize()) {
+                if (slots.get(selectedSlot).contains(x, y)) {
                     showTooltip = !showTooltip;
                     if (showTooltip) {
                         displayHover = false;
@@ -103,7 +105,7 @@ public class InventoryView {
         hoverY = y;
         displayHover = false;
         for (int i = 0; i < slots.size(); i++) {
-            if (slots.get(i).contains(x, y) && i < player.getInventory().getInventorySize()) {
+            if (slots.get(i).contains(x, y)) {
                 hoveredSlot = i;
                 displayHover = true;
             }
@@ -152,15 +154,19 @@ public class InventoryView {
                 }
             }
         }
-        for (int i = 0; i < player.getInventory().getInventorySize(); i++) { //ritar item med rätt siffra av mängd item + bilden av itemen. förlåt mig gud för alla magic numbers
-            g2.setFont(new Font("MONOSPACED", Font.BOLD, 11));
-            g2.setColor(Color.white);
-            g2.drawString(Integer.toString(player.getInventory().getItem(i).getQuantity()), slots.get(i).x, slots.get(i).y + numberPadding); //quantity av item
-            g2.drawImage(player.getInventory().getItem(i).getHotbarIcon(), slots.get(i).x + itemPaddingX, slots.get(i).y + itemPaddingY, null); //item ikonen
-
+        for (int i = 0; i < slots.size(); i++) { //ritar item med rätt siffra av mängd item + bilden av itemen. förlåt mig gud för alla magic numbers
+            if (!player.getInventory().isEmpty(i)) {
+                g2.setFont(new Font("MONOSPACED", Font.BOLD, 11));
+                g2.setColor(Color.white);
+                g2.drawString(Integer.toString(player.getInventory().getItem(i).getQuantity()), slots.get(i).x, slots.get(i).y + numberPadding); //quantity av item
+                g2.drawImage(player.getInventory().getItem(i).getHotbarIcon(), slots.get(i).x + itemPaddingX, slots.get(i).y + itemPaddingY, null); //item ikonen
+            }
         }
         if (displayHover) {
             Item item = player.getInventory().getItem(hoveredSlot);
+            if(item == null){
+                return;
+            }
             String effect = item.getHoverDescription();
 
             g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
