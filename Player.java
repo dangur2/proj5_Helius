@@ -81,6 +81,7 @@ public class Player extends Entity {
 
     public void updateTarget(int mx, int my, double tx, double ty, Item currItem) {
         if (currItem == null) {
+            previewToolHit = false;
             return;
         }
         double mdx = mx - ((x + playerSizeX / 2) - tx); //mus position/klick i relation till spelarens skärmposition

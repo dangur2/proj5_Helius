@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements ClickListener {
         this.iv = new InventoryView(player, this);
         this.ge = ge;
         this.pauseMenu = new PauseMenuView(ge);
-        this.kh = new KeyHandler(ge);
+        this.kh = new KeyHandler(ge, iv);
         this.mh = mh;
 
         this.addKeyListener(kh);

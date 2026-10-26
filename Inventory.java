@@ -1,10 +1,15 @@
 
 public class Inventory {
 
-    private Item[] inventory;
+    private final Item[] inventory;
 
     public Inventory(Item[] inventory) {
         this.inventory = inventory;
+        generateStarterItems();
+        
+    }
+
+    private void generateStarterItems() {
         addItem(new Item("Sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png", "/assets/Sprites/held_sword.png", 1, 0, 5));
         addItem(new Item("Pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png", "/assets/Sprites/held_pickaxe.png", 1, 0, 1));
         addItem(new Item("Axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png", "/assets/Sprites/held_axe.png", 1, 0, 1));
@@ -14,9 +19,9 @@ public class Inventory {
 
     public void addItem(Item x) {
         //increase quantity first if item exists, then adds a new item
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] != null && inventory[i].getItemName().equals(x.getItemName())) {
-                inventory[i].increaseQuantity(x.getQuantity());
+        for (Item inv : inventory) {
+            if (inv != null && inv.getItemName().equals(x.getItemName())) {
+                inv.increaseQuantity(x.getQuantity());
                 return;
             }
         }

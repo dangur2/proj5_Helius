@@ -47,8 +47,6 @@ public class InventoryView {
     }
 
     public void LeftClick(int x, int y) {
-        Item item = player.getInventory().getItem(selectedSlot);
-    
         if (showTooltip) {
             if (!destroyTooltip.get(selectedSlot).contains(x, y) && !useTooltip.get(selectedSlot).contains(x, y)) {
                 showTooltip = false;
@@ -80,6 +78,9 @@ public class InventoryView {
 
     public Item getSelectedItem() {
         return player.getInventory().getItem(selectedSlot);
+    }
+    public void setSelectItem(int x){
+        this.selectedSlot = x;
     }
     public int getSelectedSlot() {
         return selectedSlot;

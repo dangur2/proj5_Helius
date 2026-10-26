@@ -7,9 +7,11 @@ public class KeyHandler implements KeyListener {
     private boolean aPressed, dPressed, wPressed, sPressed, ePressed, escPressed;
     private double dx, dy;
     private final GameEngine ge;
+    private final InventoryView iv;
 
-    public KeyHandler(GameEngine ge) {
+    public KeyHandler(GameEngine ge, InventoryView iv) {
         this.ge = ge;
+        this.iv = iv;
     }
 
     public boolean isaPressed() {
@@ -66,6 +68,24 @@ public class KeyHandler implements KeyListener {
                 sPressed = true;
             case KeyEvent.VK_E ->
                 ePressed = true;
+            case KeyEvent.VK_1 ->
+                iv.setSelectItem(0);
+            case KeyEvent.VK_2 ->
+                iv.setSelectItem(1);
+            case KeyEvent.VK_3 ->
+                iv.setSelectItem(2);
+            case KeyEvent.VK_4 ->
+                iv.setSelectItem(3);
+            case KeyEvent.VK_5 ->
+                iv.setSelectItem(4);
+            case KeyEvent.VK_6 ->
+                iv.setSelectItem(5);
+            case KeyEvent.VK_7 ->
+                iv.setSelectItem(6);
+            case KeyEvent.VK_8 ->
+                iv.setSelectItem(7);
+            case KeyEvent.VK_9 ->
+                iv.setSelectItem(8);
             case KeyEvent.VK_ESCAPE -> {
                 if (ge.getState() == GameState.PLAYING) {
                     ge.setCurrentState(GameState.PAUSE);
