@@ -87,5 +87,4 @@ public class Inventory {
     public boolean isEmpty(int x) {
         return this.inventory[x] == null;
     }
-
 }

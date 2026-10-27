@@ -67,7 +67,6 @@ public class WorldSpawn {
         for (PlacedResource i : groundResourceSpawn) {
             if (i.getResource().requiredTool == playerTool && i.getBounds().getX()/32 == targetCol && i.getBounds().getY()/32 == targetRow) {
                 i.setHealth(-toolDamage);
-                System.out.println(i.getHealth());
                 if (i.getHealth() < 1) {
                     dropItem(i, targetCol, targetRow);
                     groundResourceSpawn.remove(i);
@@ -80,7 +79,7 @@ public class WorldSpawn {
     }
 
     private void dropItem(PlacedResource resource, int dropCol, int dropRow) {
-        groundItemsSpawn.add(new PlacedItem(resource.getResource().drop, new Point(dropCol + r.nextInt(1, 3), dropRow + r.nextInt(1, 3))));
+        groundItemsSpawn.add(new PlacedItem(resource.getResource().drop, new Point(dropCol*32 + r.nextInt(-32, 32), dropRow*32 + r.nextInt(-32, 32))));
     }
 
     public void handleCollision(Player player, boolean ePressed, GamePanel ge) {

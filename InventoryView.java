@@ -62,6 +62,7 @@ public class InventoryView {
         if (useTooltip.get(selectedSlot).contains(x, y) && showTooltip) {
             int heal = player.getInventory().useItem(selectedSlot);
             player.increaseHealth(heal);
+            player.increaseStamina(heal);
             gp.playSound(SoundEffect.USE);
             showTooltip = false;
             return;

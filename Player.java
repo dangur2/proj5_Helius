@@ -76,9 +76,9 @@ public class Player extends Entity {
         return harvesting;
     }
 
-    public void setStamina(int x) {
-        this.currStamina += x;
-        if (currStamina + x < 0) {
+    public void spendStamina(int x) {
+        this.currStamina -= x;
+        if (currStamina - x < 0) {
             currStamina = 0;
         }
     }
@@ -142,12 +142,15 @@ public class Player extends Entity {
             case HOE, SHOVEL -> {
                 Tile lookedTile = tm.getTileNum(targetCol, targetRow);
                 hit = canHarvest(lookedTile, selectedItem);
-                if (hit) {
+                if (hit && currStamina > 0) {
                     tm.setTile(targetCol, targetRow, lookedTile.setTile);
                 }
             }
             case AXE, PICKAXE -> {
-                hit = ws.hitResource(targetCol, targetRow, selectedItem.getItemType(), selectedItem.getDmg());
+                if (currStamina > 0) {
+                    hit = ws.hitResource(targetCol, targetRow, selectedItem.getItemType(), selectedItem.getDmg());
+                }
+                
             }
             case SWORD -> {
                 attacking = true;
@@ -156,7 +159,7 @@ public class Player extends Entity {
 
         if (hit) {
             if (currStamina > 0) {
-                setStamina(-1);
+                spendStamina(1);
             }
         }
         harvesting = true;
