@@ -72,6 +72,10 @@ public class Player extends Entity {
         return playerSizeY;
     }
 
+    public boolean isHarvesting() {
+        return harvesting;
+    }
+
     public void setStamina(int x) {
         this.currStamina += x;
         if (currStamina + x < 0) {
@@ -92,6 +96,7 @@ public class Player extends Entity {
 
         int dRow = 0;
         int dCol = 0;
+
         if (Math.abs(mdx) > 0.4 * Math.abs(mdy)) {
             dCol += mdx > 0 ? 1 : -1;   //Ternary operator, om mdx > 0, sätt dCol till 1, annars -1
         }
@@ -99,56 +104,62 @@ public class Player extends Entity {
             dRow += mdy > 0 ? 1 : -1;
         }
         if (Math.abs(mdx) > Math.abs(mdy)) {
-            if (mdx > 0) {
-                attDir = attackDirection.RIGHT;
-            } else {
-                attDir = attackDirection.LEFT;
-            }
+            attDir = mdx > 0 ? attackDirection.RIGHT : attackDirection.LEFT;
         } else {
-            if (mdy > 0) {
-                attDir = attackDirection.DOWN;
-            } else {
-                attDir = attackDirection.UP;
-            }
+            attDir = mdy > 0 ? attackDirection.DOWN : attackDirection.UP;
         }
+
         targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
         targetRow = pRow + dRow;
 
         previewToolHit = currItem.isTool();
     }
 
-    public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots) {
+    public int getTargetCol() {
+        return targetCol;
+    }
+
+    public int getTargetRow() {
+        return targetRow;
+    }
+
+    public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots, WorldSpawn ws) {
         selectedItem = inventory.getItem(selectedSlot);
 
         if (selectedItem == null || slots.size() <= selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedItem.getItemType() == ItemType.CONSUMABLE) {
             //returnar tidigt om saken man håller i inte kan slåss
             return;
         }
+
         attArea = new Rectangle();
         attImageRot = 0; //resettar rotationen på itemspriten
 
         setAttackImage(selectedItem);
 
+        boolean hit = false;
+
         switch (selectedItem.getItemType()) {
-            case AXE, HOE, SHOVEL, PICKAXE -> {
+            case HOE, SHOVEL -> {
                 Tile lookedTile = tm.getTileNum(targetCol, targetRow);
-                boolean canHarvest = canHarvest(lookedTile, selectedItem);
-                toolUsage(targetCol, targetRow, lookedTile, canHarvest);
+                hit = canHarvest(lookedTile, selectedItem);
+                if (hit) {
+                    tm.setTile(targetCol, targetRow, lookedTile.setTile);
+                }
+            }
+            case AXE, PICKAXE -> {
+                hit = ws.hitResource(targetCol, targetRow, selectedItem.getItemType(), selectedItem.getDmg());
             }
             case SWORD -> {
                 attacking = true;
             }
         }
-    }
 
-    private void toolUsage(int targetCol, int targetRow, Tile lookedTile, boolean canHarvest) {
-        if (canHarvest) {
-            harvesting = true;
-            if (currStamina>0) {
+        if (hit) {
+            if (currStamina > 0) {
                 setStamina(-1);
             }
-            tm.setTile((int) targetCol, (int) targetRow, lookedTile.setTile);
         }
+        harvesting = true;
     }
 
     private boolean canHarvest(Tile tileLookedAt, Item item) {
@@ -196,6 +207,7 @@ public class Player extends Entity {
             throw new IllegalStateException("no find sprite amigo", e);
         }
     }
+
     public void updateAttack() {
         if (attacking || harvesting) {
             animationCounter++;

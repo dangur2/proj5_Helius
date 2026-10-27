@@ -35,6 +35,7 @@ public class TileManager {
     public Tile getTileNum(int x, int y){
         return tile[mapTileNum[(int) x][(int) y]];
     }
+
     private void setTileImage() {
         try {
             tile[0] = new Tile();
@@ -119,7 +120,7 @@ public class TileManager {
         for (int i = 0; i < 100; i++) {
                 int x = random.nextInt(worldPadding, gp.worldCol-worldPadding) * gp.tileSize;
                 int y = random.nextInt(worldPadding, gp.worldRow-worldPadding) * gp.tileSize;
-                if (!(isSolid(x, y))) {
+                if (!(isSolid(x, y)) && !(getTileNum((int)x/gp.tileSize, (int) y/gp.tileSize) == tile[3])) {
                     return new Point(x, y);
                 }
         }
@@ -127,7 +128,7 @@ public class TileManager {
     }
 
     private void generativeMap() {
-        Random random = new Random();
+        Random random = new Random(123);
 
         int spacing = 10;
         int gridCols = (gp.worldCol / spacing) + 2; //dela upp världen i en mindre rutnät: var tioende tile har en random siffra, som "flaggor"
@@ -155,7 +156,7 @@ public class TileManager {
 
                 if (value < 0.32) {
                     mapTileNum[j][i] = 1; //vatten
-                } else if (value < 0.38) {
+                } else if (value < 0.40) {
                     mapTileNum[j][i] = 3;//sand
                 } else if (value < 0.85) {
                     mapTileNum[j][i] = 0;//gräs

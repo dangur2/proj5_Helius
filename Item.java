@@ -90,6 +90,8 @@ public class Item {
                 "Dmg:" + dmg;
             case SHOVEL ->
                 "Digs sand";
+            case MATERIAL ->
+                "Used in crafting";
         };
     }
 

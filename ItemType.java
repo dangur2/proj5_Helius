@@ -4,5 +4,6 @@ public enum ItemType {
     SWORD,
     HOE,
     SHOVEL,
-    CONSUMABLE
+    CONSUMABLE,
+    MATERIAL
 }

@@ -82,7 +82,7 @@ public class GamePanel extends JPanel implements ClickListener {
         switch (ge.getState()) {
             case GameState.PLAYING -> {
                 iv.LeftClick(x, y);
-                player.LeftClick(x, y, iv.getSelectedSlot(), iv.getSlots());
+                player.LeftClick(x, y, iv.getSelectedSlot(), iv.getSlots(), worldSpawn);
             }
             case GameState.PAUSE -> {
                 pauseMenu.LeftClick(x, y);
