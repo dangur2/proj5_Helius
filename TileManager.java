@@ -1,5 +1,4 @@
 
-
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -8,17 +7,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Random;
 
-
 public class TileManager {
 
     private final Tile[] tile;
     private final GamePanel gp;
     private final int mapTileNum[][];
+    private final int decorationTileNum[][];
     private final TileCatalog tc = new TileCatalog();
+    private final Random random = new Random();
+
     public TileManager(GamePanel gp, MapType mapType) {
         this.gp = gp;
         tile = new Tile[15];
         this.mapTileNum = new int[gp.worldCol][gp.worldRow];
+        this.decorationTileNum = new int[gp.worldCol][gp.worldRow];
 
         switch (mapType) {
             case GENERATED -> {
@@ -28,10 +30,10 @@ public class TileManager {
             case MAP ->
                 loadMap();
         }
-        
 
     }
-    public Tile getTileNum(int x, int y){
+
+    public Tile getTileNum(int x, int y) {
         return tc.getTile(mapTileNum[(int) x][(int) y]);
     }
 
@@ -42,8 +44,9 @@ public class TileManager {
         }
         return tc.getTile(mapTileNum[(int) worldX / gp.tileSize][(int) worldY / gp.tileSize]).collision;
     }
-    public void setTile(int x, int y, int toTile){
-        if (x <= gp.worldCol || x > 0 || y > 0 || y <= gp.worldRow) {
+
+    public void setTile(int x, int y, int toTile) {
+        if (x <= gp.worldCol && x > 0 || y > 0 && y <= gp.worldRow) {
             mapTileNum[x][y] = toTile;
         }
     }
@@ -63,17 +66,16 @@ public class TileManager {
         Random random = new Random();
         int worldPadding = 15;
         for (int i = 0; i < 100; i++) {
-                int x = random.nextInt(worldPadding, gp.worldCol-worldPadding) * gp.tileSize;
-                int y = random.nextInt(worldPadding, gp.worldRow-worldPadding) * gp.tileSize;
-                if (!(isSolid(x, y)) && !(getTileNum((int)x/gp.tileSize, (int) y/gp.tileSize) == tile[3])) {
-                    return new Point(x, y);
-                }
+            int x = random.nextInt(worldPadding, gp.worldCol - worldPadding) * gp.tileSize;
+            int y = random.nextInt(worldPadding, gp.worldRow - worldPadding) * gp.tileSize;
+            if (!(isSolid(x, y)) && !(getTileNum((int) x / gp.tileSize, (int) y / gp.tileSize) == tile[3])) {
+                return new Point(x, y);
+            }
         }
         return null;
     }
 
     private void generativeMap() {
-        Random random = new Random(123);
 
         int spacing = 10;
         int gridCols = (gp.worldCol / spacing) + 2; //dela upp världen i en mindre rutnät: var tioende tile har en random siffra, som "flaggor"
@@ -112,18 +114,30 @@ public class TileManager {
             }
         }
     }
-    private void generateFlora(){
-        Random r = new Random();
+
+    private void generateFlora() {
         for (int i = 0; i < gp.worldRow; i++) {
             for (int j = 0; j < gp.worldCol; j++) {
                 if (mapTileNum[j][i] == 0) {
-                    if (r.nextInt(100) % 30 == 0) {
-                        mapTileNum[j][i] = 10;
+                    if (random.nextInt(10) == 0) {
+                        if (random.nextInt(20) == 0) {
+                            decorationTileNum[j][i] = 10; //poppy
+                        }
+                        if (random.nextInt(50) == 0) {
+                            decorationTileNum[j][i] = 11; //poppy patch
+                        }
+                        if (random.nextInt(20) == 0) {
+                            decorationTileNum[j][i] = 7; //rose
+                        }
+                        if (random.nextInt(50) == 0) {
+                            decorationTileNum[j][i] = 8; //rose  patch
+                        }
                     }
+
                 }
                 if (mapTileNum[j][i] == 3) {
-                    if (r.nextInt(100) % 50 == 0) {
-                        mapTileNum[j][i] = 10;
+                    if (random.nextInt(50) == 0) {
+                        decorationTileNum[j][i] = 9; //kaktus
                     }
                 }
             }
@@ -157,6 +171,7 @@ public class TileManager {
             e.printStackTrace();
         }
     }
+
     public void draw(Graphics2D g2, Camera camera) {
 
         int startCol = Math.max(0, (int) camera.getTx() / gp.tileSize);
@@ -166,8 +181,14 @@ public class TileManager {
 
         for (int i = startRow; i < endRow; i++) {
             for (int j = startCol; j < endCol; j++) {
+                //normala tiles
                 g2.drawImage(tc.getTile(mapTileNum[j][i]).image, (j * (gp.tileSize) - (int) camera.getTx()), (i * (gp.tileSize) - (int) camera.getTy()), gp.tileSize, gp.tileSize, null);
+                //dekoration över, som blommor
+                if (decorationTileNum[j][i] != 0) {
+                    g2.drawImage(tc.getTile(decorationTileNum[j][i]).image, (j * (gp.tileSize) - (int) camera.getTx()), (i * (gp.tileSize) - (int) camera.getTy()), gp.tileSize, gp.tileSize, null);
+                }
             }
+
         }
     }
 }
