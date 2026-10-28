@@ -144,16 +144,29 @@ public class Player extends Entity {
                 hit = canHarvest(lookedTile, selectedItem);
                 if (hit && currStamina > 0) {
                     tm.setTile(targetCol, targetRow, lookedTile.setTile);
+                    if (selectedItem.getItemType() == ItemType.HOE) {
+                        gp.playSound(SoundEffect.HOE);
+                    }
+                    if (selectedItem.getItemType() == ItemType.SHOVEL) {
+                        gp.playSound(SoundEffect.SHOVEL);
+                    }
                 }
             }
             case AXE, PICKAXE -> {
                 if (currStamina > 0) {
                     hit = ws.hitResource(targetCol, targetRow, selectedItem.getItemType(), selectedItem.getDmg());
+                    if (selectedItem.getItemType() == ItemType.AXE) {
+                        gp.playSound(SoundEffect.AXE);
+                    }
+                    if (selectedItem.getItemType() == ItemType.PICKAXE) {
+                        gp.playSound(SoundEffect.PICKAXE);
+                    }
                 }
                 
             }
             case SWORD -> {
                 attacking = true;
+                gp.playSound(SoundEffect.SWORD);
             }
         }
 

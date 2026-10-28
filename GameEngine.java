@@ -25,8 +25,8 @@ public class GameEngine implements Runnable {
 
         setCurrentState(GameState.MENU);
 
-        sound.playMusic();
-        sound.loopMusic();
+        // sound.playMusic();
+        // sound.loopMusic();
         startThread();
     }
 

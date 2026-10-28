@@ -14,9 +14,11 @@ public class WorldSpawn {
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
     private final ArrayList<PlacedResource> groundResourceSpawn = new ArrayList<>();
     private final ArrayList<PlacedItem> resourceDrop = new ArrayList<>();
+    private final GamePanel gp;
 
-    public WorldSpawn(TileManager tm) {
+    public WorldSpawn(TileManager tm, GamePanel gp) {
         this.tm = tm;
+        this.gp = gp;
 
         generateItemsSpawns(50);
         generateResourceSpawns(50);
@@ -65,6 +67,7 @@ public class WorldSpawn {
             if (i.getResource().requiredTool == playerTool && i.getBounds().getX()/32 == targetCol && i.getBounds().getY()/32 == targetRow) {
                 i.setHealth(-toolDamage);
                 if (i.getHealth() < 1) {
+                    gp.playSound(SoundEffect.RESOURCEBREAK);
                     dropItem(i, targetCol, targetRow);
                     groundResourceSpawn.remove(i);
                     break;

@@ -3,5 +3,10 @@ public enum SoundEffect {
     PICKUP,
     USE,
     STEP,
-    LOWHP
+    SWORD,
+    PICKAXE,
+    SHOVEL,
+    HOE,
+    AXE,
+    RESOURCEBREAK
 }

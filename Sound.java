@@ -15,10 +15,15 @@ public class Sound {
     }
 
     private void createSoundEffects() {
-        soundEffects.put(SoundEffect.USE, createClip("/assets/Sound/eatSound.wav"));
+        soundEffects.put(SoundEffect.USE, createClip("/assets/Sound/useSound.wav"));
         soundEffects.put(SoundEffect.STEP, createClip("/assets/Sound/stepSound.wav"));
         soundEffects.put(SoundEffect.PICKUP, createClip("/assets/Sound/itemPickup.wav"));
-        soundEffects.put(SoundEffect.LOWHP, createClip("/assets/Sound/lowHpSong.wav"));
+        soundEffects.put(SoundEffect.AXE, createClip("/assets/Sound/axe.wav"));
+        soundEffects.put(SoundEffect.SWORD, createClip("/assets/Sound/sword.wav"));
+        soundEffects.put(SoundEffect.SHOVEL, createClip("/assets/Sound/shovel.wav"));
+        soundEffects.put(SoundEffect.PICKAXE, createClip("/assets/Sound/pickaxe.wav"));
+        soundEffects.put(SoundEffect.HOE, createClip("/assets/Sound/hoe.wav"));
+        soundEffects.put(SoundEffect.RESOURCEBREAK, createClip("/assets/Sound/resourcebreak.wav"));
     }
 
     private Clip createClip(String filePath) {

@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements ClickListener {
         this.tm = new TileManager(this, mapType);
         this.player = new Player(tm, this);
         this.camera = new Camera(worldSizeX, worldSizeY, screenSizeX, screenSizeY);
-        this.worldSpawn = new WorldSpawn(tm);
+        this.worldSpawn = new WorldSpawn(tm, this);
         this.phv = new PlayerHealthView();
         this.iv = new InventoryView(player, this);
         this.ge = ge;
