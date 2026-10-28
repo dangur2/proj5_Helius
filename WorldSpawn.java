@@ -1,6 +1,7 @@
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,8 +21,8 @@ public class WorldSpawn {
         this.tm = tm;
         this.gp = gp;
 
-        generateItemsSpawns(50);
-        generateResourceSpawns(50);
+        generateItemsSpawns(30);
+        generateResourceSpawns(30);
     }
 
     private boolean isOccupied(int col, int row) {
@@ -104,14 +105,16 @@ public class WorldSpawn {
     }
 
     public void draw(Graphics2D g2, Camera camera) {
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         for (PlacedResource i : groundResourceSpawn) {
+            
             g2.drawImage(i.getResource().image, (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         for(PlacedItem i : resourceDrop){
-            g2.drawImage(i.getItem().getHotbarIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
+            g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         for (PlacedItem i : groundItemsSpawn) {
-            g2.drawImage(i.getItem().getHotbarIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
+            g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         
     }

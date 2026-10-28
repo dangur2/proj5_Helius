@@ -119,7 +119,7 @@ public class TileManager {
         for (int i = 0; i < gp.worldRow; i++) {
             for (int j = 0; j < gp.worldCol; j++) {
                 if (mapTileNum[j][i] == 0) {
-                    if (random.nextInt(10) == 0) {
+                    if (random.nextInt(15) == 0) {
                         if (random.nextInt(20) == 0) {
                             decorationTileNum[j][i] = 10; //poppy
                         }
