@@ -22,6 +22,7 @@ public class GameEngine implements Runnable {
         this.ts = new TitleScreen(this);
         this.sound = new Sound();
         mh.setActive(ts);
+        
 
         setCurrentState(GameState.MENU);
 

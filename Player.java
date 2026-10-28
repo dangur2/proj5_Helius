@@ -302,7 +302,9 @@ public class Player extends Entity {
         //hastigheten av hur snabbt den byter sprite vid gång
         if (spriteCounter > 15) {
             if (spriteNum == 1) {
-                playSound();
+                if (length > 0) {
+                    gp.playSound(SoundEffect.STEP);
+                }
                 spriteNum = 2;
             } else if (spriteNum == 2) {
                 spriteNum = 1;
@@ -310,12 +312,6 @@ public class Player extends Entity {
             spriteCounter = 0;
         }
 
-    }
-
-    private void playSound() {
-        if (spriteNum == 1 && length > 0) {
-            gp.playSound(SoundEffect.STEP);
-        }
     }
 
     public void draw(Graphics2D g2, Camera camera) {

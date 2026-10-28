@@ -4,11 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Random;
-import javax.imageio.ImageIO;
 
 
 public class TileManager {
@@ -16,78 +14,25 @@ public class TileManager {
     private final Tile[] tile;
     private final GamePanel gp;
     private final int mapTileNum[][];
-
+    private final TileCatalog tc = new TileCatalog();
     public TileManager(GamePanel gp, MapType mapType) {
         this.gp = gp;
-        tile = new Tile[10];
+        tile = new Tile[15];
         this.mapTileNum = new int[gp.worldCol][gp.worldRow];
 
-        setTileImage();
-
         switch (mapType) {
-            case GENERATED ->
+            case GENERATED -> {
                 generativeMap();
+                generateFlora();
+            }
             case MAP ->
                 loadMap();
         }
+        
 
     }
     public Tile getTileNum(int x, int y){
-        return tile[mapTileNum[(int) x][(int) y]];
-    }
-
-    private void setTileImage() {
-        try {
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tile.png"));
-            tile[0].collision = false;
-            tile[0].requiredTool = ItemType.HOE;
-            tile[0].setTile = 4;
-            tile[0].health = 1;
-
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/water_tile.png"));
-            tile[1].collision = true;
-            tile[1].requiredTool = null;
-            tile[1].setTile = 1;
-            tile[1].health = 0;
-
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/brick_tile.png"));
-            tile[2].collision = true;
-            tile[2].requiredTool = null;
-            tile[2].setTile = 2;
-            tile[2].health = 0;
-
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tile.png"));
-            tile[3].collision = false;
-            tile[3].requiredTool = ItemType.SHOVEL;
-            tile[3].setTile = 6;
-            tile[3].health = 0;
-
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tile.png"));
-            tile[4].collision = false;
-            tile[4].requiredTool = ItemType.SHOVEL;
-            tile[4].setTile = 5;
-            tile[4].health = 0;
-
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dugdirt_tile.png"));
-            tile[5].collision = false;
-            tile[5].requiredTool = null;
-            tile[5].setTile = 5;
-            tile[5].health = 0;
-
-            tile[6] = new Tile();
-            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dugsand_tile.png"));
-            tile[6].collision = false;
-            tile[6].requiredTool = null;
-            tile[6].setTile = 6;
-            tile[6].health = 0;
-        } catch (IOException e) {
-        }
+        return tc.getTile(mapTileNum[(int) x][(int) y]);
     }
 
     public boolean isSolid(double worldX, double worldY) {
@@ -95,7 +40,7 @@ public class TileManager {
         if (worldX < 0 || worldY < 0 || worldX >= gp.worldSizeX || worldY >= gp.worldSizeY) {
             return true;
         }
-        return tile[mapTileNum[(int) worldX / gp.tileSize][(int) worldY / gp.tileSize]].collision;
+        return tc.getTile(mapTileNum[(int) worldX / gp.tileSize][(int) worldY / gp.tileSize]).collision;
     }
     public void setTile(int x, int y, int toTile){
         if (x <= gp.worldCol || x > 0 || y > 0 || y <= gp.worldRow) {
@@ -167,6 +112,23 @@ public class TileManager {
             }
         }
     }
+    private void generateFlora(){
+        Random r = new Random();
+        for (int i = 0; i < gp.worldRow; i++) {
+            for (int j = 0; j < gp.worldCol; j++) {
+                if (mapTileNum[j][i] == 0) {
+                    if (r.nextInt(100) % 30 == 0) {
+                        mapTileNum[j][i] = 10;
+                    }
+                }
+                if (mapTileNum[j][i] == 3) {
+                    if (r.nextInt(100) % 50 == 0) {
+                        mapTileNum[j][i] = 10;
+                    }
+                }
+            }
+        }
+    }
 
     private double lerp(double a, double b, double t) {
         return a + (b - a) * t; //Linjär interpolation för att räkna ut ett värde mellan punkt A och punkt B.
@@ -204,7 +166,7 @@ public class TileManager {
 
         for (int i = startRow; i < endRow; i++) {
             for (int j = startCol; j < endCol; j++) {
-                g2.drawImage(tile[mapTileNum[j][i]].image, (j * (gp.tileSize) - (int) camera.getTx()), (i * (gp.tileSize) - (int) camera.getTy()), gp.tileSize, gp.tileSize, null);
+                g2.drawImage(tc.getTile(mapTileNum[j][i]).image, (j * (gp.tileSize) - (int) camera.getTx()), (i * (gp.tileSize) - (int) camera.getTy()), gp.tileSize, gp.tileSize, null);
             }
         }
     }
