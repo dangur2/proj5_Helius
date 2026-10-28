@@ -13,6 +13,7 @@ public class WorldSpawn {
     private final Random r = new Random();
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
     private final ArrayList<PlacedResource> groundResourceSpawn = new ArrayList<>();
+    private final ArrayList<PlacedItem> resourceDrop = new ArrayList<>();
 
     public WorldSpawn(TileManager tm) {
         this.tm = tm;
@@ -49,10 +50,6 @@ public class WorldSpawn {
         for (int i = 0; i < amount; i++) {
             PlacedResource resource = new PlacedResource(rc.getResource(r.nextInt(0, rc.getSize())), findSpawnPosition());
             groundResourceSpawn.add(resource);
-            for (PlacedResource z : groundResourceSpawn) {
-                System.out.println("x " + z.getBounds().getX());
-                System.out.println("y " + z.getBounds().getY());
-            }
         }
     }
 
@@ -79,7 +76,9 @@ public class WorldSpawn {
     }
 
     private void dropItem(PlacedResource resource, int dropCol, int dropRow) {
-        groundItemsSpawn.add(new PlacedItem(resource.getResource().drop, new Point(dropCol*32 + r.nextInt(-32, 32), dropRow*32 + r.nextInt(-32, 32))));
+        for(int i = 0; i < resource.getDropAmount(); i++){
+            resourceDrop.add(new PlacedItem(resource.getResource().drop, new Point(dropCol*32+r.nextInt(-32,32), dropRow*32+r.nextInt(-32,32))));
+        }
     }
 
     public void handleCollision(Player player, boolean ePressed, GamePanel ge) {
@@ -91,11 +90,22 @@ public class WorldSpawn {
                 break;
             }
         }
+        for (PlacedItem i : resourceDrop) {
+            if (i.getBounds().intersects(player.getCollison())) {
+                ge.playSound(SoundEffect.PICKUP);
+                player.getInventory().addCopyOf(i.getItem());
+                resourceDrop.remove(i);
+                break;
+            }
+        }
     }
 
     public void draw(Graphics2D g2, Camera camera) {
         for (PlacedResource i : groundResourceSpawn) {
             g2.drawImage(i.getResource().image, (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
+        }
+        for(PlacedItem i : resourceDrop){
+            g2.drawImage(i.getItem().getHotbarIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         for (PlacedItem i : groundItemsSpawn) {
             g2.drawImage(i.getItem().getHotbarIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
