@@ -52,6 +52,7 @@ public class WorldSpawn {
     private void generateResourceSpawns(int amount) {
         for (int i = 0; i < amount; i++) {
             PlacedResource resource = new PlacedResource(rc.getResource(r.nextInt(0, rc.getSize())), findSpawnPosition());
+            tm.setIsBlocked((int) resource.getBounds().getX(), (int) resource.getBounds().getY());
             groundResourceSpawn.add(resource);
         }
     }
@@ -70,6 +71,7 @@ public class WorldSpawn {
                 if (i.getHealth() < 1) {
                     gp.playSound(SoundEffect.RESOURCEBREAK);
                     dropItem(i, targetCol, targetRow);
+                    tm.removeIsBlocked((int) i.getBounds().getX(), (int) i.getBounds().getY());
                     groundResourceSpawn.remove(i);
                     break;
                 }

@@ -15,12 +15,14 @@ public class TileManager {
     private final int decorationTileNum[][];
     private final TileCatalog tc = new TileCatalog();
     private final Random random = new Random();
+    private boolean isBlocked[][];
 
     public TileManager(GamePanel gp, MapType mapType) {
         this.gp = gp;
         tile = new Tile[15];
         this.mapTileNum = new int[gp.worldCol][gp.worldRow];
         this.decorationTileNum = new int[gp.worldCol][gp.worldRow];
+        this.isBlocked = new boolean[gp.worldCol][gp.worldRow];
 
         switch (mapType) {
             case GENERATED -> {
@@ -32,6 +34,15 @@ public class TileManager {
         }
 
     }
+    public void setIsBlocked(int x, int y){
+        isBlocked[x/gp.tileSize][y/gp.tileSize] = true;
+    }
+    public void removeIsBlocked(int x, int y){
+        isBlocked[x/gp.tileSize][y/gp.tileSize] = false;
+    }
+    public boolean IsBlocked(int x, int y){
+        return isBlocked[x/gp.tileSize][y/gp.tileSize] == true;
+    }
 
     public Tile getTileNum(int x, int y) {
         return tc.getTile(mapTileNum[(int) x][(int) y]);
@@ -42,7 +53,7 @@ public class TileManager {
         if (worldX < 0 || worldY < 0 || worldX >= gp.worldSizeX || worldY >= gp.worldSizeY) {
             return true;
         }
-        return tc.getTile(mapTileNum[(int) worldX / gp.tileSize][(int) worldY / gp.tileSize]).collision;
+        return tc.getTile(mapTileNum[(int) worldX / gp.tileSize][(int) worldY / gp.tileSize]).collision || IsBlocked((int) worldX, (int) worldY);
     }
 
     public void setTile(int x, int y, int toTile) {
