@@ -33,7 +33,7 @@ public class Player extends Entity {
         this.currStamina = 100;
         this.tm = tm;
         collArea = new Rectangle(10, 25, 12, 7);
-        inventory = new Inventory(new Item[9]);
+        inventory = new Inventory(new Item[36]);
         setStartingValues(tm.findFreePosition());
         setPlayerImage();
     }
@@ -191,7 +191,7 @@ public class Player extends Entity {
     }
 
     private void setStartingValues(Point p) {
-        speed = 150;
+        speed = 550; //150 default
         x = p.x;
         y = p.y;
         playerCollision = true;

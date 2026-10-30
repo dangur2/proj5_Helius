@@ -17,7 +17,7 @@ public class ResourceCatalog {
             resource[0] = new ResourceType();
             resource[0].name = "rock";
             resource[0].collision = true;
-            resource[0].drop = new Item("rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock.png", 1, 0, 0);
+            resource[0].drop = new Item("rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock_floor.png", 1, 0, 0);
             resource[0].dropAmount = r.nextInt(1,5);
             resource[0].health = 10;
             resource[0].image = ImageIO.read(getClass().getResourceAsStream("/assets/GroundResource/rock_resource.png"));
@@ -44,7 +44,7 @@ public class ResourceCatalog {
             resource[3] = new ResourceType();
             resource[3].name = "rock";
             resource[3].collision = true;
-            resource[3].drop = new Item("rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock.png", 1, 0, 0);
+            resource[3].drop = new Item("rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock_floor.png", 1, 0, 0);
             resource[3].dropAmount = r.nextInt(1,5);
             resource[3].health = 10;
             resource[3].image = ImageIO.read(getClass().getResourceAsStream("/assets/GroundResource/rock_resource2.png"));

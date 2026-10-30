@@ -17,27 +17,29 @@ public class GamePanel extends JPanel implements ClickListener {
     public final int worldSizeY = worldRow * tileSize;
 
     private final KeyHandler kh;
-    private final TileManager tm;
+    private final TileManager tileManager;
     private final Player player;
     private final Camera camera;
-    private final InventoryView iv;
+    private final HudView hudView;
     private final WorldSpawn worldSpawn;
-    private final PlayerHealthView phv;
-    private final GameEngine ge;
+    private final PlayerHealthView playerHealthView;
+    private final GameEngine gameEngine;
     private final PauseMenuView pauseMenu;
-    private final MouseHandler mh;
+    private final MouseHandler mouseHandler;
+    private final InventoryViewManager inventoryViewManager;
 
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
-        this.tm = new TileManager(this, mapType);
-        this.player = new Player(tm, this);
+        this.tileManager = new TileManager(this, mapType);
+        this.player = new Player(tileManager, this);
         this.camera = new Camera(worldSizeX, worldSizeY, screenSizeX, screenSizeY);
-        this.worldSpawn = new WorldSpawn(tm, this);
-        this.phv = new PlayerHealthView();
-        this.iv = new InventoryView(player, this);
-        this.ge = ge;
+        this.worldSpawn = new WorldSpawn(tileManager, this);
+        this.playerHealthView = new PlayerHealthView();
+        this.hudView = new HudView(player, this);
+        this.gameEngine = ge;
         this.pauseMenu = new PauseMenuView(ge);
-        this.kh = new KeyHandler(ge, iv);
-        this.mh = mh;
+        this.kh = new KeyHandler(ge, hudView);
+        this.mouseHandler = mh;
+        this.inventoryViewManager = new InventoryViewManager(player.getInventory());
 
         this.addKeyListener(kh);
         this.addMouseListener(mh);
@@ -50,12 +52,17 @@ public class GamePanel extends JPanel implements ClickListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        tm.draw(g2, camera);
+        tileManager.draw(g2, camera);
         worldSpawn.draw(g2, camera);
         player.draw(g2, camera);
-        iv.draw(g2);
-        phv.draw(g2, player.getHealth(), player.getStamina());
-        if (ge.getState() == GameState.PAUSE) {
+        if (!kh.getbPressed()) {
+            hudView.draw(g2);
+            playerHealthView.draw(g2, player.getHealth(), player.getStamina());
+        }
+        if (kh.getbPressed()) {
+            inventoryViewManager.draw(g2);
+        }
+        if (gameEngine.getState() == GameState.PAUSE) {
             pauseMenu.draw(g2);
         }
 
@@ -63,11 +70,12 @@ public class GamePanel extends JPanel implements ClickListener {
 
     public void tick(double dt) {
         //medans spelaren lever
-        if (!player.isDead()) {
-            player.move(dt, kh.getDx(), kh.getDy(), worldSizeX, worldSizeY, tm);
-            player.updateTarget(mh.getMx(), mh.getMy(), camera.getTx(), camera.getTy(), iv.getSelectedItem());
+        if (!kh.getbPressed()) {
+            player.move(dt, kh.getDx(), kh.getDy(), worldSizeX, worldSizeY, tileManager);
+            player.updateTarget(mouseHandler.getMx(), mouseHandler.getMy(), camera.getTx(), camera.getTy(), hudView.getSelectedItem());
             player.updateAttack();
             camera.follow(player);
+            inventoryViewManager.tick();
             worldSpawn.handleCollision(player, kh.isePressed(), this);
         }
         repaint();
@@ -79,10 +87,15 @@ public class GamePanel extends JPanel implements ClickListener {
 
     @Override
     public void OnLeftClick(int x, int y) {
-        switch (ge.getState()) {
+        switch (gameEngine.getState()) {
             case GameState.PLAYING -> {
-                iv.LeftClick(x, y);
-                player.LeftClick(x, y, iv.getSelectedSlot(), iv.getSlots(), worldSpawn);
+                if (!kh.getbPressed()) {
+                    hudView.LeftClick(x, y);
+                    player.LeftClick(x, y, hudView.getSelectedSlot(), hudView.getSlots(), worldSpawn);
+                }
+                else {
+                    inventoryViewManager.LeftClick(x,y);
+                }
             }
             case GameState.PAUSE -> {
                 pauseMenu.LeftClick(x, y);
@@ -96,9 +109,10 @@ public class GamePanel extends JPanel implements ClickListener {
 
     @Override
     public void OnRightClick(int x, int y) {
-        switch (ge.getState()) {
+        switch (gameEngine.getState()) {
+
             case GameState.PLAYING -> {
-                iv.RightClick(x, y);
+                hudView.RightClick(x, y);
             }
             case GameState.PAUSE -> {
 
@@ -112,9 +126,16 @@ public class GamePanel extends JPanel implements ClickListener {
 
     @Override
     public void OnHover(int x, int y) {
-        switch (ge.getState()) {
+        switch (gameEngine.getState()) {
+
             case GameState.PLAYING -> {
-                iv.Hover(x, y);
+                if (kh.getbPressed()) {
+                    inventoryViewManager.Hover(x,y);
+                }
+                else{
+                    hudView.Hover(x, y);
+                }
+                
             }
             case GameState.PAUSE -> {
 
@@ -127,7 +148,7 @@ public class GamePanel extends JPanel implements ClickListener {
     }
 
     public void playSound(SoundEffect i) {
-        ge.playSound(i);
+        gameEngine.playSound(i);
     }
 
 }

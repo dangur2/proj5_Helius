@@ -5,7 +5,7 @@ public class ItemCatalog{
     private final Item[] groundItems;
     
     public ItemCatalog(){
-        groundItems = new Item[6];
+        groundItems = new Item[8];
         loadGroundItems();
     }
 
@@ -17,6 +17,8 @@ public class ItemCatalog{
             groundItems[3] = new Item("pear", ItemType.CONSUMABLE, "/assets/Resource/pear.png","/assets/Resource/pear_floor.png", 1,12,0);
             groundItems[4] = new Item("red apple", ItemType.CONSUMABLE, "/assets/Resource/redapple.png","/assets/Resource/redapple_floor.png", 1,7,0);
             groundItems[5] = new Item("green apple", ItemType.CONSUMABLE, "/assets/Resource/greenapple.png","/assets/Resource/greenapple_floor.png", 1,12,0);
+            groundItems[6] = new Item("stick", ItemType.MATERIAL, "/assets/Resource/stick.png","/assets/Resource/stick_floor.png", 1,0,0);
+            groundItems[7] = new Item("rock", ItemType.MATERIAL, "/assets/Resource/rock.png","/assets/Resource/rock_floor.png", 1,0,0);
         } catch (Exception e) {}
     }
 

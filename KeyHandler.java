@@ -5,13 +5,14 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener {
 
     private boolean aPressed, dPressed, wPressed, sPressed, ePressed, escPressed;
+    private boolean bPressed = false;
     private double dx, dy;
     private final GameEngine ge;
-    private final InventoryView iv;
+    private final HudView hv;
 
-    public KeyHandler(GameEngine ge, InventoryView iv) {
+    public KeyHandler(GameEngine ge, HudView hv) {
         this.ge = ge;
-        this.iv = iv;
+        this.hv = hv;
     }
 
     public boolean isaPressed() {
@@ -38,16 +39,15 @@ public class KeyHandler implements KeyListener {
         return escPressed;
     }
 
-    public void setescPressedFalse() {
-        this.escPressed = false;
-    }
-
     public double getDx() {
         return dx;
     }
 
     public double getDy() {
         return dy;
+    }
+    public boolean getbPressed(){
+        return bPressed;
     }
 
     @Override
@@ -69,23 +69,25 @@ public class KeyHandler implements KeyListener {
             case KeyEvent.VK_E ->
                 ePressed = true;
             case KeyEvent.VK_1 ->
-                iv.setSelectItem(0);
+                hv.setSelectItem(0);
             case KeyEvent.VK_2 ->
-                iv.setSelectItem(1);
+                hv.setSelectItem(1);
             case KeyEvent.VK_3 ->
-                iv.setSelectItem(2);
+                hv.setSelectItem(2);
             case KeyEvent.VK_4 ->
-                iv.setSelectItem(3);
+                hv.setSelectItem(3);
             case KeyEvent.VK_5 ->
-                iv.setSelectItem(4);
+                hv.setSelectItem(4);
             case KeyEvent.VK_6 ->
-                iv.setSelectItem(5);
+                hv.setSelectItem(5);
             case KeyEvent.VK_7 ->
-                iv.setSelectItem(6);
+                hv.setSelectItem(6);
             case KeyEvent.VK_8 ->
-                iv.setSelectItem(7);
+                hv.setSelectItem(7);
             case KeyEvent.VK_9 ->
-                iv.setSelectItem(8);
+                hv.setSelectItem(8);
+            case KeyEvent.VK_B -> bPressed = !bPressed;
+
             case KeyEvent.VK_ESCAPE -> {
                 if (ge.getState() == GameState.PLAYING) {
                     ge.setCurrentState(GameState.PAUSE);
