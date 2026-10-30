@@ -75,7 +75,6 @@ public class GamePanel extends JPanel implements ClickListener {
             player.updateTarget(mouseHandler.getMx(), mouseHandler.getMy(), camera.getTx(), camera.getTy(), hudView.getSelectedItem());
             player.updateAttack();
             camera.follow(player);
-            inventoryViewManager.tick();
             worldSpawn.handleCollision(player, kh.isePressed(), this);
         }
         repaint();
@@ -110,9 +109,13 @@ public class GamePanel extends JPanel implements ClickListener {
     @Override
     public void OnRightClick(int x, int y) {
         switch (gameEngine.getState()) {
-
             case GameState.PLAYING -> {
-                hudView.RightClick(x, y);
+                if (!kh.getbPressed()) {
+                    hudView.RightClick(x, y);
+                }
+                else{
+                    inventoryViewManager.RightClick(x, y);
+                }
             }
             case GameState.PAUSE -> {
 

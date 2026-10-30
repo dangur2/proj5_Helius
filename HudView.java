@@ -13,18 +13,10 @@ public class HudView {
     //bry dig inte om alla dessa variabler :3
     private BufferedImage inventoryBackground, inventoryTooltip, tooltipDestroy, tooltipUse, hoverDisplay;
     private final Player player;
-    private final int slotSpacing = 49;
-    private final int itemPaddingY = 7;
-    private final int itemPaddingX = 5;
-    private final int numberPadding = 10;
-    private final int highlightPadding = 6;
-    private final int hotbarX = 191;
-    private final int hotbarY = 415;
+    private final int hotbarX = 191, hotbarY = 415;
     private final int column = 9;
-    private final int slotSize = 46;
-    private final int tooltipPadding = 65;
-    private final int tooltipTextPaddingX = 35;
-    private final int tooltipTextPaddingY = 30;
+    private final int slotSize = 46, slotSpacing = 49, highlightPadding = 6, numberPadding = 10, itemPaddingX = 5, itemPaddingY = 7;
+    private final int tooltipPadding = 65, tooltipTextPaddingX = 35, tooltipTextPaddingY = 30, hoverDisplayX = 71, hoverDisplayY = 34 ;
     private int hoverX, hoverY;
     private final ArrayList<Rectangle> slots = new ArrayList<>();
     private final ArrayList<Rectangle> destroyTooltip = new ArrayList<>();
@@ -139,7 +131,6 @@ public class HudView {
             inventoryTooltip = ImageIO.read(getClass().getResourceAsStream("/assets/Background/hotbarTooltip.png"));
             tooltipDestroy = ImageIO.read(getClass().getResourceAsStream("/assets/Font/tooltipDestroy.png"));
             tooltipUse = ImageIO.read(getClass().getResourceAsStream("/assets/Font/tooltipUse.png"));
-            hoverDisplay = ImageIO.read(getClass().getResourceAsStream("/assets/Background/hoverDisplay.png"));
         } catch (Exception e) {
         }
     }
@@ -170,26 +161,28 @@ public class HudView {
             if(item == null){
                 return;
             }
-            String effect = item.getHoverDescription();
+            String itemDescription = item.getHoverDescription();
 
             g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
             FontMetrics textSize = g2.getFontMetrics();
-            int textWidth = Math.max(textSize.stringWidth(item.getItemName()), textSize.stringWidth(effect));
+            int textWidth = Math.max(textSize.stringWidth(item.getItemName()), textSize.stringWidth(itemDescription));
             int textHeight = textSize.getHeight();
+            g2.setColor(Color.black);
+            g2.fillRoundRect((hoverX - 46 + hoverDisplayX / 2), (hoverY - hoverDisplayY / 2) - 46, textWidth + 17, (textHeight+1) * 2, 9, 9);
             g2.setColor(new Color(36, 33, 52, 230));
-            g2.fillRoundRect((hoverX - 45 + hoverDisplay.getWidth() / 2), (hoverY - hoverDisplay.getHeight() / 2) - 45, textWidth + 15, (textHeight) * 2, 9, 9);
+            g2.fillRoundRect((hoverX - 45 + hoverDisplayX / 2), (hoverY - hoverDisplayY / 2) - 45, textWidth + 15, (textHeight) * 2, 9, 9);
 
             //3d text, item name
             g2.setColor(Color.black);
-            g2.drawString(item.getItemName(), hoverX - 40 + hoverDisplay.getWidth() / 2, hoverY - 12 - hoverDisplay.getHeight());
+            g2.drawString(item.getItemName(), hoverX - 40 + hoverDisplayX / 2, hoverY - 12 - hoverDisplayY);
             g2.setColor(Color.white);
-            g2.drawString(item.getItemName(), hoverX - 39 + hoverDisplay.getWidth() / 2, hoverY - 12 - hoverDisplay.getHeight());
+            g2.drawString(item.getItemName(), hoverX - 39 + hoverDisplayX / 2, hoverY - 12 - hoverDisplayY);
 
             //3d text, item use
             g2.setColor(Color.black);
-            g2.drawString(effect, hoverX - 40 + hoverDisplay.getWidth() / 2, hoverY + 5 - hoverDisplay.getHeight());
+            g2.drawString(itemDescription, hoverX - 40 + hoverDisplayX / 2, hoverY + 5 - hoverDisplayY);
             g2.setColor(Color.white);
-            g2.drawString(effect, hoverX - 39 + hoverDisplay.getWidth() / 2, hoverY + 5 - hoverDisplay.getHeight());
+            g2.drawString(itemDescription, hoverX - 39 + hoverDisplayX / 2, hoverY + 5 - hoverDisplayY);
 
         }
     }

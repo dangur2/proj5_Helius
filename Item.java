@@ -47,6 +47,9 @@ public class Item {
     public void decreaseQuantity() {
         this.quantity--;
     }
+    public void setOneQuantity(){
+        this.quantity = 1;
+    }
 
     public int getQuantity() {
         return this.quantity;

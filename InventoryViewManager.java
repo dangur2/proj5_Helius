@@ -49,9 +49,9 @@ public class InventoryViewManager {
         }
     }
 
-    public void tick() {
+    public void RightClick(int mouseX, int mouseY){
         if (showInventory) {
-
+            inventoryView.RightClick(mouseX, mouseY);
         }
     }
 
@@ -77,11 +77,6 @@ public class InventoryViewManager {
 
     public void draw(Graphics2D g2) {
         g2.drawImage(inventoryBackground, inventoryX, inventoryY, null);
-        if (showInventory) {
-            inventoryView.draw(g2);
-        } else if (showCrafting) {
-            craftingView.draw(g2);
-        }
 
         g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
         g2.setColor(Color.black);
@@ -93,5 +88,10 @@ public class InventoryViewManager {
         g2.drawString("Crafting", (int) menuButtonsCollision.get(1).getX() + 10, (int) menuButtonsCollision.get(1).getY() + 11);
         g2.setColor(Color.white);
         g2.drawString("Crafting", (int) menuButtonsCollision.get(1).getX() + 9, (int) menuButtonsCollision.get(1).getY() + 11);
+        if (showInventory) {
+            inventoryView.draw(g2);
+        } else if (showCrafting) {
+            craftingView.draw(g2);
+        }
     }
 }

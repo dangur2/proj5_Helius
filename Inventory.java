@@ -36,6 +36,11 @@ public class Inventory {
             }
         }
     }
+    public void decreaseQuantity(int x){
+        if (x > 0 && x < inventory.length) {
+            inventory[x].decreaseQuantity();
+        }  
+    }
     public void setItem(int x, Item item){
         if (item != null) {
             inventory[x] = item;
