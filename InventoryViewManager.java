@@ -21,7 +21,7 @@ public class InventoryViewManager {
 
     public InventoryViewManager(Inventory inventory) {
         this.inventoryView = new InventoryView(inventory);
-        this.craftingView = new CraftingView();
+        this.craftingView = new CraftingView(inventory);
         loadSprites();
         loadMenuButtons();
     }
@@ -58,6 +58,9 @@ public class InventoryViewManager {
     public void Hover(int mouseX, int mouseY) {
         if (showInventory) {
             inventoryView.Hover(mouseX, mouseY);
+        }
+        if (showCrafting) {
+            craftingView.Hover(mouseX, mouseY);
         }
     }
 

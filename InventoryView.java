@@ -75,6 +75,14 @@ public class InventoryView {
                         inventory.removeItem(prevSlot);
                     }
                     holdingItem = true;
+                } else {
+                    if (inventory.getItem(selectedSlot) != null && inventory.getItem(selectedSlot).getItemName().equals(selectedItem.getItemName())) {
+                        inventory.getItem(prevSlot).decreaseQuantity();
+                        selectedItem.increaseQuantity(1);
+                        if (inventory.getItem(prevSlot).getQuantity() < 1) {
+                            inventory.removeItem(prevSlot);
+                        }
+                    }
                 }
             }
         }
@@ -82,14 +90,13 @@ public class InventoryView {
 
     private void loadItemButtons() {
         for (int i = 0; i < 9; i++) {
-            inventoryButtonsCollision.add(new Rectangle(inventoryX + 6 + (i * 49), inventoryY + 176,46,46));
+            inventoryButtonsCollision.add(new Rectangle(inventoryX + 6 + (i * 49), inventoryY + 176, 46, 46));
         }
         for (int i = 0; i < itemButtonsRow; i++) {
             for (int j = 0; j < itemButtonsCol; j++) {
                 inventoryButtonsCollision.add(new Rectangle(inventoryX + 6 + (j * 49), inventoryY + 26 + (i * 49), 46, 46));
             }
         }
-        
     }
 
     private void loadSprites() {
@@ -137,7 +144,7 @@ public class InventoryView {
 
             g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
             FontMetrics textSize = g2.getFontMetrics();
-            int textWidth = Math.max(textSize.stringWidth(item.getItemName()), textSize.stringWidth(itemDescription));
+            int textWidth = Math.max(leftClickIcon.getWidth() + rightClickIcon.getWidth()+70, Math.max(textSize.stringWidth(item.getItemName()), textSize.stringWidth(itemDescription)));
             int textHeight = textSize.getHeight();
             g2.setColor(Color.black);
             g2.fillRoundRect((hoverX - 46 + hoverDisplayX / 2), (hoverY - hoverDisplayY / 2) - 46, textWidth + 17, (textHeight + (leftClickIcon.getHeight() / 2) + 1) * 2, 9, 9);
@@ -145,19 +152,19 @@ public class InventoryView {
             g2.fillRoundRect((hoverX - 45 + hoverDisplayX / 2), (hoverY - hoverDisplayY / 2) - 45, textWidth + 15, (textHeight + (leftClickIcon.getHeight() / 2)) * 2, 9, 9);
 
             //MouseIcons
-            g2.drawImage(leftClickIcon, hoverX-40+ hoverDisplayX / 2, hoverY-23, null);
-            g2.drawImage(rightClickIcon, hoverX+15 + hoverDisplayX / 2, hoverY-23, null);
+            g2.drawImage(leftClickIcon, hoverX - 40 + hoverDisplayX / 2, hoverY - 23, null);
+            g2.drawImage(rightClickIcon, hoverX + 15 + hoverDisplayX / 2, hoverY - 23, null);
 
             //3d text, mousebutton information
             g2.setColor(Color.black);
-            g2.drawString("All", hoverX-30+ hoverDisplayX / 2, hoverY-12);
+            g2.drawString("All", hoverX - 30 + hoverDisplayX / 2, hoverY - 12);
             g2.setColor(Color.white);
-            g2.drawString("All", hoverX - 29 + hoverDisplayX / 2, hoverY-12);
+            g2.drawString("All", hoverX - 29 + hoverDisplayX / 2, hoverY - 12);
 
             g2.setColor(Color.black);
-            g2.drawString("1x", hoverX+24 + hoverDisplayX / 2, hoverY-12);
+            g2.drawString("1x", hoverX + 24 + hoverDisplayX / 2, hoverY - 12);
             g2.setColor(Color.white);
-            g2.drawString("1x", hoverX+25 + hoverDisplayX / 2, hoverY-12);
+            g2.drawString("1x", hoverX + 25 + hoverDisplayX / 2, hoverY - 12);
 
             //3d text, item name
             g2.setColor(Color.black);

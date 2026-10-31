@@ -94,7 +94,7 @@ public class Item {
             case SHOVEL ->
                 "Digs sand";
             case MATERIAL ->
-                "Used in crafting";
+                "Material";
         };
     }
 
