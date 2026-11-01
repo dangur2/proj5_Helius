@@ -26,6 +26,13 @@ public class InventoryView {
         loadItemButtons();
     }
 
+    public void setSelectItem(Item selectItem){
+        this.selectedItem = selectItem;
+        if(selectItem != null){
+            holdingItem = true;
+        }
+    }
+
     public void LeftClick(int mouseX, int mouseY) {
         //undvik att döda mig för denna kod :3
         for (int i = 0; i < inventoryButtonsCollision.size(); i++) {

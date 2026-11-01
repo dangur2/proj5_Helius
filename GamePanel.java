@@ -27,19 +27,22 @@ public class GamePanel extends JPanel implements ClickListener {
     private final PauseMenuView pauseMenu;
     private final MouseHandler mouseHandler;
     private final InventoryViewManager inventoryViewManager;
+    private final ItemCatalog itemCatalog;
 
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
+        this.itemCatalog = new ItemCatalog();
         this.tileManager = new TileManager(this, mapType);
         this.player = new Player(tileManager, this);
         this.camera = new Camera(worldSizeX, worldSizeY, screenSizeX, screenSizeY);
-        this.worldSpawn = new WorldSpawn(tileManager, this);
+        this.worldSpawn = new WorldSpawn(tileManager, this, itemCatalog);
         this.playerHealthView = new PlayerHealthView();
         this.hudView = new HudView(player, this);
         this.gameEngine = ge;
         this.pauseMenu = new PauseMenuView(ge);
         this.kh = new KeyHandler(ge, hudView);
         this.mouseHandler = mh;
-        this.inventoryViewManager = new InventoryViewManager(player.getInventory());
+        this.inventoryViewManager = new InventoryViewManager(player.getInventory(), itemCatalog);
+        
 
         this.addKeyListener(kh);
         this.addMouseListener(mh);

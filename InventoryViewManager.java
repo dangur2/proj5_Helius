@@ -19,11 +19,17 @@ public class InventoryViewManager {
     private boolean showInventory = true;
     private boolean showCrafting = false;
 
-    public InventoryViewManager(Inventory inventory) {
+    public InventoryViewManager(Inventory inventory, ItemCatalog itemCatalog) {
         this.inventoryView = new InventoryView(inventory);
-        this.craftingView = new CraftingView(inventory);
+        this.craftingView = new CraftingView(inventory, itemCatalog, this);
         loadSprites();
         loadMenuButtons();
+    }
+
+    public void swapScreen(){
+        showInventory = !showInventory;
+        showCrafting = !showCrafting;
+        inventoryView.setSelectItem(craftingView.getSelectItem());
     }
 
     public void LeftClick(int mouseX, int mouseY) {

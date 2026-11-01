@@ -1,15 +1,15 @@
 public class RecipeIngredient {
 
-    private final String name;
+    private final Item item;
     private final int quantity;
 
-    public RecipeIngredient(String name, int quantity){
-        this.name = name;
+    public RecipeIngredient(Item item, int quantity){
+        this.item = item;
         this.quantity = quantity;
     }
 
-    public String getName(){
-        return this.name;
+    public Item getItem(){
+        return this.item;
     }
     public int getQuantity(){
         return this.quantity;

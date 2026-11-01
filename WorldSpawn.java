@@ -8,18 +8,22 @@ import java.util.Random;
 
 public class WorldSpawn {
 
-    private final ResourceCatalog rc = new ResourceCatalog();
-    private final ItemCatalog ic = new ItemCatalog();
+    private final ResourceCatalog resourceCatalog;
+    private final RandomSpawnCatalog randomSpawnCatalog;
     private final TileManager tm;
     private final Random r = new Random();
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
     private final ArrayList<PlacedResource> groundResourceSpawn = new ArrayList<>();
     private final ArrayList<PlacedItem> resourceDrop = new ArrayList<>();
     private final GamePanel gp;
+    private final ItemCatalog itemCatalog;
 
-    public WorldSpawn(TileManager tm, GamePanel gp) {
+    public WorldSpawn(TileManager tm, GamePanel gp, ItemCatalog itemCatalog) {
         this.tm = tm;
         this.gp = gp;
+        this.itemCatalog = itemCatalog;
+        this.resourceCatalog = new ResourceCatalog(itemCatalog);
+        this.randomSpawnCatalog = new RandomSpawnCatalog(itemCatalog);
 
         generateItemsSpawns(30);
         generateResourceSpawns(30);
@@ -51,7 +55,7 @@ public class WorldSpawn {
 
     private void generateResourceSpawns(int amount) {
         for (int i = 0; i < amount; i++) {
-            PlacedResource resource = new PlacedResource(rc.getResource(r.nextInt(0, rc.getSize())), findSpawnPosition());
+            PlacedResource resource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())), findSpawnPosition());
             tm.setIsBlocked((int) resource.getBounds().getX(), (int) resource.getBounds().getY());
             groundResourceSpawn.add(resource);
         }
@@ -59,7 +63,7 @@ public class WorldSpawn {
 
     private void generateItemsSpawns(int amount) {
         for (int i = 0; i < amount; i++) {
-            PlacedItem item = new PlacedItem(ic.getItem(r.nextInt(0, ic.getSize())), findSpawnPosition());
+            PlacedItem item = new PlacedItem(randomSpawnCatalog.getItem(r.nextInt(0, randomSpawnCatalog.getSize())), findSpawnPosition());
             groundItemsSpawn.add(item);
         }
     }

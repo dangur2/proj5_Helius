@@ -15,6 +15,7 @@ public class Inventory {
         addItem(new Item("Axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png", "/assets/Sprites/held_axe.png", 1, 0, 1));
         addItem(new Item("Hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 1));
         addItem(new Item("Shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_shovel.png", "/assets/Sprites/held_shovel.png", 1, 0, 1));
+        addItem(new Item("Log", ItemType.MATERIAL, "/assets/Resource/log.png", "/assets/Resource/log_floor.png", 1, 0, 0));
     }
 
     public void addItem(Item x) {
@@ -35,6 +36,9 @@ public class Inventory {
     public void decreaseQuantity(int x){
         if (x > 0 && x < inventory.length) {
             inventory[x].decreaseQuantity();
+            if (inventory[x].getQuantity() < 1) {
+                removeItem(x);
+            }
         }  
     }
     public void setItem(int x, Item item){
@@ -93,7 +97,26 @@ public class Inventory {
         }
         return this.inventory[x];
     }
-
+    public void useResources(Item resource, int quantity){
+        for (int i = 0; i < inventory.length; i++) {
+            if (getItem(i) != null && resource != null && quantity >= 1 && getItem(i).getItemName().equals(resource.getItemName()) && getItem(i).getQuantity() >= quantity) {
+                for (int j = 0; j < quantity; j++) {
+                    getItem(i).decreaseQuantity();
+                    if (getItem(i).getQuantity() < 1) {
+                        removeItem(i);
+                    }
+                }
+            }
+        }
+    }
+    public boolean contains(Item resource, int quantity){
+        for (int i = 0; i < inventory.length; i++) {
+            if (getItem(i) != null && resource != null && getItem(i).getItemName().equals(resource.getItemName()) && getItem(i).getQuantity() >= quantity) {
+                return true;
+            }
+        }
+        return false;
+    }
     public boolean isEmpty(int x) {
         return this.inventory[x] == null;
     }

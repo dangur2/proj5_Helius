@@ -4,9 +4,11 @@ import javax.imageio.ImageIO;
 public class RecipeCatalog {
 
     private final ItemRecipe[] recipe;
+    private final ItemCatalog itemCatalog;
 
-    public RecipeCatalog() {
-        this.recipe = new ItemRecipe[2];
+    public RecipeCatalog(ItemCatalog itemCatalog) {
+        this.recipe = new ItemRecipe[3];
+        this.itemCatalog = itemCatalog;
         loadCraftingRecipies();
     }
 
@@ -16,19 +18,30 @@ public class RecipeCatalog {
             recipe[0].grayedSprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/grayedPickaxe.png"));
             recipe[0].sprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/pickaxe.png"));
             recipe[0].name = "Stone Pickaxe";
-            recipe[0].craftedItem = new Item("Stone Pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png", "/assets/Sprites/held_pickaxe.png", 1, 0, 1);
-            recipe[0].itemDescription = "Used in mining rocks";
-            recipe[0].itemRequirment.add(new RecipeIngredient("stick",2));
-            recipe[0].itemRequirment.add(new RecipeIngredient("rock",3));
+            recipe[0].craftedItem = new Item(itemCatalog.getItem(11));
+            recipe[0].itemDescription = "Used to mine rocks";
+            recipe[0].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(6),2));
+            recipe[0].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(7),3));
+            recipe[0].amount = 1;
 
             recipe[1] = new ItemRecipe();
             recipe[1].grayedSprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/grayedSword.png"));
             recipe[1].sprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/sword.png"));
             recipe[1].name = "Stone Sword";
-            recipe[1].craftedItem = new Item("Stone Sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png", "/assets/Sprites/held_sword.png", 1, 0, 1);
+            recipe[1].craftedItem = new Item(itemCatalog.getItem(10));
             recipe[1].itemDescription = "Used in combat";
-            recipe[1].itemRequirment.add(new RecipeIngredient("stick",1));
-            recipe[1].itemRequirment.add(new RecipeIngredient("rock",2));
+            recipe[1].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(6),1));
+            recipe[1].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(7),2));
+            recipe[1].amount = 1;
+
+            recipe[2] = new ItemRecipe();
+            recipe[2].grayedSprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/grayedStick.png"));
+            recipe[2].sprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/stick.png"));
+            recipe[2].name = "3x Stick";
+            recipe[2].craftedItem = new Item(itemCatalog.getItem(6));
+            recipe[2].itemDescription = "Material";
+            recipe[2].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(8),1));
+            recipe[2].amount = 3;
 
         } catch (Exception e) {
             e.printStackTrace();
