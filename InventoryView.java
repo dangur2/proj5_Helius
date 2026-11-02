@@ -58,10 +58,7 @@ public class InventoryView {
                         } else { //byter items, om du håller i en item och trycker på en annan item
                             heldItem = inventory.getItem(selectedSlot);
                             inventory.setItem(selectedSlot, selectedItem);
-                            inventory.setItem(prevSlot, heldItem);
-                            heldItem = null;
-                            holdingItem = false;
-                            selectedItem = null;
+                            selectedItem = heldItem;
                         }
                     }
                 }

@@ -112,7 +112,7 @@ public class Player extends Entity {
         targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
         targetRow = pRow + dRow;
 
-        previewToolHit = currItem.isTool();
+        previewToolHit = currItem.isTool() || currItem.getItemType() == ItemType.FURNITURE;
     }
 
     public int getTargetCol() {
@@ -138,9 +138,9 @@ public class Player extends Entity {
 
         boolean hit = false;
 
+        Tile lookedTile = tm.getTileNum(targetCol, targetRow);
         switch (selectedItem.getItemType()) {
             case HOE, SHOVEL -> {
-                Tile lookedTile = tm.getTileNum(targetCol, targetRow);
                 hit = canHarvest(lookedTile, selectedItem);
                 if (hit && currStamina > 0) {
                     tm.setTile(targetCol, targetRow, lookedTile.setTile);
@@ -162,11 +162,17 @@ public class Player extends Entity {
                         gp.playSound(SoundEffect.PICKAXE);
                     }
                 }
-                
+
             }
             case SWORD -> {
                 attacking = true;
                 gp.playSound(SoundEffect.SWORD);
+            }
+            case FURNITURE -> {
+                if (!tm.isSolid(targetRow, targetCol)) {
+                    ws.PlaceFurniture(targetCol, targetRow, selectedItem);
+                    inventory.decreaseQuantity(selectedSlot);
+                }
             }
         }
 

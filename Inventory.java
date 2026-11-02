@@ -16,6 +16,7 @@ public class Inventory {
         addItem(new Item("Hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 1));
         addItem(new Item("Shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_shovel.png", "/assets/Sprites/held_shovel.png", 1, 0, 1));
         addItem(new Item("Log", ItemType.MATERIAL, "/assets/Resource/log.png", "/assets/Resource/log_floor.png", 1, 0, 0));
+        addItem(new Item("Rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock_floor.png", 8, 0, 0));
     }
 
     public void addItem(Item x) {

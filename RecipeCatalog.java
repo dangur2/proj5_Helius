@@ -7,7 +7,7 @@ public class RecipeCatalog {
     private final ItemCatalog itemCatalog;
 
     public RecipeCatalog(ItemCatalog itemCatalog) {
-        this.recipe = new ItemRecipe[3];
+        this.recipe = new ItemRecipe[4];
         this.itemCatalog = itemCatalog;
         loadCraftingRecipies();
     }
@@ -42,6 +42,18 @@ public class RecipeCatalog {
             recipe[2].itemDescription = "Material";
             recipe[2].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(8),1));
             recipe[2].amount = 3;
+
+            recipe[3] = new ItemRecipe();
+            recipe[3].grayedSprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/grayedFurnace.png"));
+            recipe[3].sprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/furnace.png"));
+            recipe[3].name = "Furnace";
+            recipe[3].craftedItem = new Item(itemCatalog.getItem(15));
+            recipe[3].itemDescription = "Furniture";
+            recipe[3].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(7),8));
+            recipe[3].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(8),1));
+            recipe[3].amount = 1;
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

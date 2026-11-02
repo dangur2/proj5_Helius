@@ -95,6 +95,8 @@ public class Item {
                 "Digs sand";
             case MATERIAL ->
                 "Material";
+            case FURNITURE -> 
+                "Furniture";
         };
     }
 

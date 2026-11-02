@@ -26,10 +26,11 @@ public class InventoryViewManager {
         loadMenuButtons();
     }
 
-    public void swapScreen(){
-        showInventory = !showInventory;
-        showCrafting = !showCrafting;
+    public void swapScreen(int mouseX, int mouseY){
+        showInventory = true;
+        showCrafting = false;
         inventoryView.setSelectItem(craftingView.getSelectItem());
+        inventoryView.Hover(mouseX, mouseY);
     }
 
     public void LeftClick(int mouseX, int mouseY) {

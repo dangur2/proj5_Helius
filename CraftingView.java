@@ -51,13 +51,14 @@ public class CraftingView {
         for (int i = 0; i < recipe.itemRequirement.size(); i++) {
             if (craftingButtons.get(hoverSlot).contains(mouseX,mouseY) && hasAllItemRequirment(hoverSlot)) {
                 inventory.useResources(recipeCatalog.getRecipe(hoverSlot).itemRequirement.get(i).getItem(), recipeCatalog.getRecipe(hoverSlot).itemRequirement.get(i).getQuantity());
-                Item item = recipeCatalog.getRecipe(hoverSlot).craftedItem;
-                selectedItem = item;
+                selectedItem = new Item(recipeCatalog.getRecipe(hoverSlot).craftedItem);
                 selectedItem.increaseQuantity(recipeCatalog.getRecipe(hoverSlot).amount-1);
-                inventoryViewManager.swapScreen();
+                inventoryViewManager.swapScreen(mouseX, mouseY);
                 selectedItem = null;
             }
+            
         }
+        
     }
 
     public void Hover(int mouseX, int mouseY) {

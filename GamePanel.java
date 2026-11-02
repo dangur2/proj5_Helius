@@ -28,6 +28,7 @@ public class GamePanel extends JPanel implements ClickListener {
     private final MouseHandler mouseHandler;
     private final InventoryViewManager inventoryViewManager;
     private final ItemCatalog itemCatalog;
+    private final FurnitureCatalog furnitureCatalog;
 
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
         this.itemCatalog = new ItemCatalog();
@@ -42,6 +43,7 @@ public class GamePanel extends JPanel implements ClickListener {
         this.kh = new KeyHandler(ge, hudView);
         this.mouseHandler = mh;
         this.inventoryViewManager = new InventoryViewManager(player.getInventory(), itemCatalog);
+        this.furnitureCatalog = new FurnitureCatalog(itemCatalog);
         
 
         this.addKeyListener(kh);

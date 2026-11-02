@@ -10,20 +10,22 @@ public class WorldSpawn {
 
     private final ResourceCatalog resourceCatalog;
     private final RandomSpawnCatalog randomSpawnCatalog;
+    private final FurnitureCatalog furnitureCatalog;
     private final TileManager tm;
     private final Random r = new Random();
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
     private final ArrayList<PlacedResource> groundResourceSpawn = new ArrayList<>();
     private final ArrayList<PlacedItem> resourceDrop = new ArrayList<>();
+    private final ArrayList<PlacedFurniture> placedFurniture = new ArrayList<>();
     private final GamePanel gp;
-    private final ItemCatalog itemCatalog;
+
 
     public WorldSpawn(TileManager tm, GamePanel gp, ItemCatalog itemCatalog) {
         this.tm = tm;
         this.gp = gp;
-        this.itemCatalog = itemCatalog;
         this.resourceCatalog = new ResourceCatalog(itemCatalog);
         this.randomSpawnCatalog = new RandomSpawnCatalog(itemCatalog);
+        this.furnitureCatalog = new FurnitureCatalog(itemCatalog);
 
         generateItemsSpawns(30);
         generateResourceSpawns(30);
@@ -40,6 +42,11 @@ public class WorldSpawn {
                     return true;
                 }
             }
+        for (PlacedFurniture z : placedFurniture) {
+                if (col == z.getBounds().getX() && row == z.getBounds().getY()) {
+                    return true;
+                }
+            }
         return false;
     }
 
@@ -52,7 +59,24 @@ public class WorldSpawn {
         }
         return null;
     }
-
+    public void PlaceFurniture(int x, int y, Item selectedItem){
+        if(!isOccupied(x, y)){
+            System.out.println("hej1");
+            FurnitureType currentFurniture = null;
+            for (int i = 0; i < furnitureCatalog.getSize(); i++) {
+                if (selectedItem.getItemName().equals(furnitureCatalog.getFurniture(i).name)) {
+                    currentFurniture = furnitureCatalog.getFurniture(i);
+                    System.out.println("hej2");
+                }
+            }
+            if (currentFurniture != null) {
+                System.out.println("hej3");
+                placedFurniture.add(new PlacedFurniture(currentFurniture, new Point(x*32,y*32)));
+                tm.setIsBlocked(x*32,y*32);
+            }
+        }
+        
+    }
     private void generateResourceSpawns(int amount) {
         for (int i = 0; i < amount; i++) {
             PlacedResource resource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())), findSpawnPosition());
@@ -121,6 +145,9 @@ public class WorldSpawn {
         }
         for (PlacedItem i : groundItemsSpawn) {
             g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
+        }
+        for (PlacedFurniture i : placedFurniture) {
+            g2.drawImage(i.getFurniture().image, (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         
     }

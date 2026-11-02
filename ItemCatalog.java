@@ -4,7 +4,7 @@ public class ItemCatalog {
     private final Item[] item;
 
     public ItemCatalog() {
-        item = new Item[15];
+        item = new Item[16];
         loadItems();
     }
 
@@ -25,6 +25,7 @@ public class ItemCatalog {
             item[12] = new Item("Axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png", "/assets/Sprites/held_axe.png", 1, 0, 1);
             item[13] = new Item("Hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 1);
             item[14] = new Item("Shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_shovel.png", "/assets/Sprites/held_shovel.png", 1, 0, 1);
+            item[15] = new Item("Furnace", ItemType.FURNITURE, "/assets/CraftingSprites/furnace.png", "/assets/CraftingSprites/furnace.png", 1, 0, 1);
         } catch (Exception e) {
         }
     }
