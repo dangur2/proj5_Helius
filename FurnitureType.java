@@ -8,4 +8,5 @@ public class FurnitureType {
     public Item drop;
     public ItemType requiredTool;
     public boolean collision;
+    public FurnitureInteractType type;
 }

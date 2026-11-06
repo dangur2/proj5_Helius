@@ -17,7 +17,6 @@ public class Player extends Entity {
     private final int maxHealth = 100, maxStamina = 100;
     private final GamePanel gp;
     private double length;
-    private boolean playerLost = false;
     private boolean attacking = false;
     private boolean harvesting = false;
     private boolean previewToolHit = false;
@@ -169,9 +168,10 @@ public class Player extends Entity {
                 gp.playSound(SoundEffect.SWORD);
             }
             case FURNITURE -> {
-                if (!tm.isSolid(targetRow, targetCol)) {
-                    ws.PlaceFurniture(targetCol, targetRow, selectedItem);
-                    inventory.decreaseQuantity(selectedSlot);
+                if (!tm.isSolid((int) targetCol * gp.tileSize, (int) targetRow * gp.tileSize)) {
+                    if (ws.PlaceFurniture(targetCol, targetRow, selectedItem)) {
+                        inventory.decreaseQuantity(selectedSlot);
+                    }
                 }
             }
         }
@@ -183,6 +183,14 @@ public class Player extends Entity {
         }
         harvesting = true;
     }
+    public void RightClick(int mouseX, int mouseY, WorldSpawn worldSpawn, ArrayList<Rectangle> slots){
+        for (int i = 0; i < slots.size(); i++) {
+            if (slots.get(i).contains(mouseX,mouseY)) {
+                return;
+            }
+        }
+        worldSpawn.Interact(targetCol, targetRow);
+    }
 
     private boolean canHarvest(Tile tileLookedAt, Item item) {
         return tileLookedAt.requiredTool == item.getItemType();
@@ -192,12 +200,8 @@ public class Player extends Entity {
         attImage = item.getHeldIcon();
     }
 
-    public boolean isDead() {
-        return playerLost;
-    }
-
     private void setStartingValues(Point p) {
-        speed = 550; //150 default
+        speed = 150; //150 default
         x = p.x;
         y = p.y;
         playerCollision = true;

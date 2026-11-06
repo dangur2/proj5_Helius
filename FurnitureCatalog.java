@@ -21,6 +21,7 @@ public class FurnitureCatalog {
             furniture[0].drop = itemCatalog.getItem(15);
             furniture[0].requiredTool = ItemType.PICKAXE;
             furniture[0].useTime = 5;
+            furniture[0].type = FurnitureInteractType.FURNACE;
 
         } catch (Exception e) {
         }

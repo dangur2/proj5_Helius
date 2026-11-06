@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class HudView {
 
     //bry dig inte om alla dessa variabler :3
-    private BufferedImage inventoryBackground, inventoryTooltip, tooltipDestroy, tooltipUse, hoverDisplay;
+    private BufferedImage inventoryBackground, inventoryTooltip, tooltipDestroy, tooltipUse;
     private final Player player;
     private final int hotbarX = 191, hotbarY = 415;
     private final int column = 9;

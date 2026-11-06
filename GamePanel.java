@@ -28,14 +28,13 @@ public class GamePanel extends JPanel implements ClickListener {
     private final MouseHandler mouseHandler;
     private final InventoryViewManager inventoryViewManager;
     private final ItemCatalog itemCatalog;
-    private final FurnitureCatalog furnitureCatalog;
+
 
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
         this.itemCatalog = new ItemCatalog();
         this.tileManager = new TileManager(this, mapType);
         this.player = new Player(tileManager, this);
         this.camera = new Camera(worldSizeX, worldSizeY, screenSizeX, screenSizeY);
-        this.worldSpawn = new WorldSpawn(tileManager, this, itemCatalog);
         this.playerHealthView = new PlayerHealthView();
         this.hudView = new HudView(player, this);
         this.gameEngine = ge;
@@ -43,9 +42,8 @@ public class GamePanel extends JPanel implements ClickListener {
         this.kh = new KeyHandler(ge, hudView);
         this.mouseHandler = mh;
         this.inventoryViewManager = new InventoryViewManager(player.getInventory(), itemCatalog);
-        this.furnitureCatalog = new FurnitureCatalog(itemCatalog);
+        this.worldSpawn = new WorldSpawn(tileManager, this, itemCatalog, player);
         
-
         this.addKeyListener(kh);
         this.addMouseListener(mh);
         this.addMouseMotionListener(mh);
@@ -80,7 +78,7 @@ public class GamePanel extends JPanel implements ClickListener {
             player.updateTarget(mouseHandler.getMx(), mouseHandler.getMy(), camera.getTx(), camera.getTy(), hudView.getSelectedItem());
             player.updateAttack();
             camera.follow(player);
-            worldSpawn.handleCollision(player, kh.isePressed(), this);
+            worldSpawn.handleCollision(player, kh.isePressed(), this, mouseHandler.getMx(), mouseHandler.getMy());
         }
         repaint();
     }
@@ -117,6 +115,7 @@ public class GamePanel extends JPanel implements ClickListener {
             case GameState.PLAYING -> {
                 if (!kh.getbPressed()) {
                     hudView.RightClick(x, y);
+                    player.RightClick(x,y,worldSpawn, hudView.getSlots());
                 }
                 else{
                     inventoryViewManager.RightClick(x, y);
@@ -135,7 +134,6 @@ public class GamePanel extends JPanel implements ClickListener {
     @Override
     public void OnHover(int x, int y) {
         switch (gameEngine.getState()) {
-
             case GameState.PLAYING -> {
                 if (kh.getbPressed()) {
                     inventoryViewManager.Hover(x,y);
