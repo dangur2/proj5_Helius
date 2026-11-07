@@ -111,7 +111,13 @@ public class CraftingView {
 
             g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
             FontMetrics textSize = g2.getFontMetrics();
-            int textWidth = Math.max(textSize.stringWidth(item.name), textSize.stringWidth(itemDescription));
+            
+            int textWidth = Math.max(textSize.stringWidth(item.name),textSize.stringWidth(itemDescription));
+            int requirmentWidth = 0;
+            for (int i = 0; i < item.itemRequirement.size();i++){
+                requirmentWidth = textSize.stringWidth(item.itemRequirement.get(i).getItem().getItemName());
+            }
+            textWidth = Math.max(textWidth, requirmentWidth);
             int textHeight = textSize.getHeight();
             g2.setColor(Color.black);
             g2.fillRoundRect((hoverX - 26 + hoverDisplayX / 2), (hoverY + 80 - hoverDisplayY / 2) - 46, textWidth + 17, (textHeight * 4) + 2, 9, 9);

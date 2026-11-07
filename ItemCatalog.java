@@ -4,7 +4,7 @@ public class ItemCatalog {
     private final Item[] item;
 
     public ItemCatalog() {
-        item = new Item[16];
+        item = new Item[18];
         loadItems();
     }
 
@@ -26,12 +26,22 @@ public class ItemCatalog {
             item[13] = new Item("Hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 1);
             item[14] = new Item("Shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_shovel.png", "/assets/Sprites/held_shovel.png", 1, 0, 1);
             item[15] = new Item("Furnace", ItemType.FURNITURE, "/assets/CraftingSprites/furnace.png", "/assets/CraftingSprites/furnace.png", 1, 0, 1);
+            item[16] = new Item("Chest", ItemType.FURNITURE, "/assets/CraftingSprites/chest.png", "/assets/CraftingSprites/chest.png", 1, 0, 1);
+            item[17] = new Item("Copper bar", ItemType.MATERIAL, "/assets/Resource/copperBar.png", "/assets/Resource/copperBar.png", 1, 0, 0);
         } catch (Exception e) {
         }
     }
 
     public Item getItem(int i) {
         return item[i];
+    }
+    public Item getByName(String name){
+        for (Item i : item) {
+            if (i.getItemName().equals(name)) {
+                return i;
+            }
+        }
+        return null;
     }
 
     public int getSize() {

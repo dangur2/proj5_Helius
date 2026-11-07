@@ -83,10 +83,7 @@ public class Player extends Entity {
     }
 
     public void updateTarget(int mx, int my, double tx, double ty, Item currItem) {
-        if (currItem == null) {
-            previewToolHit = false;
-            return;
-        }
+
         double mdx = mx - ((x + playerSizeX / 2) - tx); //mus position/klick i relation till spelarens skärmposition
         double mdy = my - ((y + playerSizeY / 2) - ty);
 
@@ -110,6 +107,11 @@ public class Player extends Entity {
 
         targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
         targetRow = pRow + dRow;
+
+        if (currItem == null) {
+            previewToolHit = false;
+            return;
+        }
 
         previewToolHit = currItem.isTool() || currItem.getItemType() == ItemType.FURNITURE;
     }
@@ -183,13 +185,14 @@ public class Player extends Entity {
         }
         harvesting = true;
     }
-    public void RightClick(int mouseX, int mouseY, WorldSpawn worldSpawn, ArrayList<Rectangle> slots){
+
+    public void RightClick(int mouseX, int mouseY, WorldSpawn worldSpawn, ArrayList<Rectangle> slots) {
         for (int i = 0; i < slots.size(); i++) {
-            if (slots.get(i).contains(mouseX,mouseY)) {
+            if (slots.get(i).contains(mouseX, mouseY)) {
                 return;
             }
         }
-        worldSpawn.Interact(targetCol, targetRow);
+        worldSpawn.Interact(targetCol, targetRow, selectedItem);
     }
 
     private boolean canHarvest(Tile tileLookedAt, Item item) {

@@ -2,7 +2,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ public class WorldSpawn {
     private final ResourceCatalog resourceCatalog;
     private final RandomSpawnCatalog randomSpawnCatalog;
     private final FurnitureCatalog furnitureCatalog;
+    private final FurnaceRecipeCatalog furnaceRecipeCatalog;
     private final TileManager tm;
     private final Random r = new Random();
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
@@ -21,6 +21,7 @@ public class WorldSpawn {
     private final HashMap<Point, PlacedFurniture> placedFurniture = new HashMap<>();
     private final GamePanel gp;
     private final Player player;
+    private Item displayOutput;
 
     public WorldSpawn(TileManager tm, GamePanel gp, ItemCatalog itemCatalog, Player player) {
         this.tm = tm;
@@ -28,27 +29,41 @@ public class WorldSpawn {
         this.resourceCatalog = new ResourceCatalog(itemCatalog);
         this.randomSpawnCatalog = new RandomSpawnCatalog(itemCatalog);
         this.furnitureCatalog = new FurnitureCatalog(itemCatalog);
+        this.furnaceRecipeCatalog = new FurnaceRecipeCatalog(itemCatalog);
         this.player = player;
 
         generateItemsSpawns(30);
         generateResourceSpawns(30);
     }
 
-    public void Interact(int targetCol, int targetRow){
-        if (placedFurniture.get(new Point(targetCol, targetRow)) == null) {
-            System.out.println("hej");
+    public void tick(double dt) {
+        for (Point i : placedFurniture.keySet()) {
+            displayOutput = placedFurniture.get(i).tick(dt);
+        }
+    }
+
+    public void Interact(int targetCol, int targetRow, Item selectedItem) {
+        PlacedFurniture selectedFurniture = placedFurniture.get(new Point(targetCol * gp.tileSize, targetRow * gp.tileSize));
+
+        if (selectedFurniture == null) {
             return;
         }
-        PlacedFurniture selectedFurniture = placedFurniture.get(new Point(targetCol, targetRow));
+
         switch (selectedFurniture.getFurniture().type) {
             case FURNACE -> {
-                System.out.println("du en fornajs");
+                if (displayOutput != null) {
+                    player.getInventory().addCopyOf(displayOutput);
+                    selectedFurniture.clearDisplay();
+                }else{
+                    selectedFurniture.smelt(selectedItem, player.getInventory(), furnaceRecipeCatalog);
+                }
+                
             }
             case CHEST -> {
-
+                System.out.println("du chest");
             }
             case ANVIL -> {
-
+                System.out.println("do ajnvil");
             }
         }
     }
@@ -174,7 +189,6 @@ public class WorldSpawn {
     }
 
     public void draw(Graphics2D g2, Camera camera) {
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         for (PlacedResource i : groundResourceSpawn) {
             g2.drawImage(i.getResource().image, (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
@@ -185,9 +199,18 @@ public class WorldSpawn {
             g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         for (Point i : placedFurniture.keySet()) {
-            g2.drawImage(placedFurniture.get(i).getFurniture().image, (int) i.getX() - (int) camera.getTx(), (int) i.getY() - (int) camera.getTy(), null);
-            g2.setColor(Color.red);
-            g2.drawRect((int) i.getX() - (int) camera.getTx(), (int) i.getY() - (int) camera.getTy(), gp.tileSize, gp.tileSize);
+            if (placedFurniture.get(i).getSmelting()) {
+                g2.drawImage(placedFurniture.get(i).getFurniture().useImage, (int) i.getX() - (int) camera.getTx(), (int) i.getY() - (int) camera.getTy(), null);
+            } else {
+                if (displayOutput != null) {
+                    g2.setColor(Color.black);
+                    g2.fillRoundRect((int) i.getX() - (int) camera.getTx(), ((int) i.getY() - (int) camera.getTy()) - 30,32,32, 9, 9);
+                    g2.setColor(new Color(36, 33, 52, 230));
+                    g2.fillRoundRect((int) i.getX() - (int) camera.getTx() + 1 , ((int) i.getY() - (int) camera.getTy()) - 29,30,30, 9, 9);
+                    g2.drawImage(displayOutput.getHeldIcon(), (int) i.getX() - (int) camera.getTx(), ((int) i.getY() - (int) camera.getTy()) - 30, null);
+                }
+                g2.drawImage(placedFurniture.get(i).getFurniture().image, (int) i.getX() - (int) camera.getTx(), (int) i.getY() - (int) camera.getTy(), null);
+            }
         }
 
     }

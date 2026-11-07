@@ -79,6 +79,7 @@ public class GamePanel extends JPanel implements ClickListener {
             player.updateAttack();
             camera.follow(player);
             worldSpawn.handleCollision(player, kh.isePressed(), this, mouseHandler.getMx(), mouseHandler.getMy());
+            worldSpawn.tick(dt);
         }
         repaint();
     }
