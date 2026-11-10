@@ -25,7 +25,7 @@ public class FurnitureCatalog {
 
             furniture[1] = new FurnitureType();
             furniture[1].image = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/chest.png"));
-            furniture[1].useImage = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/chest.png"));
+            furniture[1].useImage = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/chestOpen.png"));
             furniture[1].name = "Chest";
             furniture[1].collision = true;
             furniture[1].health = 3;

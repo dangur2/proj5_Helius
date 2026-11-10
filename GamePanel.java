@@ -29,7 +29,6 @@ public class GamePanel extends JPanel implements ClickListener {
     private final InventoryViewManager inventoryViewManager;
     private final ItemCatalog itemCatalog;
 
-
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
         this.itemCatalog = new ItemCatalog();
         this.tileManager = new TileManager(this, mapType);
@@ -41,9 +40,9 @@ public class GamePanel extends JPanel implements ClickListener {
         this.pauseMenu = new PauseMenuView(ge);
         this.kh = new KeyHandler(ge, hudView);
         this.mouseHandler = mh;
-        this.inventoryViewManager = new InventoryViewManager(player.getInventory(), itemCatalog);
         this.worldSpawn = new WorldSpawn(tileManager, this, itemCatalog, player);
-        
+        this.inventoryViewManager = new InventoryViewManager(player.getInventory(), itemCatalog);
+
         this.addKeyListener(kh);
         this.addMouseListener(mh);
         this.addMouseMotionListener(mh);
@@ -58,11 +57,11 @@ public class GamePanel extends JPanel implements ClickListener {
         tileManager.draw(g2, camera);
         worldSpawn.draw(g2, camera);
         player.draw(g2, camera);
-        if (!kh.getbPressed()) {
+        if (!kh.getbPressed() && !inventoryViewManager.showingChest()) {
             hudView.draw(g2);
             playerHealthView.draw(g2, player.getHealth(), player.getStamina());
         }
-        if (kh.getbPressed()) {
+        if (kh.getbPressed() || inventoryViewManager.showingChest()) {
             inventoryViewManager.draw(g2);
         }
         if (gameEngine.getState() == GameState.PAUSE) {
@@ -73,7 +72,7 @@ public class GamePanel extends JPanel implements ClickListener {
 
     public void tick(double dt) {
         //medans spelaren lever
-        if (!kh.getbPressed()) {
+        if (!kh.getbPressed() || inventoryViewManager.showingChest()) {
             player.move(dt, kh.getDx(), kh.getDy(), worldSizeX, worldSizeY, tileManager);
             player.updateTarget(mouseHandler.getMx(), mouseHandler.getMy(), camera.getTx(), camera.getTy(), hudView.getSelectedItem());
             player.updateAttack();
@@ -92,12 +91,11 @@ public class GamePanel extends JPanel implements ClickListener {
     public void OnLeftClick(int x, int y) {
         switch (gameEngine.getState()) {
             case GameState.PLAYING -> {
-                if (!kh.getbPressed()) {
+                if (kh.getbPressed() || inventoryViewManager.showingChest()) {
+                    inventoryViewManager.LeftClick(x, y);
+                } else {
                     hudView.LeftClick(x, y);
                     player.LeftClick(x, y, hudView.getSelectedSlot(), hudView.getSlots(), worldSpawn);
-                }
-                else {
-                    inventoryViewManager.LeftClick(x,y);
                 }
             }
             case GameState.PAUSE -> {
@@ -114,11 +112,13 @@ public class GamePanel extends JPanel implements ClickListener {
     public void OnRightClick(int x, int y) {
         switch (gameEngine.getState()) {
             case GameState.PLAYING -> {
-                if (!kh.getbPressed()) {
+                if (!kh.getbPressed() && !inventoryViewManager.showingChest()) {
                     hudView.RightClick(x, y);
-                    player.RightClick(x,y,worldSpawn, hudView.getSlots());
-                }
-                else{
+                    player.RightClick(x, y, worldSpawn, hudView.getSlots());
+                    if (worldSpawn.getChest() != null) {
+                        inventoryViewManager.setChest(worldSpawn.getChest());
+                    }
+                } else {
                     inventoryViewManager.RightClick(x, y);
                 }
             }
@@ -136,16 +136,14 @@ public class GamePanel extends JPanel implements ClickListener {
     public void OnHover(int x, int y) {
         switch (gameEngine.getState()) {
             case GameState.PLAYING -> {
-                if (kh.getbPressed()) {
-                    inventoryViewManager.Hover(x,y);
-                }
-                else{
+                if (kh.getbPressed()  || inventoryViewManager.showingChest()) {
+                    inventoryViewManager.Hover(x, y);
+                } else {
                     hudView.Hover(x, y);
                 }
-                
+
             }
             case GameState.PAUSE -> {
-
             }
             case GameState.LOSE -> {
             }

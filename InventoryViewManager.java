@@ -10,55 +10,86 @@ import javax.imageio.ImageIO;
 
 public class InventoryViewManager {
 
+    private final SlotInteraction slotInteraction;
     private final InventoryView inventoryView;
     private final CraftingView craftingView;
-    private BufferedImage inventoryBackground;
-    private final int inventoryX = 191, inventoryY = 150;
+    private final ChestView chestView;
+    private BufferedImage inventoryBackground, inventoryMenuButton;
+    private final int inventoryX = 191, inventoryY = 165;
     private final ArrayList<Rectangle> menuButtonsCollision = new ArrayList<>();
-    private final int menuButtons = 4;
+    private final int menuButtons = 2;
     private boolean showInventory = true;
     private boolean showCrafting = false;
+    private boolean showChest = false;
+    private Chest currChest;
 
     public InventoryViewManager(Inventory inventory, ItemCatalog itemCatalog) {
+        this.slotInteraction = new SlotInteraction();
         this.inventoryView = new InventoryView(inventory);
         this.craftingView = new CraftingView(inventory, itemCatalog, this);
+        this.chestView = new ChestView(inventory, inventoryView.getInventoryButtons(),this);
+
         loadSprites();
         loadMenuButtons();
     }
 
-    public void swapScreen(int mouseX, int mouseY){
+    public void swapScreen(int mouseX, int mouseY) {
         showInventory = true;
         showCrafting = false;
         inventoryView.setSelectItem(craftingView.getSelectItem());
         inventoryView.Hover(mouseX, mouseY);
     }
+    public void closeChest(){
+        showChest = false;
+        this.currChest = null;
+    }
+
+    public void setChest(Chest currChest) {
+        if (this.currChest == currChest) {
+            return;
+        }
+        showChest = true;
+        showInventory = false;
+        showCrafting = false;
+        this.currChest = currChest;
+        chestView.setChest(currChest);
+    }
 
     public void LeftClick(int mouseX, int mouseY) {
-        for (int i = 0; i < menuButtonsCollision.size(); i++) {
-            if (menuButtonsCollision.get(i).contains(new Point(mouseX, mouseY))) {
-                switch (i) {
-                    case 0 -> {
-                        showInventory = true;
-                        showCrafting = false;
-                    }
-                    case 1 -> {
-                        showCrafting = true;
-                        showInventory = false;
+        if (!showChest) {
+            for (int i = 0; i < menuButtonsCollision.size(); i++) {
+                if (menuButtonsCollision.get(i).contains(new Point(mouseX, mouseY))) {
+                    switch (i) {
+                        case 0 -> {
+                            showInventory = true;
+                            showCrafting = false;
+                        }
+                        case 1 -> {
+                            showCrafting = true;
+                            showInventory = false;
+                        }
                     }
                 }
             }
         }
+
         if (showInventory) {
             inventoryView.LeftClick(mouseX, mouseY);
         }
         if (showCrafting) {
             craftingView.LeftClick(mouseX, mouseY);
         }
+        if (showChest) {
+            chestView.LeftClick(mouseX, mouseY);
+        }
     }
 
-    public void RightClick(int mouseX, int mouseY){
+    public void RightClick(int mouseX, int mouseY) {
         if (showInventory) {
             inventoryView.RightClick(mouseX, mouseY);
+        }
+        if (showChest) {
+            chestView.RightClick(mouseX, mouseY);
         }
     }
 
@@ -69,39 +100,57 @@ public class InventoryViewManager {
         if (showCrafting) {
             craftingView.Hover(mouseX, mouseY);
         }
+        if (showChest) {
+            chestView.Hover(mouseX, mouseY);
+        }
     }
 
     private void loadSprites() {
         try {
             inventoryBackground = ImageIO.read(getClass().getResourceAsStream("/assets/Background/inventory_background.png"));
+            inventoryMenuButton = ImageIO.read(getClass().getResourceAsStream("/assets/Background/inventoryMenuButton.png"));
         } catch (Exception e) {
         }
     }
 
     private void loadMenuButtons() {
         for (int i = 0; i < menuButtons; i++) {
-            menuButtonsCollision.add(new Rectangle(inventoryX + 6 + (i * 98), inventoryY + 6, 95, 17));
+            menuButtonsCollision.add(new Rectangle(inventoryX + 6 + (i * 98), inventoryY - 17, 95, 17));
         }
-        menuButtonsCollision.add(new Rectangle(inventoryX + (398), inventoryY + 6, 46, 17));
+    }
+
+    public boolean showingChest() {
+        return showChest;
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(inventoryBackground, inventoryX, inventoryY, null);
+        if (!showChest) {
+            g2.drawImage(inventoryBackground, inventoryX, inventoryY, null);
+        }
 
-        g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
-        g2.setColor(Color.black);
-        g2.drawString("Inventory", (int) menuButtonsCollision.get(0).getX() + 7, (int) menuButtonsCollision.get(0).getY() + 11);
-        g2.setColor(Color.white);
-        g2.drawString("Inventory", (int) menuButtonsCollision.get(0).getX() + 6, (int) menuButtonsCollision.get(0).getY() + 11);
+        if (currChest == null) {
+            for (Rectangle i : menuButtonsCollision) {
+                g2.drawImage(inventoryMenuButton, (int) i.getX(), (int) i.getY(), null);
+            }
+            g2.setFont(new Font("MONOSPACED", Font.BOLD, 15));
+            g2.setColor(Color.black);
+            g2.drawString("Inventory", (int) menuButtonsCollision.get(0).getX() + 7, (int) menuButtonsCollision.get(0).getY() + 12);
+            g2.setColor(Color.white);
+            g2.drawString("Inventory", (int) menuButtonsCollision.get(0).getX() + 6, (int) menuButtonsCollision.get(0).getY() + 12);
 
-        g2.setColor(Color.black);
-        g2.drawString("Crafting", (int) menuButtonsCollision.get(1).getX() + 10, (int) menuButtonsCollision.get(1).getY() + 11);
-        g2.setColor(Color.white);
-        g2.drawString("Crafting", (int) menuButtonsCollision.get(1).getX() + 9, (int) menuButtonsCollision.get(1).getY() + 11);
+            g2.setColor(Color.black);
+            g2.drawString("Crafting", (int) menuButtonsCollision.get(1).getX() + 10, (int) menuButtonsCollision.get(1).getY() + 12);
+            g2.setColor(Color.white);
+            g2.drawString("Crafting", (int) menuButtonsCollision.get(1).getX() + 9, (int) menuButtonsCollision.get(1).getY() + 12);
+        }
         if (showInventory) {
             inventoryView.draw(g2);
-        } else if (showCrafting) {
+        }
+        if (showCrafting) {
             craftingView.draw(g2);
+        }
+        if (showChest) {
+            chestView.draw(g2);
         }
     }
 }

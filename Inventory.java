@@ -18,6 +18,7 @@ public class Inventory {
         addItem(new Item("Log", ItemType.MATERIAL, "/assets/Resource/log.png", "/assets/Resource/log_floor.png", 4, 0, 0));
         addItem(new Item("Rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock_floor.png", 8, 0, 0));
         addItem(new Item("Copper nugget", ItemType.MATERIAL, "/assets/Resource/copperOre.png", "/assets/Resource/copperOre_floor.png", 4, 0, 0));
+        addItem(new Item("Chest", ItemType.FURNITURE, "/assets/CraftingSprites/chest.png", "/assets/CraftingSprites/chest.png", 1, 0, 1));
     }
 
     public void addItem(Item x) {

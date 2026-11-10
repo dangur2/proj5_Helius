@@ -102,6 +102,9 @@ public class InventoryView {
             }
         }
     }
+    public ArrayList<Rectangle> getInventoryButtons(){
+        return inventoryButtonsCollision;
+    }
 
     private void loadSprites() {
         try {
@@ -131,7 +134,7 @@ public class InventoryView {
             if (invItem != null) {
                 g2.setFont(new Font("MONOSPACED", Font.BOLD, 11));
                 g2.setColor(Color.white);
-                g2.drawString(Integer.toString(invItem.getQuantity()), (int) inventoryButtonsCollision.get(i).getX(), (int) inventoryButtonsCollision.get(i).getY() + 10);
+                g2.drawString(Integer.toString(invItem.getQuantity()), (int) inventoryButtonsCollision.get(i).getX(), (int) inventoryButtonsCollision.get(i).getY() + 10 );
                 g2.drawImage(invItem.getHotbarIcon(), (int) inventoryButtonsCollision.get(i).getX() + 7, (int) inventoryButtonsCollision.get(i).getY() + 5, null);
             }
         }

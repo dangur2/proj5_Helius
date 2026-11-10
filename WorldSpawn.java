@@ -1,5 +1,4 @@
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -12,16 +11,16 @@ public class WorldSpawn {
     private final ResourceCatalog resourceCatalog;
     private final RandomSpawnCatalog randomSpawnCatalog;
     private final FurnitureCatalog furnitureCatalog;
-    private final FurnaceRecipeCatalog furnaceRecipeCatalog;
     private final TileManager tm;
     private final Random r = new Random();
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
     private final ArrayList<PlacedResource> groundResourceSpawn = new ArrayList<>();
     private final ArrayList<PlacedItem> resourceDrop = new ArrayList<>();
     private final HashMap<Point, PlacedFurniture> placedFurniture = new HashMap<>();
+    private PlacedFurniture selectedFurniture;
     private final GamePanel gp;
     private final Player player;
-    private Item displayOutput;
+    private final FurnaceRecipeCatalog furnaceRecipeCatalog;
 
     public WorldSpawn(TileManager tm, GamePanel gp, ItemCatalog itemCatalog, Player player) {
         this.tm = tm;
@@ -38,34 +37,18 @@ public class WorldSpawn {
 
     public void tick(double dt) {
         for (Point i : placedFurniture.keySet()) {
-            displayOutput = placedFurniture.get(i).tick(dt);
+            placedFurniture.get(i).tick(dt);
         }
     }
 
     public void Interact(int targetCol, int targetRow, Item selectedItem) {
-        PlacedFurniture selectedFurniture = placedFurniture.get(new Point(targetCol * gp.tileSize, targetRow * gp.tileSize));
+        selectedFurniture = placedFurniture.get(new Point(targetCol * gp.tileSize, targetRow * gp.tileSize));
 
         if (selectedFurniture == null) {
             return;
         }
 
-        switch (selectedFurniture.getFurniture().type) {
-            case FURNACE -> {
-                if (displayOutput != null) {
-                    player.getInventory().addCopyOf(displayOutput);
-                    selectedFurniture.clearDisplay();
-                }else{
-                    selectedFurniture.smelt(selectedItem, player.getInventory(), furnaceRecipeCatalog);
-                }
-                
-            }
-            case CHEST -> {
-                System.out.println("du chest");
-            }
-            case ANVIL -> {
-                System.out.println("do ajnvil");
-            }
-        }
+        selectedFurniture.Interact(player, selectedItem);
     }
 
     private boolean isOccupied(int col, int row) {
@@ -98,17 +81,23 @@ public class WorldSpawn {
     }
 
     public boolean PlaceFurniture(int x, int y, Item selectedItem) {
+        PlacedFurniture currentFurniture = null;
         if (!isOccupied(x * gp.tileSize, y * gp.tileSize)) {
-            PlacedFurniture currentFurniture = new PlacedFurniture();
-            for (int i = 0; i < furnitureCatalog.getSize(); i++) {
-                if (selectedItem.getItemName().equals(furnitureCatalog.getFurniture(i).name)) {
-                    currentFurniture.setFurniture(furnitureCatalog.getFurniture(i));
-                    break;
+            if (selectedItem.getItemType().equals(ItemType.FURNITURE)) {
+                switch (selectedItem.getItemName()) {
+                    case "Furnace" -> {
+                        currentFurniture = new Furnace(furnitureCatalog.getFurniture(0), furnaceRecipeCatalog);
+                    }
+                    case "Chest" -> {
+                        currentFurniture = new Chest(furnitureCatalog.getFurniture(1));
+                    }
                 }
             }
-            placedFurniture.put(new Point(x * gp.tileSize, y * gp.tileSize), currentFurniture);
-            tm.setIsBlocked((x * gp.tileSize), (y * gp.tileSize));
-            return true;
+            if (currentFurniture != null) {
+                placedFurniture.put(new Point(x * gp.tileSize, y * gp.tileSize), currentFurniture);
+                tm.setIsBlocked((x * gp.tileSize), (y * gp.tileSize));
+                return true;
+            }
         }
         return false;
 
@@ -188,6 +177,13 @@ public class WorldSpawn {
         }
     }
 
+    public Chest getChest() {
+        if (selectedFurniture != null) {
+            return selectedFurniture.CurrentChest();
+        }
+        return null;
+    }
+
     public void draw(Graphics2D g2, Camera camera) {
         for (PlacedResource i : groundResourceSpawn) {
             g2.drawImage(i.getResource().image, (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
@@ -199,18 +195,7 @@ public class WorldSpawn {
             g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         for (Point i : placedFurniture.keySet()) {
-            if (placedFurniture.get(i).getSmelting()) {
-                g2.drawImage(placedFurniture.get(i).getFurniture().useImage, (int) i.getX() - (int) camera.getTx(), (int) i.getY() - (int) camera.getTy(), null);
-            } else {
-                if (displayOutput != null) {
-                    g2.setColor(Color.black);
-                    g2.fillRoundRect((int) i.getX() - (int) camera.getTx(), ((int) i.getY() - (int) camera.getTy()) - 30,32,32, 9, 9);
-                    g2.setColor(new Color(36, 33, 52, 230));
-                    g2.fillRoundRect((int) i.getX() - (int) camera.getTx() + 1 , ((int) i.getY() - (int) camera.getTy()) - 29,30,30, 9, 9);
-                    g2.drawImage(displayOutput.getHeldIcon(), (int) i.getX() - (int) camera.getTx(), ((int) i.getY() - (int) camera.getTy()) - 30, null);
-                }
-                g2.drawImage(placedFurniture.get(i).getFurniture().image, (int) i.getX() - (int) camera.getTx(), (int) i.getY() - (int) camera.getTy(), null);
-            }
+            placedFurniture.get(i).draw(g2, camera, (int) i.getX(), (int) i.getY());
         }
 
     }

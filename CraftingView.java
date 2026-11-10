@@ -56,9 +56,7 @@ public class CraftingView {
                 inventoryViewManager.swapScreen(mouseX, mouseY);
                 selectedItem = null;
             }
-            
         }
-        
     }
 
     public void Hover(int mouseX, int mouseY) {
