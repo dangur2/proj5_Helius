@@ -31,6 +31,7 @@ public abstract class PlacedFurniture {
     public BufferedImage getUseImage() {
         return furniture.useImage;
     }
+    public abstract boolean isEmpty();
 
     public abstract Chest CurrentChest();
 

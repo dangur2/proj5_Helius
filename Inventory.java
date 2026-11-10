@@ -6,7 +6,7 @@ public class Inventory {
     public Inventory(Item[] inventory) {
         this.inventory = inventory;
         generateStarterItems();
-        
+
     }
 
     private void generateStarterItems() {
@@ -36,15 +36,39 @@ public class Inventory {
             }
         }
     }
-    public void decreaseQuantity(int x){
+
+    public boolean addItemShift(Item x, int incl, int exl) {
+        if (x == null) {
+            return false;
+        }
+        for (int i = incl; i < exl; i++) {
+            Item item = inventory[i];
+            if (item != null && item.getItemName().equals(x.getItemName())) {
+                item.increaseQuantity(x.getQuantity());
+                return true;
+            }
+        }
+
+        for (int i = incl; i < exl; i++) {
+            if (inventory[i] == null) {
+                inventory[i] = x;
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public void decreaseQuantity(int x) {
         if (x > 0 && x < inventory.length) {
             inventory[x].decreaseQuantity();
             if (inventory[x].getQuantity() < 1) {
                 removeItem(x);
             }
-        }  
+        }
     }
-    public void setItem(int x, Item item){
+
+    public void setItem(int x, Item item) {
         if (item != null) {
             inventory[x] = item;
         }
@@ -100,7 +124,8 @@ public class Inventory {
         }
         return this.inventory[x];
     }
-    public void useResources(Item resource, int quantity){
+
+    public void useResources(Item resource, int quantity) {
         for (int i = 0; i < inventory.length; i++) {
             if (getItem(i) != null && resource != null && quantity >= 1 && getItem(i).getItemName().equals(resource.getItemName()) && getItem(i).getQuantity() >= quantity) {
                 for (int j = 0; j < quantity; j++) {
@@ -112,7 +137,8 @@ public class Inventory {
             }
         }
     }
-    public boolean contains(Item resource, int quantity){
+
+    public boolean contains(Item resource, int quantity) {
         for (int i = 0; i < inventory.length; i++) {
             if (getItem(i) != null && resource != null && getItem(i).getItemName().equals(resource.getItemName()) && getItem(i).getQuantity() >= quantity) {
                 return true;
@@ -120,6 +146,7 @@ public class Inventory {
         }
         return false;
     }
+
     public boolean isEmpty(int x) {
         return this.inventory[x] == null;
     }

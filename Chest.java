@@ -81,4 +81,8 @@ public class Chest extends PlacedFurniture {
     public boolean getOpenChest(){
         return openChest;
     }
+    @Override
+    public boolean isEmpty() {
+        return chestInventory.isEmpty();
+    }
 }

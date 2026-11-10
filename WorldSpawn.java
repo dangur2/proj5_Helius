@@ -134,7 +134,9 @@ public class WorldSpawn {
         }
         for (Point i : placedFurniture.keySet()) {
             if (placedFurniture.get(i).getFurniture().requiredTool == playerTool && i.getX() / 32 == targetCol && i.getY() / 32 == targetRow) {
-                placedFurniture.get(i).setHealth(-toolDamage);
+                if(placedFurniture.get(i).isEmpty()){
+                    placedFurniture.get(i).setHealth(-toolDamage);
+                }
                 if (placedFurniture.get(i).getHealth() < 1) {
                     gp.playSound(SoundEffect.RESOURCEBREAK);
                     dropFurniture(placedFurniture.get(i), targetCol, targetRow);

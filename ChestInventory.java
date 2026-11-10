@@ -31,4 +31,12 @@ public class ChestInventory {
             chestInventory[slot] = null;
         }
     }
+    public boolean isEmpty(){
+        for (int i = 0; i < chestInventory.length; i++) {
+            if(chestInventory[i] != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

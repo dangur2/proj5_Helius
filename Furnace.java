@@ -15,6 +15,11 @@ public class Furnace extends PlacedFurniture {
         super(type);
     }
 
+    @Override 
+    public boolean isEmpty(){
+        return outputItem == null && smelting;
+    }
+
     @Override
     public void tick(double dt) {
         if (smelting) {
@@ -33,7 +38,6 @@ public class Furnace extends PlacedFurniture {
             outputItem = null;
             return;
         }
-        System.out.println("3");
         if (selectedItem != null && furnaceRecipeCatalog.getRecipeByName(selectedItem.getItemName()) != null) {
             activeRecipe = furnaceRecipeCatalog.getRecipeByName(selectedItem.getItemName());
             if (player.getInventory().contains(activeRecipe.getResource(), activeRecipe.getResourcequantity()) && player.getInventory().contains(activeRecipe.getFuel(), activeRecipe.getFuelquantity())) {

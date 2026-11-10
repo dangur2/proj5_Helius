@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 public class InventoryViewManager {
 
     private final SlotInteraction slotInteraction;
+    private final SlotInteractionView slotInteractionView;
     private final InventoryView inventoryView;
     private final CraftingView craftingView;
     private final ChestView chestView;
@@ -18,19 +19,35 @@ public class InventoryViewManager {
     private final int inventoryX = 191, inventoryY = 165;
     private final ArrayList<Rectangle> menuButtonsCollision = new ArrayList<>();
     private final int menuButtons = 2;
-    private boolean showInventory = true;
     private boolean showCrafting = false;
     private boolean showChest = false;
+    private boolean showInventory = false;
     private Chest currChest;
+    private boolean holdingShift = false;
 
     public InventoryViewManager(Inventory inventory, ItemCatalog itemCatalog) {
         this.slotInteraction = new SlotInteraction();
-        this.inventoryView = new InventoryView(inventory);
-        this.craftingView = new CraftingView(inventory, itemCatalog, this);
-        this.chestView = new ChestView(inventory, inventoryView.getInventoryButtons(),this);
+        this.slotInteractionView = new SlotInteractionView();
+        this.inventoryView = new InventoryView(inventory, slotInteraction, slotInteractionView);
+        this.craftingView = new CraftingView(inventory, itemCatalog, this, slotInteraction, slotInteractionView);
+        this.chestView = new ChestView(inventory, inventoryView.getInventoryButtons(),this, slotInteraction, slotInteractionView);
 
         loadSprites();
         loadMenuButtons();
+    }
+    public void bPressed(){
+        if (currentlyDrawing()) {
+            showCrafting = false;
+            showInventory = false;
+            closeChest();
+        } else if (!currentlyDrawing()) {
+            showInventory = true;
+            showChest = false;
+            showCrafting = false;
+        }
+    }
+    public void setShiftPressed(boolean shiftPressed){
+        holdingShift = shiftPressed;
     }
 
     public void swapScreen(int mouseX, int mouseY) {
@@ -41,9 +58,14 @@ public class InventoryViewManager {
     }
     public void closeChest(){
         showChest = false;
+        if (currChest != null) {
+            currChest.closeChest();
+        }
         this.currChest = null;
     }
-
+    public boolean currentlyDrawing(){
+        return showInventory || showChest || showCrafting;
+    }
     public void setChest(Chest currChest) {
         if (this.currChest == currChest) {
             return;
@@ -74,13 +96,13 @@ public class InventoryViewManager {
         }
 
         if (showInventory) {
-            inventoryView.LeftClick(mouseX, mouseY);
+            inventoryView.LeftClick(mouseX, mouseY, holdingShift);
         }
         if (showCrafting) {
             craftingView.LeftClick(mouseX, mouseY);
         }
         if (showChest) {
-            chestView.LeftClick(mouseX, mouseY);
+            chestView.LeftClick(mouseX, mouseY, holdingShift);
         }
     }
 
@@ -119,12 +141,8 @@ public class InventoryViewManager {
         }
     }
 
-    public boolean showingChest() {
-        return showChest;
-    }
-
     public void draw(Graphics2D g2) {
-        if (!showChest) {
+        if (!showChest && (showCrafting || showInventory)) {
             g2.drawImage(inventoryBackground, inventoryX, inventoryY, null);
         }
 

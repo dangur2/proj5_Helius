@@ -4,15 +4,17 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
-    private boolean aPressed, dPressed, wPressed, sPressed, ePressed, escPressed;
+    private boolean aPressed, dPressed, wPressed, sPressed, ePressed, escPressed, shiftPressed;
     private boolean bPressed = false;
     private double dx, dy;
     private final GameEngine ge;
     private final HudView hv;
+    private final InventoryViewManager inventoryViewManager;
 
-    public KeyHandler(GameEngine ge, HudView hv) {
+    public KeyHandler(GameEngine ge, HudView hv, InventoryViewManager inventoryViewManager) {
         this.ge = ge;
         this.hv = hv;
+        this.inventoryViewManager = inventoryViewManager;
     }
 
     public boolean isaPressed() {
@@ -48,6 +50,9 @@ public class KeyHandler implements KeyListener {
     }
     public boolean getbPressed(){
         return bPressed;
+    }
+    public boolean getShiftPressed(){
+        return shiftPressed;
     }
 
     @Override
@@ -86,7 +91,14 @@ public class KeyHandler implements KeyListener {
                 hv.setSelectItem(7);
             case KeyEvent.VK_9 ->
                 hv.setSelectItem(8);
-            case KeyEvent.VK_B -> bPressed = !bPressed;
+
+            case KeyEvent.VK_B -> {
+                inventoryViewManager.bPressed();
+            }
+            case KeyEvent.VK_SHIFT -> {
+                shiftPressed = true;
+                inventoryViewManager.setShiftPressed(getShiftPressed());
+            }
 
             case KeyEvent.VK_ESCAPE -> {
                 if (ge.getState() == GameState.PLAYING) {
@@ -113,6 +125,10 @@ public class KeyHandler implements KeyListener {
                 sPressed = false;
             case KeyEvent.VK_E ->
                 ePressed = false;
+            case KeyEvent.VK_SHIFT -> {
+                shiftPressed = false;
+                inventoryViewManager.setShiftPressed(getShiftPressed());
+            }
         }
         updateDirection();
     }
