@@ -17,7 +17,7 @@ public class Furnace extends PlacedFurniture {
 
     @Override 
     public boolean isEmpty(){
-        return outputItem == null && smelting;
+        return outputItem == null && !smelting;
     }
 
     @Override

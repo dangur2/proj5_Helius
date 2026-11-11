@@ -2,6 +2,9 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Comparator;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements ClickListener {
@@ -29,6 +32,8 @@ public class GamePanel extends JPanel implements ClickListener {
     private final InventoryViewManager inventoryViewManager;
     private final ItemCatalog itemCatalog;
 
+    private ArrayList<RenderObjects> ySort = new ArrayList<>();
+
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
         this.itemCatalog = new ItemCatalog();
         this.tileManager = new TileManager(this, mapType);
@@ -50,13 +55,32 @@ public class GamePanel extends JPanel implements ClickListener {
         setPreferredSize(new Dimension(screenSizeX, screenSizeY));
     }
 
+    public void setRenderObjects(){
+        ySort = new ArrayList<>();
+        for (Point i : worldSpawn.getGroundResources().keySet()) {
+            ySort.add(new RenderObjects((int) i.getY(),(int) i.getX(), worldSpawn.getGroundResources().get(i)));
+        }
+        for (Point i : worldSpawn.getPlacedFurniture().keySet()) {
+            ySort.add(new RenderObjects((int) i.getY(),(int) i.getX(), worldSpawn.getPlacedFurniture().get(i)));
+        }
+        ySort.add(new RenderObjects( (int) player.getY()+player.getPlayerY(), (int) player.getX(), player));
+        ySort.sort(Comparator.comparingInt(r -> r.getY()));
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         tileManager.draw(g2, camera);
-        worldSpawn.draw(g2, camera);
-        player.draw(g2, camera);
+        for (RenderObjects i : ySort) {
+            if (i.getObject() instanceof Player) {
+                player.draw(g2, camera);
+            } else if (i.getObject() instanceof PlacedFurniture currFur){
+                currFur.draw(g2, camera, (int) i.getX(), (int) i.getY());
+            } else if (i.getObject() instanceof PlacedResource resource){
+                g2.drawImage(resource.getResource().image, (int) i.getX(), (int) i.getY(), null);
+            }
+        }
         if (!inventoryViewManager.currentlyDrawing()) {
             hudView.draw(g2);
             playerHealthView.draw(g2, player.getHealth(), player.getStamina());
@@ -71,6 +95,7 @@ public class GamePanel extends JPanel implements ClickListener {
     }
 
     public void tick(double dt) {
+        setRenderObjects();
         if (!inventoryViewManager.currentlyDrawing()) {
             player.move(dt, kh.getDx(), kh.getDy(), worldSizeX, worldSizeY, tileManager);
             player.updateTarget(mouseHandler.getMx(), mouseHandler.getMy(), camera.getTx(), camera.getTy(), hudView.getSelectedItem());

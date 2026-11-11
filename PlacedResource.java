@@ -1,26 +1,24 @@
 
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
+import java.awt.Point;
+
+
 
 public class PlacedResource {
     
     private final ResourceType resource;
-    private final Rectangle bounds;
     private int currentHealth;
     private final int dropAmount;
+    private int ySort;
+    private Point collArea;
 
-    public PlacedResource(ResourceType resource, Point2D location) {
+    public PlacedResource(ResourceType resource) {
         this.resource = resource;
         this.currentHealth = resource.health;
         this.dropAmount = resource.dropAmount;
-        this.bounds = new Rectangle((int) location.getX(), (int) location.getY(), 32,32);
     }
 
     public ResourceType getResource(){
         return resource;
-    }
-    public Rectangle getBounds(){
-        return bounds;
     }
     public int getHealth(){
         return currentHealth;

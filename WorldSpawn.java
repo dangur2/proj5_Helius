@@ -14,7 +14,7 @@ public class WorldSpawn {
     private final TileManager tm;
     private final Random r = new Random();
     private final ArrayList<PlacedItem> groundItemsSpawn = new ArrayList<>();
-    private final ArrayList<PlacedResource> groundResourceSpawn = new ArrayList<>();
+    private final HashMap<Point, PlacedResource> groundResourceSpawn = new HashMap<>();
     private final ArrayList<PlacedItem> resourceDrop = new ArrayList<>();
     private final HashMap<Point, PlacedFurniture> placedFurniture = new HashMap<>();
     private PlacedFurniture selectedFurniture;
@@ -57,8 +57,8 @@ public class WorldSpawn {
                 return true;
             }
         }
-        for (PlacedResource j : groundResourceSpawn) {
-            if (col == j.getBounds().getX() && row == j.getBounds().getY()) {
+        for (Point j : groundResourceSpawn.keySet()) {
+            if (col == j.getX() && row == j.getY()) {
                 return true;
             }
         }
@@ -104,10 +104,12 @@ public class WorldSpawn {
     }
 
     private void generateResourceSpawns(int amount) {
+        PlacedResource groundResource;
         for (int i = 0; i < amount; i++) {
-            PlacedResource resource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())), findSpawnPosition());
-            tm.setIsBlocked((int) resource.getBounds().getX(), (int) resource.getBounds().getY());
-            groundResourceSpawn.add(resource);
+            groundResource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())));
+            Point currPoint = new Point((int)findSpawnPosition().getX(), (int)findSpawnPosition().getY());
+            groundResourceSpawn.put(currPoint, groundResource);
+            tm.setIsBlocked((int)currPoint.getX(), (int)currPoint.getY());
         }
     }
 
@@ -119,13 +121,13 @@ public class WorldSpawn {
     }
 
     public boolean hitResource(int targetCol, int targetRow, ItemType playerTool, int toolDamage) {
-        for (PlacedResource i : groundResourceSpawn) {
-            if (i.getResource().requiredTool == playerTool && i.getBounds().getX() / 32 == targetCol && i.getBounds().getY() / 32 == targetRow) {
-                i.setHealth(-toolDamage);
-                if (i.getHealth() < 1) {
+        for (Point i : groundResourceSpawn.keySet()) {
+            if (groundResourceSpawn.get(i).getResource().requiredTool == playerTool && i.getX() / 32 == targetCol && i.getY() / 32 == targetRow) {
+                groundResourceSpawn.get(i).setHealth(-toolDamage);
+                if (groundResourceSpawn.get(i).getHealth() < 1) {
                     gp.playSound(SoundEffect.RESOURCEBREAK);
-                    dropItem(i, targetCol, targetRow);
-                    tm.removeIsBlocked((int) i.getBounds().getX(), (int) i.getBounds().getY());
+                    dropItem(groundResourceSpawn.get(i), targetCol, targetRow);
+                    tm.removeIsBlocked((int) i.getX(), (int) i.getY());
                     groundResourceSpawn.remove(i);
                     break;
                 }
@@ -185,20 +187,19 @@ public class WorldSpawn {
         }
         return null;
     }
+    public HashMap<Point, PlacedFurniture> getPlacedFurniture(){
+        return placedFurniture;
+    }
+    public HashMap<Point, PlacedResource> getGroundResources(){
+        return groundResourceSpawn;
+    }
 
     public void draw(Graphics2D g2, Camera camera) {
-        for (PlacedResource i : groundResourceSpawn) {
-            g2.drawImage(i.getResource().image, (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
-        }
         for (PlacedItem i : resourceDrop) {
             g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
         for (PlacedItem i : groundItemsSpawn) {
             g2.drawImage(i.getItem().getHeldIcon(), (int) i.getBounds().getX() - (int) camera.getTx(), (int) i.getBounds().getY() - (int) camera.getTy(), null);
         }
-        for (Point i : placedFurniture.keySet()) {
-            placedFurniture.get(i).draw(g2, camera, (int) i.getX(), (int) i.getY());
-        }
-
     }
 }

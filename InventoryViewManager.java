@@ -62,6 +62,7 @@ public class InventoryViewManager {
             currChest.closeChest();
         }
         this.currChest = null;
+        slotInteraction.setChest(currChest);
     }
     public boolean currentlyDrawing(){
         return showInventory || showChest || showCrafting;
