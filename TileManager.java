@@ -22,7 +22,7 @@ public class TileManager {
         tile = new Tile[15];
         this.mapTileNum = new int[gp.worldCol][gp.worldRow];
         this.decorationTileNum = new int[gp.worldCol][gp.worldRow];
-        this.isBlocked = new boolean[gp.worldCol][gp.worldRow];
+        this.isBlocked = new boolean[gp.worldSizeX][gp.worldSizeX];
 
         switch (mapType) {
             case GENERATED -> {
@@ -34,14 +34,25 @@ public class TileManager {
         }
 
     }
-    public void setIsBlocked(int x, int y){
-        isBlocked[x/gp.tileSize][y/gp.tileSize] = true;
+
+    public void setIsBlocked(Rectangle collision) {
+        for (int i = (int) collision.getY(); i < (int) collision.getY() + (int) collision.getHeight(); i++) {
+            for (int j = (int) collision.getX(); j < (int) collision.getX() + (int) collision.getWidth(); j++) {
+                isBlocked[j][i] = true;
+            }
+        }
     }
-    public void removeIsBlocked(int x, int y){
-        isBlocked[x/gp.tileSize][y/gp.tileSize] = false;
+
+    public void removeIsBlocked(Rectangle collision) {
+        for (int i = (int) collision.getY(); i < (int) collision.getY() + (int) collision.getHeight(); i++) {
+            for (int j = (int) collision.getX(); j < (int) collision.getX() + (int) collision.getWidth(); j++) {
+                isBlocked[j][i] = false;
+            }
+        }
     }
-    public boolean IsBlocked(int x, int y){
-        return isBlocked[x/gp.tileSize][y/gp.tileSize] == true;
+
+    public boolean IsBlocked(int x, int y) {
+        return isBlocked[x][y] == true;
     }
 
     public Tile getTileNum(int x, int y) {
@@ -135,13 +146,13 @@ public class TileManager {
                             decorationTileNum[j][i] = 10; //poppy
                         }
                         if (random.nextInt(50) == 0) {
-                            decorationTileNum[j][i] = 11; //poppy patch
+                            decorationTileNum[j][i] = 11; //poppypatch
                         }
                         if (random.nextInt(20) == 0) {
                             decorationTileNum[j][i] = 7; //rose
                         }
                         if (random.nextInt(50) == 0) {
-                            decorationTileNum[j][i] = 8; //rose  patch
+                            decorationTileNum[j][i] = 8; //rosepatch
                         }
                     }
 

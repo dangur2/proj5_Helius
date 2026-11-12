@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 
 public class Furnace extends PlacedFurniture {
 
@@ -10,9 +11,9 @@ public class Furnace extends PlacedFurniture {
     private double counter;
     private final FurnaceRecipeCatalog furnaceRecipeCatalog;
 
-    public Furnace(FurnitureType type, FurnaceRecipeCatalog furnaceRecipeCatalog){
+    public Furnace(FurnitureType type,  FurnaceRecipeCatalog furnaceRecipeCatalog,int x, int y){
         this.furnaceRecipeCatalog = furnaceRecipeCatalog;
-        super(type);
+        super(type, new Point(x,y));
     }
 
     @Override 

@@ -1,4 +1,5 @@
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class ResourceType {
@@ -9,4 +10,6 @@ public class ResourceType {
     public int dropAmount;
     public ItemType requiredTool;
     public boolean collision;
+    public int ySortOffset;
+    public Rectangle collArea;
 }

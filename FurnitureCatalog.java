@@ -1,3 +1,4 @@
+import java.awt.Rectangle;
 import javax.imageio.ImageIO;
 
 public class FurnitureCatalog {
@@ -22,6 +23,8 @@ public class FurnitureCatalog {
             furniture[0].requiredTool = ItemType.PICKAXE;
             furniture[0].useTime = 3;
             furniture[0].type = FurnitureInteractType.FURNACE;
+            furniture[0].collArea = new Rectangle(6,18,20,9);
+            furniture[0].ySortOffset = 19;
 
             furniture[1] = new FurnitureType();
             furniture[1].image = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/chest.png"));
@@ -33,6 +36,8 @@ public class FurnitureCatalog {
             furniture[1].requiredTool = ItemType.AXE;
             furniture[1].useTime = 0;
             furniture[1].type = FurnitureInteractType.CHEST;
+            furniture[1].collArea = new Rectangle(6,18,20,9);
+            furniture[1].ySortOffset = 19;
 
         } catch (Exception e) {
         }

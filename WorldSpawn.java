@@ -70,7 +70,7 @@ public class WorldSpawn {
         return false;
     }
 
-    private Point2D findSpawnPosition() {
+    private Point findSpawnPosition() {
         for (int i = 0; i < 100; i++) {
             Point2D spawn = tm.findFreePosition();
             if (!isOccupied((int) spawn.getX(), (int) spawn.getY())) {
@@ -86,16 +86,16 @@ public class WorldSpawn {
             if (selectedItem.getItemType().equals(ItemType.FURNITURE)) {
                 switch (selectedItem.getItemName()) {
                     case "Furnace" -> {
-                        currentFurniture = new Furnace(furnitureCatalog.getFurniture(0), furnaceRecipeCatalog);
+                        currentFurniture = new Furnace(furnitureCatalog.getFurniture(0), furnaceRecipeCatalog,x*gp.tileSize,y*gp.tileSize);
                     }
                     case "Chest" -> {
-                        currentFurniture = new Chest(furnitureCatalog.getFurniture(1));
+                        currentFurniture = new Chest(furnitureCatalog.getFurniture(1),x*gp.tileSize,y*gp.tileSize);
                     }
                 }
             }
             if (currentFurniture != null) {
                 placedFurniture.put(new Point(x * gp.tileSize, y * gp.tileSize), currentFurniture);
-                tm.setIsBlocked((x * gp.tileSize), (y * gp.tileSize));
+                tm.setIsBlocked(currentFurniture.getCollArea());
                 return true;
             }
         }
@@ -106,10 +106,10 @@ public class WorldSpawn {
     private void generateResourceSpawns(int amount) {
         PlacedResource groundResource;
         for (int i = 0; i < amount; i++) {
-            groundResource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())));
-            Point currPoint = new Point((int)findSpawnPosition().getX(), (int)findSpawnPosition().getY());
+            Point currPoint = findSpawnPosition();
+            groundResource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())), currPoint);
             groundResourceSpawn.put(currPoint, groundResource);
-            tm.setIsBlocked((int)currPoint.getX(), (int)currPoint.getY());
+            tm.setIsBlocked(groundResource.getCollArea());
         }
     }
 
@@ -127,7 +127,7 @@ public class WorldSpawn {
                 if (groundResourceSpawn.get(i).getHealth() < 1) {
                     gp.playSound(SoundEffect.RESOURCEBREAK);
                     dropItem(groundResourceSpawn.get(i), targetCol, targetRow);
-                    tm.removeIsBlocked((int) i.getX(), (int) i.getY());
+                    tm.removeIsBlocked(groundResourceSpawn.get(i).getCollArea());
                     groundResourceSpawn.remove(i);
                     break;
                 }
@@ -142,7 +142,7 @@ public class WorldSpawn {
                 if (placedFurniture.get(i).getHealth() < 1) {
                     gp.playSound(SoundEffect.RESOURCEBREAK);
                     dropFurniture(placedFurniture.get(i), targetCol, targetRow);
-                    tm.removeIsBlocked((int) i.getX(), (int) i.getY());
+                    tm.removeIsBlocked(placedFurniture.get(i).getCollArea());
                     placedFurniture.remove(i);
                     break;
                 }

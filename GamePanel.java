@@ -1,4 +1,5 @@
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,8 +32,7 @@ public class GamePanel extends JPanel implements ClickListener {
     private final MouseHandler mouseHandler;
     private final InventoryViewManager inventoryViewManager;
     private final ItemCatalog itemCatalog;
-
-    private ArrayList<RenderObjects> ySort = new ArrayList<>();
+    private final ArrayList<RenderObjects> ySort = new ArrayList<>();
 
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
         this.itemCatalog = new ItemCatalog();
@@ -56,14 +56,14 @@ public class GamePanel extends JPanel implements ClickListener {
     }
 
     public void setRenderObjects(){
-        ySort = new ArrayList<>();
+        ySort.clear();
         for (Point i : worldSpawn.getGroundResources().keySet()) {
-            ySort.add(new RenderObjects((int) i.getY(),(int) i.getX(), worldSpawn.getGroundResources().get(i)));
+            ySort.add(new RenderObjects((int) worldSpawn.getGroundResources().get(i).getySort()+(int)i.getY(), i, worldSpawn.getGroundResources().get(i)));
         }
         for (Point i : worldSpawn.getPlacedFurniture().keySet()) {
-            ySort.add(new RenderObjects((int) i.getY(),(int) i.getX(), worldSpawn.getPlacedFurniture().get(i)));
+            ySort.add(new RenderObjects((int) i.getY()+(int)worldSpawn.getPlacedFurniture().get(i).getYsort(), i, worldSpawn.getPlacedFurniture().get(i)));
         }
-        ySort.add(new RenderObjects( (int) player.getY()+player.getPlayerY(), (int) player.getX(), player));
+        ySort.add(new RenderObjects( (int) player.getY()+player.getPlayerY(), null, player));
         ySort.sort(Comparator.comparingInt(r -> r.getY()));
     }
 
@@ -76,11 +76,16 @@ public class GamePanel extends JPanel implements ClickListener {
             if (i.getObject() instanceof Player) {
                 player.draw(g2, camera);
             } else if (i.getObject() instanceof PlacedFurniture currFur){
-                currFur.draw(g2, camera, (int) i.getX(), (int) i.getY());
+                currFur.draw(g2, camera, (int) i.getLocation().getX(), (int) i.getLocation().getY());
+                g2.setColor(Color.red);
+                g2.drawRect((int) currFur.getCollArea().getX() - (int)camera.getTx(), (int) currFur.getCollArea().getY() - (int) camera.getTy(), (int) currFur.getCollArea().getWidth(), (int) currFur.getCollArea().getHeight());
             } else if (i.getObject() instanceof PlacedResource resource){
-                g2.drawImage(resource.getResource().image, (int) i.getX(), (int) i.getY(), null);
+                g2.drawImage(resource.getResource().image, (int) i.getLocation().getX() - (int)camera.getTx(), (int) i.getLocation().getY() - (int) camera.getTy(), null);
+                g2.setColor(Color.red);
+                g2.drawRect((int) resource.getCollArea().getX() - (int)camera.getTx(), (int) resource.getCollArea().getY() - (int) camera.getTy(), (int) resource.getCollArea().getWidth(), (int) resource.getCollArea().getHeight());
             }
         }
+        worldSpawn.draw(g2, camera);
         if (!inventoryViewManager.currentlyDrawing()) {
             hudView.draw(g2);
             playerHealthView.draw(g2, player.getHealth(), player.getStamina());

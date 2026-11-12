@@ -125,6 +125,9 @@ public class Player extends Entity {
     }
 
     public void LeftClick(int mx, int my, int selectedSlot, ArrayList<Rectangle> slots, WorldSpawn ws) {
+        if (attacking || harvesting) {
+            return;
+        }
         selectedItem = inventory.getItem(selectedSlot);
 
         if (selectedItem == null || slots.size() <= selectedSlot || slots.get(selectedSlot).contains(mx, my) || selectedItem.getItemType() == ItemType.CONSUMABLE) {

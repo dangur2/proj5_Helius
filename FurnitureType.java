@@ -1,4 +1,5 @@
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class FurnitureType {
@@ -9,4 +10,6 @@ public class FurnitureType {
     public ItemType requiredTool;
     public boolean collision;
     public FurnitureInteractType type;
+    public int ySortOffset;
+    public Rectangle collArea;
 }

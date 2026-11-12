@@ -1,15 +1,14 @@
 
-
-
+import java.awt.Point;
 
 public class RenderObjects {
     private final int y;
     private final Object object;
-    private final int x;
+    private final Point location;
 
-    public RenderObjects(int y, int x, Object object){
+    public RenderObjects(int y, Point location, Object object){
         this.y = y;
-        this.x = x;
+        this.location = location;
         this.object = object;
     }
 
@@ -19,7 +18,7 @@ public class RenderObjects {
     public Object getObject(){
         return object;
     }
-    public int getX(){
-        return x;
+    public Point getLocation(){
+        return location;
     }
 }
