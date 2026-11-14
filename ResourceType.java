@@ -1,6 +1,7 @@
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class ResourceType {
     public String name;
@@ -9,7 +10,7 @@ public class ResourceType {
     public Item drop;
     public int dropAmount;
     public ItemType requiredTool;
-    public boolean collision;
     public int ySortOffset;
     public Rectangle collArea;
+    public ArrayList<Integer> spawnableTiles = new ArrayList<>();
 }

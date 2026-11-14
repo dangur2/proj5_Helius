@@ -1,9 +1,11 @@
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class WorldSpawn {
@@ -31,8 +33,8 @@ public class WorldSpawn {
         this.furnaceRecipeCatalog = new FurnaceRecipeCatalog(itemCatalog);
         this.player = player;
 
-        generateItemsSpawns(30);
-        generateResourceSpawns(30);
+        generateItemsSpawns(50);
+        generateResourceSpawns(40);
     }
 
     public void tick(double dt) {
@@ -70,10 +72,11 @@ public class WorldSpawn {
         return false;
     }
 
-    private Point findSpawnPosition() {
+    private Point findSpawnPosition(ArrayList<Integer> spawnableTiles) {
         for (int i = 0; i < 100; i++) {
             Point2D spawn = tm.findFreePosition();
-            if (!isOccupied((int) spawn.getX(), (int) spawn.getY())) {
+            Tile selectedTile = tm.getTileNum((int)spawn.getX()/32, (int) spawn.getY()/32);
+            if (!isOccupied((int) spawn.getX(), (int) spawn.getY()) && tm.canResourceSpawn(spawnableTiles, selectedTile)) {
                 return new Point((int) spawn.getX(), (int) spawn.getY());
             }
         }
@@ -104,25 +107,33 @@ public class WorldSpawn {
     }
 
     private void generateResourceSpawns(int amount) {
-        PlacedResource groundResource;
         for (int i = 0; i < amount; i++) {
-            Point currPoint = findSpawnPosition();
-            groundResource = new PlacedResource(resourceCatalog.getResource(r.nextInt(0, resourceCatalog.getSize())), currPoint);
+            ResourceType resource = resourceCatalog.getResource(r.nextInt(0,resourceCatalog.getSize()));
+            Point currPoint = findSpawnPosition(resource.spawnableTiles);
+            PlacedResource groundResource = new PlacedResource(resource, currPoint);
             groundResourceSpawn.put(currPoint, groundResource);
             tm.setIsBlocked(groundResource.getCollArea());
         }
     }
 
     private void generateItemsSpawns(int amount) {
+        ArrayList<Integer> spawnableTiles = new ArrayList<>();
+        spawnableTiles.addAll(List.of(0,4));
         for (int i = 0; i < amount; i++) {
-            PlacedItem item = new PlacedItem(randomSpawnCatalog.getItem(r.nextInt(0, randomSpawnCatalog.getSize())), findSpawnPosition());
-            groundItemsSpawn.add(item);
+            Item item = randomSpawnCatalog.getItem(r.nextInt(0,randomSpawnCatalog.getSize()));
+            Point currPoint = findSpawnPosition(spawnableTiles);
+            PlacedItem itemSpawn = new PlacedItem(item, currPoint);
+            groundItemsSpawn.add(itemSpawn);
         }
     }
 
     public boolean hitResource(int targetCol, int targetRow, ItemType playerTool, int toolDamage) {
+        Rectangle hitTile = new Rectangle(targetCol*gp.tileSize, targetRow*gp.tileSize, gp.tileSize, gp.tileSize);
+        
         for (Point i : groundResourceSpawn.keySet()) {
-            if (groundResourceSpawn.get(i).getResource().requiredTool == playerTool && i.getX() / 32 == targetCol && i.getY() / 32 == targetRow) {
+            System.out.println(hitTile.getBounds());
+            System.out.println(groundResourceSpawn.get(i).getCollArea());
+            if (groundResourceSpawn.get(i).getResource().requiredTool == playerTool && hitTile.intersects(groundResourceSpawn.get(i).getCollArea())) {
                 groundResourceSpawn.get(i).setHealth(-toolDamage);
                 if (groundResourceSpawn.get(i).getHealth() < 1) {
                     gp.playSound(SoundEffect.RESOURCEBREAK);
@@ -135,7 +146,7 @@ public class WorldSpawn {
             }
         }
         for (Point i : placedFurniture.keySet()) {
-            if (placedFurniture.get(i).getFurniture().requiredTool == playerTool && i.getX() / 32 == targetCol && i.getY() / 32 == targetRow) {
+            if (placedFurniture.get(i).getFurniture().requiredTool == playerTool && hitTile.intersects(placedFurniture.get(i).getCollArea()) && placedFurniture.get(i).isEmpty()) {
                 if(placedFurniture.get(i).isEmpty()){
                     placedFurniture.get(i).setHealth(-toolDamage);
                 }

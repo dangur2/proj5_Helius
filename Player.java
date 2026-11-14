@@ -207,7 +207,7 @@ public class Player extends Entity {
     }
 
     private void setStartingValues(Point p) {
-        speed = 150; //150 default
+        speed = 750; //150 default
         x = p.x;
         y = p.y;
         playerCollision = true;

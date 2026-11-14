@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class TileManager {
@@ -85,7 +86,6 @@ public class TileManager {
     }
 
     public Point findFreePosition() {
-        Random random = new Random();
         int worldPadding = 15;
         for (int i = 0; i < 100; i++) {
             int x = random.nextInt(worldPadding, gp.worldCol - worldPadding) * gp.tileSize;
@@ -97,8 +97,8 @@ public class TileManager {
         return null;
     }
 
-    private void generativeMap() {
 
+    private void generativeMap() {
         int spacing = 10;
         int gridCols = (gp.worldCol / spacing) + 2; //dela upp världen i en mindre rutnät: var tioende tile har en random siffra, som "flaggor"
         int gridRows = (gp.worldRow / spacing) + 2;
@@ -154,13 +154,14 @@ public class TileManager {
                         if (random.nextInt(50) == 0) {
                             decorationTileNum[j][i] = 8; //rosepatch
                         }
+                        if (random.nextInt(30) == 0) {
+                            decorationTileNum[j][i] = 9; //leaves
+                        }
+                        if (random.nextInt(30) == 0) {
+                            decorationTileNum[j][i] = 12; //leaves
+                        }
                     }
 
-                }
-                if (mapTileNum[j][i] == 3) {
-                    if (random.nextInt(50) == 0) {
-                        decorationTileNum[j][i] = 9; //kaktus
-                    }
                 }
             }
         }
@@ -212,5 +213,14 @@ public class TileManager {
             }
 
         }
+    }
+
+    public boolean canResourceSpawn(ArrayList<Integer> spawnableTiles, Tile selectedTile) {
+        for(int i : spawnableTiles){
+            if (tc.getTile(i) == selectedTile) {
+                return true;
+            }
+        }
+        return false;
     }
 }

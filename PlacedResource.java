@@ -10,7 +10,7 @@ public class PlacedResource {
     private int currentHealth;
     private final int dropAmount;
     private final int ySort;
-    private Rectangle collArea;
+    private final Rectangle collArea;
 
     public PlacedResource(ResourceType resource, Point location) {
         this.resource = resource;
@@ -19,7 +19,9 @@ public class PlacedResource {
         this.collArea = new Rectangle((int) resource.collArea.getX()+(int)location.getX(), (int)resource.collArea.getY()+(int)location.getY(),(int)resource.collArea.getWidth(),(int)resource.collArea.getHeight());
         this.ySort = resource.ySortOffset;
     }
-
+    public int getSpriteX(){
+        return (int) (collArea.getX() + collArea.getWidth()/2 - resource.image.getWidth() / 2);
+    }
     public ResourceType getResource(){
         return resource;
     }
@@ -39,9 +41,6 @@ public class PlacedResource {
 
     public Rectangle getCollArea() {
         return collArea;
-    }
-    public void removeCollare(){
-        this.collArea = null;
     }
 }
 

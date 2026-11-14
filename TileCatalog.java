@@ -88,12 +88,12 @@ public class TileCatalog {
             tile[8].name = "rosepatch";
 
             tile[9] = new Tile();
-            tile[9].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/cactus_flower.png"));
+            tile[9].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/leaves_decal.png"));
             tile[9].collision = false;
-            tile[9].requiredTool = ItemType.SWORD;
-            tile[9].setTile = 3;
+            tile[9].requiredTool = ItemType.HOE;
+            tile[9].setTile = 4;
             tile[9].health = 0;
-            tile[9].name = "cactus";
+            tile[9].name = "leaves";
 
             tile[10] = new Tile();
             tile[10].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/daisy_flower.png"));
@@ -110,6 +110,14 @@ public class TileCatalog {
             tile[11].setTile = 4;
             tile[11].health = 0;
             tile[11].name = "daisypatch";
+
+            tile[12] = new Tile();
+            tile[12].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/leaves_decal2.png"));
+            tile[12].collision = false;
+            tile[12].requiredTool = ItemType.HOE;
+            tile[12].setTile = 4;
+            tile[12].health = 0;
+            tile[12].name = "leaves";
         } catch (IOException e) {
         }
     }
