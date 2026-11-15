@@ -65,7 +65,7 @@ public class ResourceCatalog {
             resource[4] = new ResourceType();
             resource[4].name = "tree grown";
             resource[4].drop = new Item(itemCatalog.getItem(8));
-            resource[4].dropAmount = r.nextInt(2,6);
+            resource[4].dropAmount = r.nextInt(4,8);
             resource[4].health = 15;
             resource[4].image = ImageIO.read(getClass().getResourceAsStream("/assets/GroundResource/grownTree_resource.png"));
             resource[4].requiredTool = ItemType.AXE;
@@ -81,7 +81,7 @@ public class ResourceCatalog {
             resource[5].image = ImageIO.read(getClass().getResourceAsStream("/assets/GroundResource/cactus_flower.png"));
             resource[5].requiredTool = null;
             resource[5].ySortOffset = 29;
-            resource[5].collArea = new Rectangle(12,27,8,3);
+            resource[5].collArea = new Rectangle(12,30,8,6);
             resource[5].spawnableTiles.addAll(List.of(3));
 
         } catch (Exception e) {

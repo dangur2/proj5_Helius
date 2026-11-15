@@ -131,8 +131,6 @@ public class WorldSpawn {
         Rectangle hitTile = new Rectangle(targetCol*gp.tileSize, targetRow*gp.tileSize, gp.tileSize, gp.tileSize);
         
         for (Point i : groundResourceSpawn.keySet()) {
-            System.out.println(hitTile.getBounds());
-            System.out.println(groundResourceSpawn.get(i).getCollArea());
             if (groundResourceSpawn.get(i).getResource().requiredTool == playerTool && hitTile.intersects(groundResourceSpawn.get(i).getCollArea())) {
                 groundResourceSpawn.get(i).setHealth(-toolDamage);
                 if (groundResourceSpawn.get(i).getHealth() < 1) {

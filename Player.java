@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Player extends Entity {
-
-    private int animationCounter;
     private final Inventory inventory;
     private int currHealth, currStamina;
     private final int maxHealth = 100, maxStamina = 100;
@@ -25,6 +23,7 @@ public class Player extends Entity {
     private double attImageRot;
     private final TileManager tm;
     private Item selectedItem;
+    private Point handPoint, toolPoint;
 
     public Player(TileManager tm, GamePanel gp) {
         this.gp = gp;
@@ -101,10 +100,7 @@ public class Player extends Entity {
         }
         if (Math.abs(mdx) > Math.abs(mdy)) {
             attDir = mdx > 0 ? attackDirection.RIGHT : attackDirection.LEFT;
-        } else {
-            attDir = mdy > 0 ? attackDirection.DOWN : attackDirection.UP;
         }
-
         targetCol = pCol + dCol; //col eller row som spelaren kan interagera med tools. alltså spelaren +/- 1 tile.
         targetRow = pRow + dRow;
 
@@ -155,6 +151,7 @@ public class Player extends Entity {
                         gp.playSound(SoundEffect.SHOVEL);
                     }
                 }
+                harvesting = true;
             }
             case AXE, PICKAXE -> {
                 if (currStamina > 0) {
@@ -165,6 +162,7 @@ public class Player extends Entity {
                     if (selectedItem.getItemType() == ItemType.PICKAXE) {
                         gp.playSound(SoundEffect.PICKAXE);
                     }
+                    harvesting = true;
                 }
 
             }
@@ -180,13 +178,11 @@ public class Player extends Entity {
                 }
             }
         }
-
         if (hit) {
             if (currStamina > 0) {
                 spendStamina(1);
             }
         }
-        harvesting = true;
     }
 
     public void RightClick(int mouseX, int mouseY, WorldSpawn worldSpawn, ArrayList<Rectangle> slots) {
@@ -207,7 +203,7 @@ public class Player extends Entity {
     }
 
     private void setStartingValues(Point p) {
-        speed = 750; //150 default
+        speed = 150; //150 default
         x = p.x;
         y = p.y;
         playerCollision = true;
@@ -217,23 +213,34 @@ public class Player extends Entity {
     private void setPlayerImage() {
         //förladda sprites när man gör gubben
         try {
-            up1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_up_walk1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_up_walk2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_down_walk1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_down_walk2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_left_walk1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_left_walk2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_right_walk1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_right_walk2.png"));
-            idle1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_idle1.png"));
-            idle2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_idle2.png"));
-            lost1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_lose1.png"));
-            lost2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_lose2.png"));
-            attDown = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_down.png"));
-            attLeft = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_left.png"));
-            attRight = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_right.png"));
-            attUp = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_up.png"));
-            attUp = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/character_attack_up.png"));
+            up1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_backWalk1.png"));
+            up2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_backWalk2.png"));
+            up3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_backWalk3.png"));
+            up4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_backWalk4.png"));
+            down1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_frontWalk1.png"));
+            down2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_frontWalk2.png"));
+            down3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_frontWalk3.png"));
+            down4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_frontWalk4.png"));
+            left1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftWalk1.png"));
+            left2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftWalk2.png"));
+            left3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftWalk3.png"));
+            left4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftWalk4.png"));
+            right1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightWalk1.png"));
+            right2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightWalk2.png"));
+            right3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightWalk3.png"));
+            right4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightWalk4.png"));
+            idle1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_idle1.png"));
+            idle2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_idle2.png"));
+            idle3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_idle3.png"));
+            idle4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_idle4.png"));
+            attRight1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightTool1.png"));
+            attRight2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightTool2.png"));
+            attRight3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightTool3.png"));
+            attRight4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_rightTool4.png"));
+            attLeft1 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftTool1.png"));
+            attLeft2 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftTool2.png"));
+            attLeft3 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftTool3.png"));
+            attLeft4 = ImageIO.read(getClass().getResourceAsStream("/assets/Animation/char_leftTool4.png"));
             tileHighLight = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/highlight_tile.png"));
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("no find sprite amigo", e);
@@ -241,30 +248,34 @@ public class Player extends Entity {
     }
 
     public void updateAttack() {
+        if (attDir == null) {
+            return;
+        }
         if (attacking || harvesting) {
-            animationCounter++;
+            attNum++;
+            toolPoint = new Point(16,28);
             switch (attDir) {
-                case UP -> {
-                    attArea = new Rectangle((int) x + 17, (int) y - 2, 10, 20);
-                    attImageRot = Math.toRadians(0);
-                }
-                case DOWN -> {
-                    attArea = new Rectangle((int) x + 17, (int) y + 25, 10, 20);
-                    attImageRot = Math.toRadians(180);
-                }
                 case RIGHT -> {
+                    switch (attNum) {
+                        case 5 -> {handPoint = new Point(20,15); attImageRot = Math.toRadians(30);}
+                        case 10 -> {handPoint = new Point(22,17); attImageRot = Math.toRadians(60);}
+                        case 15 -> {handPoint = new Point(22,20); attImageRot = Math.toRadians(90);}
+                    }
                     attArea = new Rectangle((int) x + 23, (int) y + 19, 20, 10);
-                    attImageRot = Math.toRadians(90);
                 }
                 case LEFT -> {
+                    switch (attNum) {
+                        case 5 -> {handPoint = new Point(11,15); attImageRot = Math.toRadians(330);}
+                        case 10 -> {handPoint = new Point(9,17); attImageRot = Math.toRadians(300);}
+                        case 15 -> {handPoint = new Point(9,20); attImageRot = Math.toRadians(270);}
+                    }
                     attArea = new Rectangle((int) x - 12, (int) y + 19, 20, 10);
-                    attImageRot = Math.toRadians(270);
                 }
             }
-            if (animationCounter > 15) {
+            if (attNum > 20) {
                 attacking = false;
                 harvesting = false;
-                animationCounter = 0;
+                attNum = 1;
             }
         }
     }
@@ -272,7 +283,7 @@ public class Player extends Entity {
     public void move(double dt, double dx, double dy, int worldSizeX, int worldsizeY, TileManager tm) {
         length = Math.sqrt(dx * dx + dy * dy); //1,0 = 1, 0,0 = 0, 1,1 = 1,4
 
-        if (length == 0) {
+        if (length == 0 || (attacking || harvesting)) {
             direction = Direction.IDLE;
             updateWalkingSprite();
             return; //Om jag inte rör mig, ingen mening att fortsätta
@@ -316,86 +327,120 @@ public class Player extends Entity {
         spriteCounter++;
 
         //hastigheten av hur snabbt den byter sprite vid gång
-        if (spriteCounter > 15) {
-            if (spriteNum == 1) {
-                if (length > 0) {
-                    gp.playSound(SoundEffect.STEP);
+        if (spriteCounter > 10) {
+            switch (walkNum) {
+                case 1 -> {
+                    if (length > 0) {
+                        gp.playSound(SoundEffect.STEP);
+                    }
+                    walkNum = 2;
                 }
-                spriteNum = 2;
-            } else if (spriteNum == 2) {
-                spriteNum = 1;
+                case 2 ->
+                    walkNum = 3;
+                case 3 -> {
+                    if (length > 0) {
+                        gp.playSound(SoundEffect.STEP);
+                    }
+                    walkNum = 4;
+                }
+                case 4 ->
+                    walkNum = 1;
             }
             spriteCounter = 0;
         }
-
     }
 
     public void draw(Graphics2D g2, Camera camera) {
         BufferedImage image = null;
 
         if (attacking || harvesting) {
+            if (attDir == null) {
+                return;
+            }
             switch (attDir) {
-                case attackDirection.DOWN -> {
-                    image = attDown;
-                }
-                case attackDirection.UP -> {
-                    image = attUp;
-                }
                 case attackDirection.LEFT -> {
-                    image = attLeft;
+                    if (attNum > 5) {
+                        image = attLeft2;
+                    }
+                    else if (attNum > 10) {
+                        image = attLeft3;
+                    }
+                    else  {
+                        image = attLeft4;
+                    }
                 }
                 case attackDirection.RIGHT -> {
-                    image = attRight;
+                    if (attNum > 5) {
+                        image = attRight2;
+                    }
+                    else if (attNum > 10) {
+                        image = attRight3;
+                    }
+                    else {
+                        image = attRight4;
+                    }
                 }
             }
         } else {
             switch (direction) {
                 case Direction.UP -> {
-                    if (spriteNum == 1) {
-                        image = up1;
-                    }
-                    if (spriteNum == 2) {
-                        image = up2;
+                    switch (walkNum) {
+                        case 1 ->
+                            image = up1;
+                        case 2 ->
+                            image = up2;
+                        case 3 ->
+                            image = up3;
+                        case 4 ->
+                            image = up4;
                     }
                 }
                 case Direction.DOWN -> {
-                    if (spriteNum == 1) {
-                        image = down1;
-                    }
-                    if (spriteNum == 2) {
-                        image = down2;
+                    switch (walkNum) {
+                        case 1 ->
+                            image = down1;
+                        case 2 ->
+                            image = down2;
+                        case 3 ->
+                            image = down3;
+                        case 4 ->
+                            image = down4;
                     }
                 }
                 case Direction.RIGHT -> {
-                    if (spriteNum == 1) {
-                        image = right1;
-                    }
-                    if (spriteNum == 2) {
-                        image = right2;
+                    switch (walkNum) {
+                        case 1 ->
+                            image = right1;
+                        case 2 ->
+                            image = right2;
+                        case 3 ->
+                            image = right3;
+                        case 4 ->
+                            image = right4;
                     }
                 }
                 case Direction.LEFT -> {
-                    if (spriteNum == 1) {
-                        image = left1;
-                    }
-                    if (spriteNum == 2) {
-                        image = left2;
+                    switch (walkNum) {
+                        case 1 ->
+                            image = left1;
+                        case 2 ->
+                            image = left2;
+                        case 3 ->
+                            image = left3;
+                        case 4 ->
+                            image = left4;
                     }
                 }
                 case Direction.IDLE -> {
-                    if (spriteNum == 1) {
-                        image = idle1;
-                    }
-                    if (spriteNum == 2) {
-                        image = idle2;
-                    }
-                }
-                case Direction.LOST -> {
-                    if (spriteNum == 1) {
-                        image = lost1;
-                    }
-                    if (spriteNum == 2) {
-                        image = lost2;
+                    switch (walkNum) {
+                        case 1 ->
+                            image = idle1;
+                        case 2 ->
+                            image = idle2;
+                        case 3 ->
+                            image = idle3;
+                        case 4 ->
+                            image = idle4;
                     }
                 }
             }
@@ -407,11 +452,19 @@ public class Player extends Entity {
         g2.drawImage(image, playerX, playerY, playerSizeX, playerSizeY, null);
 
         if (attacking || harvesting) {
-            int pivotX = (int) attArea.x - (int) camera.getTx() + attArea.width / 2; //attArea mittpunkt i x
-            int pivotY = (int) attArea.y - (int) camera.getTy() + attArea.height / 2; //attArea mittpunkt i y
+            if (handPoint == null) {
+                return;
+            }
+            int pivotX = (int) playerX + handPoint.x; 
+            int pivotY = (int) playerY + handPoint.y;
             AffineTransform oldTrans = g2.getTransform();
             g2.rotate(attImageRot, pivotX, pivotY);
-            g2.drawImage(attImage, pivotX - attImage.getWidth(gp) / 2, pivotY - attImage.getHeight(gp) / 2, null);
+            if (attDir == attackDirection.LEFT) {
+                g2.drawImage(attImage, (int) playerX + 26, (int) playerY-9, -32,32,null);
+            }
+            else{
+                g2.drawImage(attImage, (int) pivotX - toolPoint.x, (int) pivotY - toolPoint.y,null);
+            }
             g2.setTransform(oldTrans);
         }
         if (previewToolHit) {

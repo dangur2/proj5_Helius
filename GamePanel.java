@@ -1,5 +1,4 @@
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -72,20 +71,20 @@ public class GamePanel extends JPanel implements ClickListener {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         tileManager.draw(g2, camera);
+        worldSpawn.draw(g2, camera);
         ySort.forEach(i -> {
             if (i.getObject() instanceof Player) {
                 player.draw(g2, camera);
             } else if (i.getObject() instanceof PlacedFurniture currFur){
                 currFur.draw(g2, camera, (int) i.getLocation().getX(), (int) i.getLocation().getY());
-                g2.setColor(Color.blue);
-                g2.drawRect((int) currFur.getCollArea().getX() - (int)camera.getTx(), (int) currFur.getCollArea().getY() - (int) camera.getTy(), (int) currFur.getCollArea().getWidth(), (int) currFur.getCollArea().getHeight());
+                // g2.setColor(Color.blue);
+                // g2.drawRect((int) currFur.getCollArea().getX() - (int)camera.getTx(), (int) currFur.getCollArea().getY() - (int) camera.getTy(), (int) currFur.getCollArea().getWidth(), (int) currFur.getCollArea().getHeight());
             } else if (i.getObject() instanceof PlacedResource resource){
                 g2.drawImage(resource.getResource().image, (int) resource.getSpriteX() - (int)camera.getTx(), (int) i.getLocation().getY() - (int) camera.getTy(), null);
-                g2.setColor(Color.blue);
-                g2.drawRect((int) resource.getCollArea().getX() - (int)camera.getTx(), (int) resource.getCollArea().getY() - (int) camera.getTy(), (int) resource.getCollArea().getWidth(), (int) resource.getCollArea().getHeight());
+                // g2.setColor(Color.blue);
+                // g2.drawRect((int) resource.getCollArea().getX() - (int)camera.getTx(), (int) resource.getCollArea().getY() - (int) camera.getTy(), (int) resource.getCollArea().getWidth(), (int) resource.getCollArea().getHeight());
             }
         });
-        worldSpawn.draw(g2, camera);
         if (!inventoryViewManager.currentlyDrawing()) {
             hudView.draw(g2);
             playerHealthView.draw(g2, player.getHealth(), player.getStamina());
