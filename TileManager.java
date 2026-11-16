@@ -71,6 +71,7 @@ public class TileManager {
     public void setTile(int x, int y, int toTile) {
         if (x <= gp.worldCol && x > 0 || y > 0 && y <= gp.worldRow) {
             mapTileNum[x][y] = toTile;
+            decorationTileNum[x][y] = 0;
         }
     }
 

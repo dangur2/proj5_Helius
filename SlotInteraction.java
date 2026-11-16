@@ -33,9 +33,10 @@ public class SlotInteraction {
                 selectedSlot = i;
                 if (!holdingItem) { //plockar upp en item
                     prevSlot = selectedSlot;
-                    if (getItem(selectedSlot) != null) {
-                        selectedItem = getItem(selectedSlot);
+                    if (getItem(selectedSlot) == null) {
+                        return;
                     }
+                    selectedItem = getItem(selectedSlot);
                     removeItem(prevSlot);
                     holdingItem = true;
                     break;

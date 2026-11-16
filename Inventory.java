@@ -10,11 +10,11 @@ public class Inventory {
     }
 
     private void generateStarterItems() {
-        addItem(new Item("Sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png", "/assets/Sprites/held_sword.png", 1, 0, 5));
-        addItem(new Item("Pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png", "/assets/Sprites/held_pickaxe.png", 1, 0, 1));
-        addItem(new Item("Axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png", "/assets/Sprites/held_axe.png", 1, 0, 1));
-        addItem(new Item("Hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 1));
-        addItem(new Item("Shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_shovel.png", "/assets/Sprites/held_shovel.png", 1, 0, 1));
+        addItem(new Item("Stone sword", ItemType.SWORD, "/assets/Sprites/hotbar_stoneSword.png", "/assets/Sprites/held_stoneSword.png", 1, 0, 2));
+        addItem(new Item("Stone pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_stonePickaxe.png", "/assets/Sprites/held_stonePickaxe.png", 1, 0, 1));
+        addItem(new Item("Stone axe", ItemType.AXE, "/assets/Sprites/hotbar_stoneAxe.png", "/assets/Sprites/held_stoneAxe.png", 1, 0, 1));
+        addItem(new Item("Stone hoe", ItemType.HOE, "/assets/Sprites/hotbar_stoneHoe.png", "/assets/Sprites/held_stoneHoe.png", 1, 0, 1));
+        addItem(new Item("Stone shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_stoneShovel.png", "/assets/Sprites/held_stoneShovel.png", 1, 0, 1));
         addItem(new Item("Log", ItemType.MATERIAL, "/assets/Resource/log.png", "/assets/Resource/log_floor.png", 4, 0, 0));
         addItem(new Item("Rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock_floor.png", 8, 0, 0));
         addItem(new Item("Copper nugget", ItemType.MATERIAL, "/assets/Resource/copperOre.png", "/assets/Resource/copperOre_floor.png", 4, 0, 0));

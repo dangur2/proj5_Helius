@@ -4,7 +4,7 @@ public class ItemCatalog {
     private final Item[] item;
 
     public ItemCatalog() {
-        item = new Item[18];
+        item = new Item[23];
         loadItems();
     }
 
@@ -20,14 +20,19 @@ public class ItemCatalog {
             item[7] = new Item("Rock", ItemType.MATERIAL, "/assets/Resource/rock.png", "/assets/Resource/rock_floor.png", 1, 0, 0);
             item[8] = new Item("Log", ItemType.MATERIAL, "/assets/Resource/log.png", "/assets/Resource/log_floor.png", 1, 0, 0);
             item[9] = new Item("Copper nugget", ItemType.MATERIAL, "/assets/Resource/copperOre.png", "/assets/Resource/copperOre_floor.png", 1, 0, 0);
-            item[10] = new Item("Sword", ItemType.SWORD, "/assets/Sprites/hotbar_sword.png", "/assets/Sprites/held_sword.png", 1, 0, 5);
-            item[11] = new Item("Pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_pickaxe.png", "/assets/Sprites/held_pickaxe.png", 1, 0, 1);
-            item[12] = new Item("Axe", ItemType.AXE, "/assets/Sprites/hotbar_axe.png", "/assets/Sprites/held_axe.png", 1, 0, 1);
-            item[13] = new Item("Hoe", ItemType.HOE, "/assets/Sprites/hotbar_hoe.png", "/assets/Sprites/held_hoe.png", 1, 0, 1);
-            item[14] = new Item("Shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_shovel.png", "/assets/Sprites/held_shovel.png", 1, 0, 1);
+            item[10] = new Item("Stone sword", ItemType.SWORD, "/assets/Sprites/hotbar_stoneSword.png", "/assets/Sprites/held_stoneSword.png", 1, 0, 2);
+            item[11] = new Item("Stone pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_stonePickaxe.png", "/assets/Sprites/held_stonePickaxe.png", 1, 0, 1);
+            item[12] = new Item("Stone axe", ItemType.AXE, "/assets/Sprites/hotbar_stoneAxe.png", "/assets/Sprites/held_stoneAxe.png", 1, 0, 1);
+            item[13] = new Item("Stone hoe", ItemType.HOE, "/assets/Sprites/hotbar_stoneHoe.png", "/assets/Sprites/held_stoneHoe.png", 1, 0, 1);
+            item[14] = new Item("Stone shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_stoneShovel.png", "/assets/Sprites/held_stoneShovel.png", 1, 0, 1);
             item[15] = new Item("Furnace", ItemType.FURNITURE, "/assets/CraftingSprites/furnace.png", "/assets/CraftingSprites/furnace.png", 1, 0, 1);
             item[16] = new Item("Chest", ItemType.FURNITURE, "/assets/CraftingSprites/chest.png", "/assets/CraftingSprites/chest.png", 1, 0, 1);
             item[17] = new Item("Copper bar", ItemType.MATERIAL, "/assets/Resource/copperBar.png", "/assets/Resource/copperBar.png", 1, 0, 0);
+            item[18] = new Item("Copper sword", ItemType.SWORD, "/assets/Sprites/hotbar_copperSword.png", "/assets/Sprites/held_copperSword.png", 1, 0, 4);
+            item[19] = new Item("Copper pickaxe", ItemType.PICKAXE, "/assets/Sprites/hotbar_copperPickaxe.png", "/assets/Sprites/held_copperPickaxe.png", 1, 0, 2);
+            item[20] = new Item("Copper axe", ItemType.AXE, "/assets/Sprites/hotbar_copperAxe.png", "/assets/Sprites/held_copperAxe.png", 1, 0, 2);
+            item[21] = new Item("Copper hoe", ItemType.HOE, "/assets/Sprites/hotbar_copperHoe.png", "/assets/Sprites/held_copperHoe.png", 1, 0, 2);
+            item[22] = new Item("Copper shovel", ItemType.SHOVEL, "/assets/Sprites/hotbar_copperShovel.png", "/assets/Sprites/held_copperShovel.png", 1, 0, 2);
         } catch (Exception e) {
         }
     }
