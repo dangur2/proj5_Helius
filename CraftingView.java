@@ -15,11 +15,9 @@ public class CraftingView {
     private boolean displayHover;
     private Item selectedItem;
     private final InventoryViewManager inventoryViewManager;
-    private final SlotInteraction slotInteraction;
     private final SlotInteractionView slotInteractionView;
 
     public CraftingView(Inventory inventory, ItemCatalog itemCatalog, InventoryViewManager inventoryViewManager, SlotInteraction slotInteraction, SlotInteractionView slotInteractionView) {
-        this.slotInteraction = slotInteraction;
         this.slotInteractionView = slotInteractionView;
         this.inventory = inventory;
         this.recipeCatalog = new RecipeCatalog(itemCatalog);
@@ -94,6 +92,7 @@ public class CraftingView {
             }
         }
         slotInteractionView.drawHoverItem(g2, selectedItem, hoverX, hoverY);
-        slotInteractionView.drawCraftingHover(g2, hasAllItemRequirment(hoverSlot), craftingButtons, displayHover, hoverX, hoverY, hoverSlot, hoverDisplayX, hoverDisplayY, recipeCatalog.getRecipe(hoverSlot), highlight);
+        slotInteractionView.drawCraftingHover(g2, craftingButtons, displayHover, hoverX, hoverY, hoverSlot, hoverDisplayX, hoverDisplayY, recipeCatalog.getRecipe(hoverSlot), highlight);
+        
     }
 }

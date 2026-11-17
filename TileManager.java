@@ -15,7 +15,7 @@ public class TileManager {
     private final int mapTileNum[][];
     private final int decorationTileNum[][];
     private final TileCatalog tc = new TileCatalog();
-    private final Random random = new Random();
+    private final Random random = new Random(123);
     private boolean isBlocked[][];
 
     public TileManager(GamePanel gp, MapType mapType) {
@@ -33,6 +33,7 @@ public class TileManager {
             case MAP ->
                 loadMap();
         }
+        smoothMap();
 
     }
 
@@ -98,7 +99,6 @@ public class TileManager {
         return null;
     }
 
-
     private void generativeMap() {
         int spacing = 10;
         int gridCols = (gp.worldCol / spacing) + 2; //dela upp världen i en mindre rutnät: var tioende tile har en random siffra, som "flaggor"
@@ -128,12 +128,51 @@ public class TileManager {
                     mapTileNum[j][i] = 1; //vatten
                 } else if (value < 0.40) {
                     mapTileNum[j][i] = 3;//sand
+                } else if (value < 0.50) {
+                    mapTileNum[j][i] = 18;//gräs2
+                } else if (value < 0.60) {
+                    mapTileNum[j][i] = 17;//gräs3
+                } else if (value < 0.70) {
+                    mapTileNum[j][i] = 16;//gräs4
                 } else if (value < 0.85) {
                     mapTileNum[j][i] = 0;//gräs
                 } else {
                     mapTileNum[j][i] = 4;//jord
                 }
+            }
+        }
+    }
 
+    private void smoothMap() {
+        int[][] tilesToSwap = new int[gp.worldCol][gp.worldRow];
+        for (int i = 0; i < gp.worldRow; i++) {
+            for (int j = 0; j < gp.worldCol; j++) {
+                int currTile = mapTileNum[j][i];
+                if (currTile == 1) {
+                    continue;
+                }
+                int[] borders = {
+                    mapTileNum[j - 1][i - 1], //nw
+                    mapTileNum[j + 1][i - 1], //se
+                    mapTileNum[j - 1][i + 1], //sw
+                    mapTileNum[j + 1][i + 1], //ne
+                    mapTileNum[j + 1][i], //e
+                    mapTileNum[j - 1][i], //w
+                    mapTileNum[j][i + 1], //n
+                    mapTileNum[j][i - 1], //s
+                };
+
+                for (int x : borders) {
+                    if (borders[5] != 3 && borders[6] != 3) {
+                        // tilesToSwap[j][i] == setTile west north waterborder
+                    }
+                }
+
+            }
+            for (int z = 0; z < gp.worldRow; z++) {
+                for (int y = 0; z < gp.worldCol; y++) {
+                    setTile(y, z, tilesToSwap[y][z]);
+                }
             }
         }
     }
@@ -141,10 +180,25 @@ public class TileManager {
     private void generateFlora() {
         for (int i = 0; i < gp.worldRow; i++) {
             for (int j = 0; j < gp.worldCol; j++) {
-                if (mapTileNum[j][i] == 0 && !IsBlocked(j, i)) {
+                if ((mapTileNum[j][i] == 0 || mapTileNum[j][i] == 16 || mapTileNum[j][i] == 17 || mapTileNum[j][i] == 18) && !IsBlocked(j, i)) {
                     if (random.nextInt(15) == 0) {
-                        if (random.nextInt(20) == 0) {
+                        if (random.nextInt(25) == 0) {
                             decorationTileNum[j][i] = 10; //poppy
+                        }
+                        if (random.nextInt(5) == 0) {
+                            decorationTileNum[j][i] = 13; //grass1
+                        }
+                        if (random.nextInt(10) == 0) {
+                            decorationTileNum[j][i] = 14; //grass2
+                        }
+                        if (random.nextInt(8) == 0) {
+                            decorationTileNum[j][i] = 15; //grass3
+                        }
+                        if (random.nextInt(12) == 0) {
+                            decorationTileNum[j][i] = 19; //grass3
+                        }
+                        if (random.nextInt(15) == 0) {
+                            decorationTileNum[j][i] = 20; //grass3
                         }
                         if (random.nextInt(50) == 0) {
                             decorationTileNum[j][i] = 11; //poppypatch
@@ -217,7 +271,7 @@ public class TileManager {
     }
 
     public boolean canResourceSpawn(ArrayList<Integer> spawnableTiles, Tile selectedTile) {
-        for(int i : spawnableTiles){
+        for (int i : spawnableTiles) {
             if (tc.getTile(i) == selectedTile) {
                 return true;
             }

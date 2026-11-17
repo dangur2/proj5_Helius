@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements ClickListener {
     private final MouseHandler mouseHandler;
     private final InventoryViewManager inventoryViewManager;
     private final ItemCatalog itemCatalog;
-    private final ArrayList<RenderObjects> ySort = new ArrayList<>();
+    private volatile ArrayList<RenderObjects> ySort = new ArrayList<>();
 
     public GamePanel(MapType mapType, MouseHandler mh, GameEngine ge) {
         this.itemCatalog = new ItemCatalog();
@@ -55,15 +55,16 @@ public class GamePanel extends JPanel implements ClickListener {
     }
 
     public void setRenderObjects(){
-        ySort.clear();
+        ArrayList<RenderObjects> newySort = new ArrayList<>();
         for (Point i : worldSpawn.getGroundResources().keySet()) {
-            ySort.add(new RenderObjects((int) worldSpawn.getGroundResources().get(i).getySort()+(int)i.getY(), i, worldSpawn.getGroundResources().get(i)));
+            newySort.add(new RenderObjects((int) worldSpawn.getGroundResources().get(i).getySort()+(int)i.getY(), i, worldSpawn.getGroundResources().get(i)));
         }
         for (Point i : worldSpawn.getPlacedFurniture().keySet()) {
-            ySort.add(new RenderObjects((int) i.getY()+(int)worldSpawn.getPlacedFurniture().get(i).getYsort(), i, worldSpawn.getPlacedFurniture().get(i)));
+            newySort.add(new RenderObjects((int) i.getY()+(int)worldSpawn.getPlacedFurniture().get(i).getYsort(), i, worldSpawn.getPlacedFurniture().get(i)));
         }
-        ySort.add(new RenderObjects( (int) player.getY()+player.getPlayerY(), null, player));
-        ySort.sort(Comparator.comparingInt(r -> r.getY()));
+        newySort.add(new RenderObjects((int) player.getY()+player.getPlayerY(), null, player));
+        newySort.sort(Comparator.comparingInt(r -> r.getY()));
+        ySort = newySort;
     }
 
     @Override

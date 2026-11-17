@@ -85,7 +85,7 @@ public class SlotInteractionView {
             g2.drawString(itemDescription, hoverX - 39 + hoverDisplayX / 2, hoverY + 5 - hoverDisplayY);
         }
     }
-    public void drawCraftingHover(Graphics2D g2, boolean hasItemRequirement, ArrayList<Rectangle> list, boolean displayHover, int hoverX, int hoverY, int hoverSlot, int hoverDisplayX, int hoverDisplayY, ItemRecipe item, BufferedImage highlight){
+    public void drawCraftingHover(Graphics2D g2, ArrayList<Rectangle> list, boolean displayHover, int hoverX, int hoverY, int hoverSlot, int hoverDisplayX, int hoverDisplayY, ItemRecipe item, BufferedImage highlight){
         if (displayHover) {
             if (item == null) {
                 return;
@@ -122,7 +122,8 @@ public class SlotInteractionView {
                 g2.setColor(Color.black);
                 g2.drawString(item.itemRequirement.get(i).getItem().getItemName(), hoverX + hoverDisplayX / 2, (hoverY + 92 - hoverDisplayY) + (15 * i));
                 g2.setColor(Color.white);
-                if (!hasItemRequirement) {
+
+                if (!inventory.contains(item.itemRequirement.get(i).getItem(), item.itemRequirement.get(i).getQuantity())) {
                     g2.setColor(Color.red);
                 }
                 g2.drawString(item.itemRequirement.get(i).getItem().getItemName(), hoverX + 1 + hoverDisplayX / 2, (hoverY + 92 - hoverDisplayY) + (15 * i));
