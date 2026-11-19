@@ -5,7 +5,7 @@ public class TileCatalog {
     Tile[] tile;
 
     public TileCatalog(){
-        tile = new Tile[22];
+        tile = new Tile[33];
         setTiles();
     
     }
@@ -184,12 +184,100 @@ public class TileCatalog {
             tile[20].name = "grasspatch5";
 
             tile[21] = new Tile();
-            tile[21].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/water_tile1.png"));
+            tile[21].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileE.png"));
             tile[21].collision = true;
             tile[21].requiredTool = null;
             tile[21].setTile = 1;
             tile[21].health = 0;
-            tile[21].name = "wateredge";
+            tile[21].name = "water";
+
+            tile[22] = new Tile();
+            tile[22].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileW.png"));
+            tile[22].collision = true;
+            tile[22].requiredTool = null;
+            tile[22].setTile = 1;
+            tile[22].health = 0;
+            tile[22].name = "water";
+
+            tile[23] = new Tile();
+            tile[23].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileS.png"));
+            tile[23].collision = true;
+            tile[23].requiredTool = null;
+            tile[23].setTile = 1;
+            tile[23].health = 0;
+            tile[23].name = "water";
+
+            tile[24] = new Tile();
+            tile[24].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileN.png"));
+            tile[24].collision = true;
+            tile[24].requiredTool = null;
+            tile[24].setTile = 1;
+            tile[24].health = 0;
+            tile[24].name = "water";
+
+            tile[25] = new Tile();
+            tile[25].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileNE.png"));
+            tile[25].collision = true;
+            tile[25].requiredTool = null;
+            tile[25].setTile = 1;
+            tile[25].health = 0;
+            tile[25].name = "water";
+
+            tile[26] = new Tile();
+            tile[26].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileNW.png"));
+            tile[26].collision = true;
+            tile[26].requiredTool = null;
+            tile[26].setTile = 1;
+            tile[26].health = 0;
+            tile[26].name = "water";
+
+            tile[27] = new Tile();
+            tile[27].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileSE.png"));
+            tile[27].collision = true;
+            tile[27].requiredTool = null;
+            tile[27].setTile = 1;
+            tile[27].health = 0;
+            tile[27].name = "water";
+
+            tile[28] = new Tile();
+            tile[28].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileSW.png"));
+            tile[28].collision = true;
+            tile[28].requiredTool = null;
+            tile[28].setTile = 1;
+            tile[28].health = 0;
+            tile[28].name = "water";
+
+            tile[29] = new Tile();
+            tile[29].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/water_tile2.png"));
+            tile[29].collision = true;
+            tile[29].requiredTool = null;
+            tile[29].setTile = 1;
+            tile[29].health = 0;
+            tile[29].name = "water";
+
+            tile[30] = new Tile();
+            tile[30].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/shell_decal1.png"));
+            tile[30].collision = true;
+            tile[30].requiredTool = null;
+            tile[30].setTile = 3;
+            tile[30].health = 0;
+            tile[30].name = "water";
+
+            tile[31] = new Tile();
+            tile[31].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/shell_decal2.png"));
+            tile[31].collision = true;
+            tile[31].requiredTool = null;
+            tile[31].setTile = 3;
+            tile[31].health = 0;
+            tile[31].name = "water";
+
+            tile[32] = new Tile();
+            tile[32].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/shell_decal3.png"));
+            tile[32].collision = true;
+            tile[32].requiredTool = null;
+            tile[32].setTile = 3;
+            tile[32].health = 0;
+            tile[32].name = "water";
 
         } catch (IOException e) {
         }

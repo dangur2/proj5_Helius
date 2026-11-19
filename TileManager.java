@@ -148,29 +148,55 @@ public class TileManager {
         for (int i = 0; i < gp.worldRow; i++) {
             for (int j = 0; j < gp.worldCol; j++) {
                 int currTile = mapTileNum[j][i];
-                if (currTile == 1) {
+                if (currTile != 1) {
                     continue;
                 }
-                int[] borders = {
-                    mapTileNum[j - 1][i - 1], //nw
-                    mapTileNum[j + 1][i - 1], //se
-                    mapTileNum[j - 1][i + 1], //sw
-                    mapTileNum[j + 1][i + 1], //ne
-                    mapTileNum[j + 1][i], //e
-                    mapTileNum[j - 1][i], //w
-                    mapTileNum[j][i + 1], //n
-                    mapTileNum[j][i - 1], //s
-                };
-
-                for (int x : borders) {
-                    if (borders[5] != 3 && borders[6] != 3) {
-                        // tilesToSwap[j][i] == setTile west north waterborder
+                if (j > 0 && j < (gp.worldCol - 1) && i > 0 && i < (gp.worldRow - 1)) {
+                    int[] borders = {
+                        mapTileNum[j - 1][i - 1], //nw : 0
+                        mapTileNum[j + 1][i - 1], //ne : 1
+                        mapTileNum[j - 1][i + 1], //sw : 2
+                        mapTileNum[j + 1][i + 1], //se : 3
+                        mapTileNum[j + 1][i], //e : 4
+                        mapTileNum[j - 1][i], //w : 5
+                        mapTileNum[j][i + 1], //s : 6
+                        mapTileNum[j][i - 1], //n : 7
+                    };
+                    if (borders[7] != 1 && borders[6] != 1 && borders[5] != 1) { //north, south, west
+                        tilesToSwap[j][i] = 3; //23
+                    } else if (borders[7] != 1 && borders[6] != 1 && borders[4] != 1) {
+                        tilesToSwap[j][i] = 3; //22
+                    } else if (borders[5] != 1 && borders[6] != 1 && borders[4] != 1) {
+                        tilesToSwap[j][i] = 3; //24
+                    } else if (borders[5] != 1 && borders[7] != 1 && borders[4] != 1) {
+                        tilesToSwap[j][i] = 3; //21
+                    } else if (borders[7] != 1 && borders[6] != 1) { //north south
+                        tilesToSwap[j][i] = 3; //34
+                    } else if (borders[4] != 1 && borders[5] != 1) { //east west
+                        tilesToSwap[j][i] = 3; //35
+                    } else if (borders[5] != 1 && borders[7] != 1) { //west north
+                        tilesToSwap[j][i] = 26;
+                    } else if (borders[4] != 1 && borders[7] != 1) { //east north
+                        tilesToSwap[j][i] = 25;
+                    } else if (borders[4] != 1 && borders[6] != 1) { // east south
+                        tilesToSwap[j][i] = 27;
+                    } else if (borders[5] != 1 && borders[6] != 1) { //west south
+                        tilesToSwap[j][i] = 28;
+                    } else if (borders[5] != 1) { //w
+                        tilesToSwap[j][i] = 22;
+                    } else if (borders[4] != 1) { //e
+                        tilesToSwap[j][i] = 21;
+                    } else if (borders[7] != 1) { //n
+                        tilesToSwap[j][i] = 24;
+                    } else if (borders[6] != 1) { //s
+                        tilesToSwap[j][i] = 23;
                     }
                 }
-
             }
-            for (int z = 0; z < gp.worldRow; z++) {
-                for (int y = 0; z < gp.worldCol; y++) {
+        }
+        for (int z = 0; z < gp.worldRow; z++) {
+            for (int y = 0; y < gp.worldCol; y++) {
+                if (tilesToSwap[y][z] != 0) {
                     setTile(y, z, tilesToSwap[y][z]);
                 }
             }
@@ -209,14 +235,34 @@ public class TileManager {
                         if (random.nextInt(50) == 0) {
                             decorationTileNum[j][i] = 8; //rosepatch
                         }
-                        if (random.nextInt(30) == 0) {
+                        if (random.nextInt(40) == 0) {
                             decorationTileNum[j][i] = 9; //leaves
                         }
-                        if (random.nextInt(30) == 0) {
+                        if (random.nextInt(50) == 0) {
                             decorationTileNum[j][i] = 12; //leaves
                         }
                     }
 
+                }
+                if (mapTileNum[j][i] == 1) {
+                    if (random.nextInt(15) == 0) {
+                        if (random.nextInt(5) == 0) {
+                            decorationTileNum[j][i] = 29;
+                        }
+                    }
+                }
+                if (mapTileNum[j][i] == 3 && !IsBlocked(j, i)) {
+                    if (random.nextInt(15) == 0) {
+                        if (random.nextInt(15) == 0) {
+                            decorationTileNum[j][i] = 30;
+                        }
+                        if (random.nextInt(16) == 0) {
+                            decorationTileNum[j][i] = 31;
+                        }
+                        if (random.nextInt(17) == 0) {
+                            decorationTileNum[j][i] = 32;
+                        }
+                    }
                 }
             }
         }
