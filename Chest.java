@@ -52,7 +52,6 @@ public class Chest extends PlacedFurniture {
             g2.drawImage(this.getFurniture().useImage, (int) x - (int) camera.getTx(), (int) y - (int) camera.getTy(), null);
         } else {
             g2.drawImage(this.getFurniture().image, (int) x - (int) camera.getTx(), (int) y- (int) camera.getTy(), null);
-
         }
     }
 

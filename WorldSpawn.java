@@ -94,16 +94,26 @@ public class WorldSpawn {
                     case "Chest" -> {
                         currentFurniture = new Chest(furnitureCatalog.getFurniture(1),x*gp.tileSize,y*gp.tileSize);
                     }
+                    case "Bridge" -> {
+                        currentFurniture = new Bridge(furnitureCatalog.getFurniture(2),x*gp.tileSize,y*gp.tileSize);
+                    }
                 }
             }
-            if (currentFurniture != null) {
+            if (currentFurniture != null && currentFurniture.getFurniture().name.equals("Bridge")) {
+                if(!tm.isWaterTile(x, y)){
+                    return false;
+                }
+                placedFurniture.put(new Point(x * gp.tileSize, y * gp.tileSize), currentFurniture);
+                tm.setBridge(x, y);
+                return true;
+            }
+            else if (currentFurniture != null) {
                 placedFurniture.put(new Point(x * gp.tileSize, y * gp.tileSize), currentFurniture);
                 tm.setIsBlocked(currentFurniture.getCollArea());
                 return true;
             }
         }
         return false;
-
     }
 
     private void generateResourceSpawns(int amount) {
@@ -129,7 +139,6 @@ public class WorldSpawn {
 
     public boolean hitResource(int targetCol, int targetRow, ItemType playerTool, int toolDamage) {
         Rectangle hitTile = new Rectangle(targetCol*gp.tileSize, targetRow*gp.tileSize, gp.tileSize, gp.tileSize);
-        
         for (Point i : groundResourceSpawn.keySet()) {
             if (groundResourceSpawn.get(i).getResource().requiredTool == playerTool && hitTile.intersects(groundResourceSpawn.get(i).getCollArea())) {
                 groundResourceSpawn.get(i).setHealth(-toolDamage);
@@ -145,12 +154,13 @@ public class WorldSpawn {
         }
         for (Point i : placedFurniture.keySet()) {
             if (placedFurniture.get(i).getFurniture().requiredTool == playerTool && hitTile.intersects(placedFurniture.get(i).getCollArea()) && placedFurniture.get(i).isEmpty()) {
-                if(placedFurniture.get(i).isEmpty()){
-                    placedFurniture.get(i).setHealth(-toolDamage);
-                }
+                placedFurniture.get(i).setHealth(-toolDamage);
                 if (placedFurniture.get(i).getHealth() < 1) {
+                    tm.removeBridge(targetCol, targetRow);
                     gp.playSound(SoundEffect.RESOURCEBREAK);
-                    dropFurniture(placedFurniture.get(i), targetCol, targetRow);
+                    if (!tm.isWaterTile(targetCol, targetRow)) {
+                        dropFurniture(placedFurniture.get(i), targetCol, targetRow);
+                    }
                     tm.removeIsBlocked(placedFurniture.get(i).getCollArea());
                     placedFurniture.remove(i);
                     break;

@@ -19,7 +19,7 @@ public class CreateUI extends JFrame{
 
     private void loadIcon() {
         try {
-            icon = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tile.png"));
+            icon = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/gameIcon.png"));
         } catch (Exception e) {
         }
     }

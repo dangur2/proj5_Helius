@@ -6,7 +6,7 @@ public class FurnitureCatalog {
     private final ItemCatalog itemCatalog;
 
     public FurnitureCatalog(ItemCatalog itemCatalog){
-        furniture = new FurnitureType[2];
+        furniture = new FurnitureType[3];
         this.itemCatalog = itemCatalog;
         loadFurniture();
     }
@@ -38,6 +38,19 @@ public class FurnitureCatalog {
             furniture[1].type = FurnitureInteractType.CHEST;
             furniture[1].collArea = new Rectangle(6,18,20,9);
             furniture[1].ySortOffset = 19;
+
+            furniture[2] = new FurnitureType();
+            furniture[2].image = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/bridge.png"));
+            furniture[2].useImage = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/bridge.png"));
+            furniture[2].name = "Bridge";
+            furniture[2].collision = false;
+            furniture[2].health = 3;
+            furniture[2].drop = itemCatalog.getItem(23);
+            furniture[2].requiredTool = ItemType.AXE;
+            furniture[2].useTime = 0;
+            furniture[2].type = FurnitureInteractType.BRIDGE;
+            furniture[2].collArea = new Rectangle(0,0,32,32);
+            furniture[2].ySortOffset = 0;
 
         } catch (Exception e) {
         }

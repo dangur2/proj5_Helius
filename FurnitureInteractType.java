@@ -1,3 +1,3 @@
-public enum FurnitureInteractType { FURNACE, ANVIL, CHEST
+public enum FurnitureInteractType { FURNACE, ANVIL, CHEST, BRIDGE
     
 }

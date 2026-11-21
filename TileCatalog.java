@@ -5,7 +5,7 @@ public class TileCatalog {
     Tile[] tile;
 
     public TileCatalog(){
-        tile = new Tile[33];
+        tile = new Tile[50];
         setTiles();
     
     }
@@ -189,7 +189,7 @@ public class TileCatalog {
             tile[21].requiredTool = null;
             tile[21].setTile = 1;
             tile[21].health = 0;
-            tile[21].name = "water";
+            tile[21].name = "sandE";
 
             tile[22] = new Tile();
             tile[22].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileW.png"));
@@ -197,7 +197,7 @@ public class TileCatalog {
             tile[22].requiredTool = null;
             tile[22].setTile = 1;
             tile[22].health = 0;
-            tile[22].name = "water";
+            tile[22].name = "sandW";
 
             tile[23] = new Tile();
             tile[23].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileS.png"));
@@ -205,7 +205,7 @@ public class TileCatalog {
             tile[23].requiredTool = null;
             tile[23].setTile = 1;
             tile[23].health = 0;
-            tile[23].name = "water";
+            tile[23].name = "sandS";
 
             tile[24] = new Tile();
             tile[24].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileN.png"));
@@ -213,7 +213,7 @@ public class TileCatalog {
             tile[24].requiredTool = null;
             tile[24].setTile = 1;
             tile[24].health = 0;
-            tile[24].name = "water";
+            tile[24].name = "sandN";
 
             tile[25] = new Tile();
             tile[25].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileNE.png"));
@@ -221,7 +221,7 @@ public class TileCatalog {
             tile[25].requiredTool = null;
             tile[25].setTile = 1;
             tile[25].health = 0;
-            tile[25].name = "water";
+            tile[25].name = "sandNE";
 
             tile[26] = new Tile();
             tile[26].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileNW.png"));
@@ -229,7 +229,7 @@ public class TileCatalog {
             tile[26].requiredTool = null;
             tile[26].setTile = 1;
             tile[26].health = 0;
-            tile[26].name = "water";
+            tile[26].name = "sandNW";
 
             tile[27] = new Tile();
             tile[27].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileSE.png"));
@@ -237,7 +237,7 @@ public class TileCatalog {
             tile[27].requiredTool = null;
             tile[27].setTile = 1;
             tile[27].health = 0;
-            tile[27].name = "water";
+            tile[27].name = "sandSE";
 
             tile[28] = new Tile();
             tile[28].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/sand_tileSW.png"));
@@ -245,7 +245,7 @@ public class TileCatalog {
             tile[28].requiredTool = null;
             tile[28].setTile = 1;
             tile[28].health = 0;
-            tile[28].name = "water";
+            tile[28].name = "sandSW";
 
             tile[29] = new Tile();
             tile[29].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/water_tile2.png"));
@@ -253,7 +253,7 @@ public class TileCatalog {
             tile[29].requiredTool = null;
             tile[29].setTile = 1;
             tile[29].health = 0;
-            tile[29].name = "water";
+            tile[29].name = "water2";
 
             tile[30] = new Tile();
             tile[30].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/shell_decal1.png"));
@@ -261,7 +261,7 @@ public class TileCatalog {
             tile[30].requiredTool = null;
             tile[30].setTile = 3;
             tile[30].health = 0;
-            tile[30].name = "water";
+            tile[30].name = "shell1";
 
             tile[31] = new Tile();
             tile[31].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/shell_decal2.png"));
@@ -269,7 +269,7 @@ public class TileCatalog {
             tile[31].requiredTool = null;
             tile[31].setTile = 3;
             tile[31].health = 0;
-            tile[31].name = "water";
+            tile[31].name = "shell2";
 
             tile[32] = new Tile();
             tile[32].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/shell_decal3.png"));
@@ -277,9 +277,150 @@ public class TileCatalog {
             tile[32].requiredTool = null;
             tile[32].setTile = 3;
             tile[32].health = 0;
-            tile[32].name = "water";
+            tile[32].name = "shell3";
+
+            tile[33] = new Tile();
+            tile[33].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileN.png"));
+            tile[33].collision = false;
+            tile[33].requiredTool = null;
+            tile[33].setTile = 1;
+            tile[33].health = 0;
+            tile[33].name = "grassN";
+
+            tile[34] = new Tile();
+            tile[34].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileS.png"));
+            tile[34].collision = false;
+            tile[34].requiredTool = null;
+            tile[34].setTile = 1;
+            tile[34].health = 0;
+            tile[34].name = "grassS";
+
+            tile[35] = new Tile();
+            tile[35].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileE.png"));
+            tile[35].collision = false;
+            tile[35].requiredTool = null;
+            tile[35].setTile = 1;
+            tile[35].health = 0;
+            tile[35].name = "grassE";
+
+            tile[36] = new Tile();
+            tile[36].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileW.png"));
+            tile[36].collision = false;
+            tile[36].requiredTool = null;
+            tile[36].setTile = 1;
+            tile[36].health = 0;
+            tile[36].name = "grassW";
+
+            tile[37] = new Tile();
+            tile[37].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileNW.png"));
+            tile[37].collision = false;
+            tile[37].requiredTool = null;
+            tile[37].setTile = 1;
+            tile[37].health = 0;
+            tile[37].name = "grassNW";
+
+            tile[38] = new Tile();
+            tile[38].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileNE.png"));
+            tile[38].collision = false;
+            tile[38].requiredTool = null;
+            tile[38].setTile = 1;
+            tile[38].health = 0;
+            tile[38].name = "grassNE";
+
+            tile[39] = new Tile();
+            tile[39].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileSE.png"));
+            tile[39].collision = false;
+            tile[39].requiredTool = null;
+            tile[39].setTile = 1;
+            tile[39].health = 0;
+            tile[39].name = "grassSE";
+
+            tile[40] = new Tile();
+            tile[40].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/grass_tileSW.png"));
+            tile[40].collision = false;
+            tile[40].requiredTool = null;
+            tile[40].setTile = 1;
+            tile[40].health = 0;
+            tile[40].name = "grassSW";
+
+            tile[41] = new Tile();
+            tile[41].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileN.png"));
+            tile[41].collision = false;
+            tile[41].requiredTool = null;
+            tile[41].setTile = 1;
+            tile[41].health = 0;
+            tile[41].name = "dirtN";
+
+            tile[42] = new Tile();
+            tile[42].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileS.png"));
+            tile[42].collision = false;
+            tile[42].requiredTool = null;
+            tile[42].setTile = 1;
+            tile[42].health = 0;
+            tile[42].name = "dirtS";
+
+            tile[43] = new Tile();
+            tile[43].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileE.png"));
+            tile[43].collision = false;
+            tile[43].requiredTool = null;
+            tile[43].setTile = 1;
+            tile[43].health = 0;
+            tile[43].name = "dirtE";
+
+            tile[44] = new Tile();
+            tile[44].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileW.png"));
+            tile[44].collision = false;
+            tile[44].requiredTool = null;
+            tile[44].setTile = 1;
+            tile[44].health = 0;
+            tile[44].name = "dirtW";
+
+            tile[45] = new Tile();
+            tile[45].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileNE.png"));
+            tile[45].collision = false;
+            tile[45].requiredTool = null;
+            tile[45].setTile = 1;
+            tile[45].health = 0;
+            tile[45].name = "dirtNE";
+
+            tile[46] = new Tile();
+            tile[46].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileNW.png"));
+            tile[46].collision = false;
+            tile[46].requiredTool = null;
+            tile[46].setTile = 1;
+            tile[46].health = 0;
+            tile[46].name = "dirtNW";
+
+            tile[47] = new Tile();
+            tile[47].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileSE.png"));
+            tile[47].collision = false;
+            tile[47].requiredTool = null;
+            tile[47].setTile = 1;
+            tile[47].health = 0;
+            tile[47].name = "dirtSE";
+
+            tile[48] = new Tile();
+            tile[48].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/dirt_tileSW.png"));
+            tile[48].collision = false;
+            tile[48].requiredTool = null;
+            tile[48].setTile = 1;
+            tile[48].health = 0;
+            tile[48].name = "dirtSW";
+
+            tile[49] = new Tile();
+            tile[49].image = ImageIO.read(getClass().getResourceAsStream("/assets/Tiles/bridge_tile.png"));
+            tile[49].collision = false;
+            tile[49].requiredTool = ItemType.AXE;
+            tile[49].setTile = 1;
+            tile[49].health = 0;
+            tile[49].name = "bridge";
 
         } catch (IOException e) {
         }
+    }
+    public boolean isWaterTile(Tile tile){
+        return tile.name.equals("water") || tile.name.equals("sandNE") || tile.name.equals("sandN") || 
+        tile.name.equals("water2") || tile.name.equals("sandE") || tile.name.equals("sandW") || 
+        tile.name.equals("sandS") || tile.name.equals("sandNW") || tile.name.equals("sandSW") || tile.name.equals("sandSE");
     }
 }

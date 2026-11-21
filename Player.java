@@ -171,7 +171,12 @@ public class Player extends Entity {
                 gp.playSound(SoundEffect.SWORD);
             }
             case FURNITURE -> {
-                if (!tm.isSolid((int) targetCol * gp.tileSize, (int) targetRow * gp.tileSize)) {
+                if (selectedItem.getItemName().equals("Bridge")) {
+                    if (ws.PlaceFurniture(targetCol, targetRow, selectedItem)) {
+                        inventory.decreaseQuantity(selectedSlot);
+                    }
+                }
+                else if (!tm.isSolid((int) targetCol * gp.tileSize, (int) targetRow * gp.tileSize)) {
                     if (ws.PlaceFurniture(targetCol, targetRow, selectedItem)) {
                         inventory.decreaseQuantity(selectedSlot);
                     }
@@ -203,7 +208,7 @@ public class Player extends Entity {
     }
 
     private void setStartingValues(Point p) {
-        speed = 850; //150 default
+        speed = 150; //150 default
         x = p.x;
         y = p.y;
         playerCollision = true;

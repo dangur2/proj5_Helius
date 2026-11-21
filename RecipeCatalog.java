@@ -8,7 +8,7 @@ public class RecipeCatalog {
 
 
     public RecipeCatalog(ItemCatalog itemCatalog) {
-        this.recipe = new ItemRecipe[13];
+        this.recipe = new ItemRecipe[14];
         this.itemCatalog = itemCatalog;
         loadCraftingRecipies();
     }
@@ -143,6 +143,15 @@ public class RecipeCatalog {
             recipe[12].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(6),2));
             recipe[12].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(17),1));
             recipe[12].amount = 1;
+
+            recipe[13] = new ItemRecipe();
+            recipe[13].grayedSprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/grayBridge.png"));
+            recipe[13].sprite = ImageIO.read(getClass().getResourceAsStream("/assets/CraftingSprites/bridge.png"));
+            recipe[13].name = "Bridge";
+            recipe[13].craftedItem = new Item(itemCatalog.getItem(23));
+            recipe[13].itemDescription = "Used on water";
+            recipe[13].itemRequirement.add(new RecipeIngredient(itemCatalog.getItem(8),3));
+            recipe[13].amount = 3;
 
         } catch (Exception e) {
             e.printStackTrace();
